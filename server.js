@@ -181,24 +181,24 @@ app.get('/login', (req, res) => res.render('login', { error: null }));
 app.get('/signup', (req, res) => res.render('signup', { error: null, ref: req.query.ref || '' }));
 
 app.post('/signup', async (req, res) => {
-    const { username, phone, password, ref } = req.body;
     try {
-        const existing = await User.findOne({ $or: [{ username }, { phone }] });
-        if (existing) {
-            return res.render('signup', { error: 'The username or mobile number already exists.', ref });
+        const { username, mobile, password, referral } = req.body;
+
+        // Check karein ke user pehle se mojood toh nahi
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.render('signup', { error: 'Username already exists' });
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await User.create({
-            username,
-            phone,
-            password: hashedPassword,
-            referredBy: ref || null,
-            balance: 0
-        });
-        req.session.user = { id: newUser._id, username: newUser.username };
-        res.redirect('/');
-    } catch (e) {
-        res.render('signup', { error: 'Registration failed; please try again.', ref: '' });
+
+        // Naya user create karein
+        const newUser = new User({ username, mobile, password, referral });
+        await newUser.save();
+
+        res.redirect('/login');
+    } catch (err) {
+        console.error(err);
+        // Agar yahan error aaye ga toh "Registration failed" show hoga
+        res.render('signup', { error: 'Registration failed; please try again.' });
     }
 });
 
