@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Withdraw History - Nexora Capital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 40px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #8ff1ff;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-align: center;
+            line-height: 1.1;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .filter-toggle-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #14b8a6;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+        }
+
+        .summary-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 28px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .summary-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .summary-info small {
+            font-size: 11px;
+            font-weight: 700;
+            color: #b7c4d9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-info h2 {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ff5c77;
+            line-height: 1.1;
+            text-shadow: 0 0 20px rgba(255, 92, 119, 0.4);
+        }
+
+        .summary-info p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 20px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(14, 165, 233, 0.2);
+            color: #38bdf8;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            border: 1px solid rgba(14, 165, 233, 0.4);
+        }
+
+        .stat-box.pending .stat-icon {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 16px;
+            font-weight: 900;
+            color: #f8fafc;
+        }
+
+        .stat-box small {
+            font-size: 11px;
+            color: #b7c4d9;
+            font-weight: 700;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #eaf7ff;
+        }
+
+        .badge-recent {
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .filter-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .filter-tab {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 14px;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #b7c4d9;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #ffffff;
+            border-color: rgba(161, 255, 225, .6);
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.4);
+        }
+
+        .empty-state {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .7), rgba(10, 17, 36, .85));
+            border: 2px dashed rgba(185, 218, 255, .3);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            margin: 0 auto 14px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .empty-state h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 4px;
+        }
+
+        .empty-state p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .btn-withdraw-funds {
+            display: inline-block;
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #ffffff;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(161, 255, 225, .5);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-frame">
+        <div class="history-header">
+            <a href="/" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="history-title">Withdraw<br>History</div>
+            <div class="filter-toggle-btn"><i class="fa-solid fa-sliders"></i></div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="summary-card">
+            <div class="summary-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <div class="summary-info">
+                <small>Total Withdrawn</small>
+                <h2>Rs <%= (typeof totalWithdrawn !=='undefined' ) ? totalWithdrawn : 0 %>
+                </h2>
+                <p>0 withdrawal records</p>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <span>
+                        <%= (typeof approvedCount !=='undefined' ) ? approvedCount : 0 %>
+                    </span>
+                    <small>Approved</small>
+                </div>
+            </div>
+            <div class="stat-box pending">
+                <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <span>
+                        <%= (typeof pendingCount !=='undefined' ) ? pendingCount : 0 %>
+                    </span>
+                    <small>Pending</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Header -->
+        <div class="section-header">
+            <div class="section-title">Recent Withdrawals</div>
+            <div class="badge-recent">Recent</div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <a href="javascript:void(0);" class="filter-tab active">All</a>
+            <a href="javascript:void(0);" class="filter-tab">Approved</a>
+            <a href="javascript:void(0);" class="filter-tab">Pending</a>
+            <a href="javascript:void(0);" class="filter-tab">Canceled</a>
+        </div>
+
+        <!-- Empty State / Records List -->
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <h3>No withdrawal records</h3>
+            <p>Your cashout requests will appear here.</p>
+            <a href="/withdraw" class="btn-withdraw-funds">Withdraw Funds <i class="fa-solid fa-arrow-right"
+                    style="margin-left: 4px;"></i></a>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

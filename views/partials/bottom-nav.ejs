@@ -1,0 +1,21 @@
+<nav class="bottom-nav">
+    <a href="/" class="nav-item <%= currentPath === '/' ? 'active' : '' %>">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+    </a>
+    <a href="/invest" class="nav-item <%= currentPath === '/invest' ? 'active' : '' %>">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Invest</span>
+    </a>
+    <a href="/invest" class="fab-center">
+        N
+    </a>
+    <a href="/profile" class="nav-item">
+        <i class="fa-solid fa-users"></i>
+        <span>Team</span>
+    </a>
+    <a href="/profile" class="nav-item <%= currentPath === '/profile' ? 'active' : '' %>">
+        <i class="fa-regular fa-user"></i>
+        <span>Profile</span>
+    </a>
+</nav>

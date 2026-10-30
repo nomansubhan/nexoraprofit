@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Nexora Profit - Admin Login</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 20%, #0a254e 0%, #03132e 50%, #010816 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 14px;
+            color: #ffffff;
+        }
+
+        /* Glassmorphic Container Card */
+        .login-wrapper {
+            width: 100%;
+            max-width: 410px;
+            background: rgba(7, 24, 56, 0.75);
+            border: 1px solid rgba(30, 64, 120, 0.6);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 26px;
+            padding: 32px 22px 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Logo and Brand Header */
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .brand-logo-icon {
+            font-size: 38px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            line-height: 1;
+            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.4));
+        }
+
+        .brand-meta {
+            text-align: left;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+
+        .brand-title span {
+            color: #fbbf24;
+        }
+
+        .brand-title sup {
+            font-size: 10px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-left: 2px;
+        }
+
+        .brand-subtitle {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #64748b;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        /* Welcome Text */
+        .welcome-title {
+            font-size: 25px;
+            font-weight: 800;
+            color: #fbbf24;
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .welcome-sub {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        /* Input Controls */
+        .input-box {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .input-box i.input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15px;
+            color: #64748b;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #081a38;
+            border: 1.5px solid #16325c;
+            border-radius: 14px;
+            padding: 13px 46px 13px 48px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .input-field::placeholder {
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .input-field:focus {
+            border-color: #3b82f6;
+            background: #0a2147;
+            box-shadow: 0 0 16px rgba(59, 130, 246, 0.25);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* Options Row */
+        .options-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #94a3b8;
+            margin: 10px 2px 18px;
+        }
+
+        .remember-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember-wrap input {
+            accent-color: #3b82f6;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: #fbbf24;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Submit Button */
+        .btn-login-gold {
+            width: 100%;
+            background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 60%, #d97706 100%);
+            border: none;
+            border-radius: 14px;
+            padding: 13px;
+            color: #0f172a;
+            font-size: 16px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-login-gold:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Role Selection Section */
+        .role-section-title {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #cbd5e1;
+            margin: 20px 2px 10px;
+            text-transform: uppercase;
+        }
+
+        /* Row 1: 3 Buttons (Super Admin, Depositer, Withdrawer) */
+        .roles-grid-row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* Row 2: 2 Buttons (Support Admin, Manager) */
+        .roles-grid-row-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Unified Role Button Style */
+        .role-btn-box {
+            background: #081a38;
+            border: 1.5px solid #16325c;
+            border-radius: 14px;
+            padding: 10px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            text-align: center;
+        }
+
+        .role-btn-box i {
+            font-size: 16px;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+
+        .role-btn-box .role-name {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        .role-btn-box .role-desc {
+            font-size: 8px;
+            color: #64748b;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Row 2 layout */
+        .roles-grid-row-2 .role-btn-box {
+            flex-direction: row;
+            padding: 10px;
+            gap: 6px;
+        }
+
+        .roles-grid-row-2 .role-btn-box .role-name {
+            font-size: 11px;
+        }
+
+        /* Active Selected State (Golden Border Glow) */
+        .role-btn-box.active {
+            border-color: #fbbf24;
+            background: #0c234a;
+            box-shadow: 0 0 16px rgba(251, 191, 36, 0.25);
+        }
+
+        .role-btn-box.active i {
+            color: #fbbf24;
+        }
+
+        .role-btn-box.active .role-name {
+            color: #fbbf24;
+        }
+
+        .role-btn-box.active .role-desc {
+            color: #fef08a;
+        }
+
+        /* Footer */
+        .login-footer {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        /* Error Alert */
+        .error-alert {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+        }
+
+        /* Custom Modal CSS */
+        .global-confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 99999; place-items: center; padding: 16px; }
+        .global-confirm-overlay.active { display: grid; }
+        .global-confirm-box { background: #071838; border: 1px solid rgba(30, 64, 120, 0.8); border-radius: 20px; width: 100%; max-width: 380px; padding: 24px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5); text-align: center; color: #ffffff; }
+        .global-confirm-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); color: #fbbf24; display: grid; place-items: center; font-size: 24px; margin: 0 auto 16px; }
+        .global-confirm-box h3 { font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
+        .global-confirm-box p { font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 22px; }
+        .btn-global-confirm { width: 100%; background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 60%, #d97706 100%); color: #0f172a; border: none; padding: 11px 16px; border-radius: 12px; font-size: 13px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); transition: opacity 0.2s; }
+        .btn-global-confirm:hover { opacity: 0.9; }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+        <!-- Brand Title -->
+        <div class="brand-header">
+            <div class="brand-logo-icon">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <div class="brand-meta">
+                <div class="brand-title">NEXORA <span>Profit</span><sup>TM</sup></div>
+                <div class="brand-subtitle">ADMIN PANEL</div>
+            </div>
+        </div>
+
+        <h2 class="welcome-title">Welcome Back</h2>
+        <p class="welcome-sub">Sign in to your admin account</p>
+
+        <% if (locals.error) { %>
+            <div class="error-alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>
+                    <%= error %>
+                </span>
+            </div>
+        <% } %>
+
+        <form action="/admin/login" method="POST" id="adminLoginForm">
+            <!-- Default selected role set to Super Admin -->
+            <input type="hidden" name="role" id="selectedRoleInput" value="Super Admin">
+
+            <!-- Username / Email Input -->
+            <div class="input-box">
+                <input type="text" name="username" class="input-field" placeholder="Username / Email" required
+                    autocomplete="off">
+                <i class="fa-regular fa-user input-icon"></i>
+            </div>
+
+            <!-- Password Input -->
+            <div class="input-box">
+                <input type="password" name="password" id="adminPassInput" class="input-field"
+                    placeholder="Password" required>
+                <i class="fa-solid fa-lock input-icon"></i>
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                    <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
+
+            <!-- Options Row -->
+            <div class="options-row">
+                <label class="remember-wrap">
+                    <input type="checkbox" name="remember">
+                    <span>Remember Me</span>
+                </label>
+                <a href="javascript:void(0)" onclick="showLoginAlert()" class="forgot-link">Forgot Password?</a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-login-gold">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                <span>Login</span>
+            </button>
+
+            <!-- SELECT YOUR ROLE -->
+            <div class="role-section-title">Select Your Role</div>
+
+            <!-- ROW 1: 3 BUTTONS -->
+            <div class="roles-grid-row-3">
+                <div class="role-btn-box active" onclick="selectAdminRole('Super Admin', this)">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="role-name">Super Admin</span>
+                    <span class="role-desc">(Full Control)</span>
+                </div>
+
+                <div class="role-btn-box" onclick="selectAdminRole('Depositer', this)">
+                    <i class="fa-solid fa-coins"></i>
+                    <span class="role-name">Depositer</span>
+                    <span class="role-desc">(Deposits)</span>
+                </div>
+
+                <div class="role-btn-box" onclick="selectAdminRole('Withdrawer', this)">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span class="role-name">Withdrawer</span>
+                    <span class="role-desc">(Withdraws)</span>
+                </div>
+            </div>
+
+            <!-- ROW 2: 2 BUTTONS -->
+            <div class="roles-grid-row-2">
+                <div class="role-btn-box" onclick="selectAdminRole('Support Admin', this)">
+                    <i class="fa-solid fa-headset"></i>
+                    <span class="role-name">Support Admin</span>
+                </div>
+
+                <div class="role-btn-box" onclick="selectAdminRole('Manager', this)">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span class="role-name">Manager</span>
+                </div>
+            </div>
+        </form>
+
+        <div class="login-footer">
+            &copy; 2026 NEXORA Profit. All rights reserved.<br>
+            Build &bull; Grow &bull; Earn
+        </div>
+    </div>
+
+    <!-- Custom Login Alert Modal -->
+    <div class="global-confirm-overlay" id="loginAlertOverlay">
+        <div class="global-confirm-box">
+            <div class="global-confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3>Forgot Password</h3>
+            <p>Please contact Super Admin to reset your credentials.</p>
+            <button type="button" class="btn-global-confirm" onclick="closeLoginAlert()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const input = document.getElementById('adminPassInput');
+            const eye = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.classList.remove('fa-eye');
+                eye.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                eye.classList.remove('fa-eye-slash');
+                eye.classList.add('fa-eye');
+            }
+        }
+
+        function selectAdminRole(roleName, element) {
+            document.getElementById('selectedRoleInput').value = roleName;
+
+            document.querySelectorAll('.role-btn-box').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            element.classList.add('active');
+        }
+
+        function showLoginAlert() {
+            document.getElementById('loginAlertOverlay').classList.add('active');
+        }
+
+        function closeLoginAlert() {
+            document.getElementById('loginAlertOverlay').classList.remove('active');
+        }
+    </script>
+
+</body>
+
+</html>

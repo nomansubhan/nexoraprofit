@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Depositer Dashboard - Nexora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            display: flex;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            background: #008069;
+            color: #fff;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .btn-approve {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-cancel {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+                margin-top: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar Include -->
+    <%- include('admin-sidebar') %>
+
+        <div class="main-content">
+            <h2><i class="fa-solid fa-building-columns"></i> Deposits Management (Depositer Portal)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Transaction ID</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (deposits && deposits.length> 0) { %>
+                        <% deposits.forEach(dep=> { %>
+                            <tr>
+                                <td>
+                                    <%= dep.username %>
+                                </td>
+                                <td>Rs. <%= dep.amount %>
+                                </td>
+                                <td>
+                                    <%= dep.method %>
+                                </td>
+                                <td>
+                                    <%= dep.transactionId %>
+                                </td>
+                                <td><b>
+                                        <%= dep.status %>
+                                    </b></td>
+                                <td>
+                                    <% if (dep.status==='Pending' ) { %>
+                                        <form action="/admin/deposits/approve/<%= dep._id %>" method="POST"
+                                            style="display:inline;">
+                                            <button type="submit" class="btn btn-approve">Approve</button>
+                                        </form>
+                                        <form action="/admin/deposits/cancel/<%= dep._id %>" method="POST"
+                                            style="display:inline;">
+                                            <button type="submit" class="btn btn-cancel">Cancel</button>
+                                        </form>
+                                        <% } else { %>
+                                            <span>Completed</span>
+                                            <% } %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6" style="text-align:center;">Koi deposit request mojood nahi hai.
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+</body>
+
+</html>

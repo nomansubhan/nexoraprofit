@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexora Admin - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 25px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 14px;
+            padding: 16px 18px;
+            color: #ffffff;
+            box-shadow: 0 6px 15px rgba(217, 119, 6, 0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 85px;
+        }
+
+        .metric-card.blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .metric-card.green {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        }
+
+        .metric-card.purple {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        }
+
+        .metric-card.red {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        }
+
+        .metric-card.teal {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+        }
+
+        .metric-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 900;
+            margin-bottom: 2px;
+            word-break: break-all;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.9;
+            letter-spacing: 0.3px;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .table-header h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 10px 14px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 12px 14px;
+            font-size: 12px;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-top-bar {
+                display: none !important;
+            }
+
+            body {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-left: 0 !important;
+                padding: 12px !important;
+                width: 100% !important;
+                margin-top: 65px !important;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('admin-sidebar') %>
+
+        <main class="admin-main-content">
+            <!-- Top Navigation Header Bar (Only visible on Laptop/Desktop) -->
+            <div class="desktop-top-bar"
+                style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #ffffff; padding: 15px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                <a href="/admin/dashboard"
+                    style="background: #008069; color: #ffffff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i
+                        class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="/admin/deposits"
+                    style="background: #f1f5f9; color: #334155; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i
+                        class="fa-solid fa-building-columns"></i> Deposits</a>
+                <a href="/admin/withdrawals"
+                    style="background: #f1f5f9; color: #334155; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i
+                        class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+                <a href="/admin/banks"
+                    style="background: #f1f5f9; color: #334155; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i
+                        class="fa-solid fa-wallet"></i> Banks</a>
+                <a href="/admin/users"
+                    style="background: #f1f5f9; color: #334155; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i
+                        class="fa-solid fa-users"></i> Users</a>
+                <a href="/" target="_blank"
+                    style="background: #f0fdf4; color: #16a34a; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i
+                        class="fa-solid fa-globe"></i> Live Site</a>
+                <a href="/admin/logout"
+                    style="background: #fee2e2; color: #dc2626; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-left: auto;"><i
+                        class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </div>
+
+            <!-- 1. Pending Deposits Table (Top Priority) -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Pending Deposits Verification (<%= pendingDeposits.length %>)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>USERNAME</th>
+                                <th>AMOUNT</th>
+                                <th>METHOD</th>
+                                <th>TRX ID</th>
+                                <th>DATE</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (pendingDeposits.length===0) { %>
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #94a3b8; padding: 15px;">No
+                                        pending deposits found!</td>
+                                </tr>
+                                <% } else { %>
+                                    <% pendingDeposits.forEach(d=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= d.username %>
+                                            </td>
+                                            <td>Rs. <%= d.amount.toLocaleString() %>
+                                            </td>
+                                            <td>
+                                                <%= d.method %>
+                                            </td>
+                                            <td>
+                                                <%= d.transactionId %>
+                                            </td>
+                                            <td>
+                                                <%= new Date(d.date).toLocaleDateString() %>
+                                            </td>
+                                            <td><span class="badge pending">
+                                                    <%= d.status %>
+                                                </span></td>
+                                        </tr>
+                                        <% }) %>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 2. Pending Withdrawals Table (Top Priority) -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Pending Withdrawals Requests (<%= pendingWithdrawals.length %>)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>USERNAME</th>
+                                <th>AMOUNT</th>
+                                <th>METHOD</th>
+                                <th>ACCOUNT TITLE</th>
+                                <th>ACCOUNT NUMBER</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (pendingWithdrawals.length===0) { %>
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #94a3b8; padding: 15px;">No
+                                        pending withdrawals found!</td>
+                                </tr>
+                                <% } else { %>
+                                    <% pendingWithdrawals.forEach(w=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= w.username %>
+                                            </td>
+                                            <td>Rs. <%= w.amount.toLocaleString() %>
+                                            </td>
+                                            <td>
+                                                <%= w.method %>
+                                            </td>
+                                            <td>
+                                                <%= w.accountTitle %>
+                                            </td>
+                                            <td>
+                                                <%= w.accountNumber %>
+                                            </td>
+                                            <td><span class="badge pending">
+                                                    <%= w.status %>
+                                                </span></td>
+                                        </tr>
+                                        <% }) %>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 20px 0 10px;"><i
+                    class="fa-solid fa-users" style="color: #f59e0b;"></i> Users</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="metric-value">
+                        <%= stats.totalMembers %>
+                    </div>
+                    <div class="metric-label">Total Members</div>
+                </div>
+                <div class="metric-card" style="background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);">
+                    <div class="metric-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="metric-value">Rs. <%= stats.totalMemberBalance.toLocaleString() %>
+                    </div>
+                    <div class="metric-label">Total Member Balance</div>
+                </div>
+                <div class="metric-card" style="background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);">
+                    <div class="metric-icon"><i class="fa-solid fa-user-plus"></i></div>
+                    <div class="metric-value">
+                        <%= stats.todayJoinedCount %>
+                    </div>
+                    <div class="metric-label">Today Joined Members</div>
+                </div>
+                <div class="metric-card" style="background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%);">
+                    <div class="metric-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    <div class="metric-value">Rs. <%= stats.todayJoinedBalance.toLocaleString() %>
+                    </div>
+                    <div class="metric-label">Today Joined Balance</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="metric-icon"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="metric-value">
+                        <%= stats.activeMembers %>
+                    </div>
+                    <div class="metric-label">Active Members</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="metric-icon"><i class="fa-solid fa-vault"></i></div>
+                    <div class="metric-value">Rs. <%= stats.activeMemberBalance ?
+                            stats.activeMemberBalance.toLocaleString() : '0' %>
+                    </div>
+                    <div class="metric-label">Active Member Balance</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-user-slash"></i></div>
+                    <div class="metric-value">
+                        <%= stats.suspendedMembers || 0 %>
+                    </div>
+                    <div class="metric-label">Suspended Members</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-ban"></i></div>
+                    <div class="metric-value">Rs. <%= stats.suspendedMemberBalance || 0 %>
+                    </div>
+                    <div class="metric-label">Suspended Member Balance</div>
+                </div>
+            </div>
+
+            <!-- Deposits Section -->
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 20px 0 10px;"><i
+                    class="fa-solid fa-coins" style="color: #10b981;"></i> Deposits</div>
+            <div class="metrics-grid">
+                <div class="metric-card green">
+                    <div class="metric-icon"><i class="fa-solid fa-hourglass-start"></i></div>
+                    <div class="metric-value">Rs. <%= stats.pendingDepositAmount.toLocaleString() %>
+                    </div>
+                    <div class="metric-label">Pending Deposits Amount</div>
+                </div>
+                <div class="metric-card green">
+                    <div class="metric-icon"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="metric-value">
+                        <%= stats.pendingDepositRequests %>
+                    </div>
+                    <div class="metric-label">Pending Deposit Requests</div>
+                </div>
+                <div class="metric-card teal">
+                    <div class="metric-icon"><i class="fa-solid fa-circle-arrow-down"></i></div>
+                    <div class="metric-value">Rs. <%= stats.todayDepositsAmount.toLocaleString() %>
+                    </div>
+                    <div class="metric-label">Today Deposits</div>
+                </div>
+                <div class="metric-card teal">
+                    <div class="metric-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div class="metric-value">
+                        <%= stats.todayActivePlans || 0 %>
+                    </div>
+                    <div class="metric-label">Today Active Plans</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="metric-icon"><i class="fa-solid fa-gem"></i></div>
+                    <div class="metric-value">
+                        <%= stats.totalActivePlans || 0 %>
+                    </div>
+                    <div class="metric-label">Total Active Plans</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div class="metric-value">Rs. <%= stats.canceledDepositsAmount || 0 %>
+                    </div>
+                    <div class="metric-label">Canceled Deposits</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-rectangle-xmark"></i></div>
+                    <div class="metric-value">
+                        <%= stats.canceledDepositRequests || 0 %>
+                    </div>
+                    <div class="metric-label">Canceled Deposit Requests</div>
+                </div>
+            </div>
+
+            <!-- Withdrawals Section -->
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 20px 0 10px;"><i
+                    class="fa-solid fa-wallet" style="color: #ef4444;"></i> Withdrawals</div>
+            <div class="metrics-grid">
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div class="metric-value">Rs. <%= stats.pendingWithdrawAmount.toLocaleString() %>
+                    </div>
+                    <div class="metric-label">Pending Withdraw Amount</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-list-ol"></i></div>
+                    <div class="metric-value">
+                        <%= stats.pendingWithdrawRequests %>
+                    </div>
+                    <div class="metric-label">Pending Withdraw Requests</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                    <div class="metric-value">Rs. <%= stats.todayWithdrawAmount.toLocaleString() %>
+                    </div>
+                    <div class="metric-label">Today Withdraw</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="metric-value">
+                        <%= stats.todayWithdrawRequests || 0 %>
+                    </div>
+                    <div class="metric-label">Today Withdraw Requests</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="metric-icon"><i class="fa-solid fa-ban"></i></div>
+                    <div class="metric-value">Rs. <%= stats.rejectedWithdrawAmount || 0 %>
+                    </div>
+                    <div class="metric-label">Rejected Withdraw</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="metric-icon"><i class="fa-solid fa-rectangle-list"></i></div>
+                    <div class="metric-value">
+                        <%= stats.canceledWithdrawRequests || 0 %>
+                    </div>
+                    <div class="metric-label">Canceled Withdraw Requests</div>
+                </div>
+            </div>
+
+            <!-- Profit & Reports Section -->
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 20px 0 10px;"><i
+                    class="fa-solid fa-chart-pie" style="color: #10b981;"></i> Profit & Reports</div>
+            <div class="metrics-grid">
+                <div class="metric-card green">
+                    <div class="metric-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="metric-value">Rs. <%= stats.totalProfit ? stats.totalProfit.toLocaleString() : '6,100'
+                            %>
+                    </div>
+                    <div class="metric-label">Total Profit</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="metric-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="metric-value">Rs. <%= stats.todayProfit ? stats.todayProfit.toLocaleString() : '3,865'
+                            %>
+                    </div>
+                    <div class="metric-label">Today Profit</div>
+                </div>
+                <div class="metric-card teal">
+                    <div class="metric-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="metric-value">Rs. <%= stats.todayProfitGenerated ?
+                            stats.todayProfitGenerated.toLocaleString() : '5,450' %>
+                    </div>
+                    <div class="metric-label">Today Profit Generated</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="metric-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="metric-value">Rs. <%= stats.nextDayEarning ? stats.nextDayEarning.toLocaleString()
+                            : '1,585' %>
+                    </div>
+                    <div class="metric-label">Next Day Earning</div>
+                </div>
+            </div>
+
+            <!-- Referrals Section -->
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 20px 0 10px;"><i
+                    class="fa-solid fa-users-rectangle" style="color: #3b82f6;"></i> Referrals</div>
+            <div class="metrics-grid">
+                <div class="metric-card blue">
+                    <div class="metric-icon"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="metric-value">
+                        <%= stats.totalReferrals || 16 %>
+                    </div>
+                    <div class="metric-label">Total Referrals</div>
+                </div>
+                <div class="metric-card teal">
+                    <div class="metric-icon"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="metric-value">
+                        <%= stats.activeReferrals || 3 %>
+                    </div>
+                    <div class="metric-label">Active Referrals</div>
+                </div>
+                <div class="metric-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <div class="metric-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <div class="metric-value">Rs. <%= stats.totalReferralDeposits ?
+                            stats.totalReferralDeposits.toLocaleString() : '1,320' %>
+                    </div>
+                    <div class="metric-label">Total Referral Deposits</div>
+                </div>
+                <div class="metric-card" style="background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);">
+                    <div class="metric-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    <div class="metric-value">Rs. <%= stats.referralCommission ?
+                            stats.referralCommission.toLocaleString() : '176' %>
+                    </div>
+                    <div class="metric-label">Referral Commission</div>
+                </div>
+            </div>
+
+            <!-- Tasks & Salary Section -->
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 20px 0 10px;"><i
+                    class="fa-solid fa-list-check" style="color: #f59e0b;"></i> Tasks & Salary</div>
+            <div class="metrics-grid">
+                <div class="metric-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <div class="metric-icon"><i class="fa-solid fa-business-time"></i></div>
+                    <div class="metric-value">
+                        <%= stats.tasksPending || 0 %>
+                    </div>
+                    <div class="metric-label">Tasks Pending</div>
+                </div>
+                <div class="metric-card green">
+                    <div class="metric-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="metric-value">
+                        <%= stats.completedTasks || 0 %>
+                    </div>
+                    <div class="metric-label">Completed Tasks</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="metric-icon"><i class="fa-solid fa-list"></i></div>
+                    <div class="metric-value">
+                        <%= stats.totalTasks || 0 %>
+                    </div>
+                    <div class="metric-label">Total Tasks</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="metric-icon"><i class="fa-solid fa-money-bill-1"></i></div>
+                    <div class="metric-value">Rs. <%= stats.totalTaskAmount ? stats.totalTaskAmount.toLocaleString()
+                            : '0' %>
+                    </div>
+                    <div class="metric-label">Total Task Amount</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="metric-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div class="metric-value">Rs. <%= stats.pendingSalaryRewards ?
+                            stats.pendingSalaryRewards.toLocaleString() : '0' %>
+                    </div>
+                    <div class="metric-label">Pending Salary Rewards</div>
+                </div>
+                <div class="metric-card teal">
+                    <div class="metric-icon"><i class="fa-solid fa-gift"></i></div>
+                    <div class="metric-value">Rs. <%= stats.totalSalaryReward ? stats.totalSalaryReward.toLocaleString()
+                            : '0' %>
+                    </div>
+                    <div class="metric-label">Total Salary Reward</div>
+                </div>
+            </div>
+
+            <!-- Expenses Section -->
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 20px 0 10px;"><i
+                    class="fa-solid fa-receipt" style="color: #ef4444;"></i> Expenses</div>
+            <div class="metrics-grid">
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+                    <div class="metric-value">Rs. <%= stats.todayExpenses ? stats.todayExpenses.toLocaleString() : '0'
+                            %>
+                    </div>
+                    <div class="metric-label">Today Expenses</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div class="metric-value">Rs. <%= stats.totalExpenses ? stats.totalExpenses.toLocaleString() : '0'
+                            %>
+                    </div>
+                    <div class="metric-label">Total Expenses</div>
+                </div>
+            </div>
+        </main>
+
+</body>
+
+</html>

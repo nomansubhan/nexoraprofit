@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Admin Members (Team) - Nexora Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px;
+            min-height: 100vh;
+        }
+
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 10px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-team {
+            background: #008069;
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(0, 128, 105, 0.25);
+            white-space: nowrap;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 18px 16px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        thead th {
+            padding: 10px 8px;
+            border-bottom: 2px solid #fed7aa;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        tbody td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #d8f5ef;
+            color: #008069;
+            display: inline-grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 13px;
+            margin-right: 8px;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        .role-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .role-Depositer {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .role-Withdrawer {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        .role-Support {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .role-Manager {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-pill {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-toggle-status {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-delete-member {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 3px;
+        }
+
+        .mobile-team-cards {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team-m-box {
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(210, 135, 45, 0.06);
+        }
+
+        .team-m-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #fed7aa;
+        }
+
+        .team-m-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-m-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .team-m-user {
+            font-size: 10px;
+            color: #64748b;
+            font-family: monospace;
+            display: block;
+        }
+
+        .team-m-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            place-items: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: grid;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 18px;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-card h3 {
+            font-size: 16px;
+            font-weight: 900;
+            margin-bottom: 14px;
+            color: #0f172a;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            background: #f8fafc;
+        }
+
+        @media (max-width: 768px) {
+            .admin-main-content {
+                margin-left: 0;
+                padding: 68px 12px 80px;
+            }
+
+            .page-title {
+                font-size: 14px;
+            }
+
+            .btn-add-team {
+                padding: 7px 11px;
+                font-size: 10px;
+            }
+
+            .desktop-table-view {
+                display: none;
+            }
+
+            .mobile-team-cards {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('admin-sidebar') %>
+
+        <main class="admin-main-content">
+            <%- include('admin-header') %>
+
+                <div class="page-header-bar">
+                    <h1 class="page-title"><i class="fa-solid fa-user-shield" style="color:#008069;"></i> Admin Members
+                        (Internal Team)</h1>
+                    <button class="btn-add-team" onclick="openMemberModal()"><i class="fa-solid fa-user-plus"></i> Add
+                        Team Member</button>
+                </div>
+
+                <% if (locals.error) { %>
+                    <div
+                        style="background:#fee2e2; color:#b91c1c; padding:10px; border-radius:10px; font-size:11px; font-weight:700; margin-bottom:12px;">
+                        <%= error %>
+                    </div>
+                    <% } %>
+
+                        <% if (members.length===0) { %>
+                            <div
+                                style="background:#fff; border-radius:16px; padding:25px; text-align:center; color:#64748b; font-size:12px; border: 1.5px solid #fed7aa;">
+                                No admin team members found. Click <strong>Add Team Member</strong> to create one.
+                            </div>
+                            <% } %>
+
+                                <div class="table-card desktop-table-view">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Member</th>
+                                                <th>Username</th>
+                                                <th>Role</th>
+                                                <th>Status</th>
+                                                <th>Joined</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% members.forEach(m=> { %>
+                                                <tr>
+                                                    <td>
+                                                        <div class="member-avatar">
+                                                            <%= m.name.charAt(0).toUpperCase() %>
+                                                        </div>
+                                                        <strong>
+                                                            <%= m.name %>
+                                                        </strong>
+                                                    </td>
+                                                    <td><code>@<%= m.username %></code></td>
+                                                    <td><span class="role-badge role-<%= m.role %>">
+                                                            <%= m.role %>
+                                                        </span></td>
+                                                    <td><span
+                                                            class="status-pill <%= m.isActive ? 'status-active' : 'status-inactive' %>">
+                                                            <%= m.isActive ? 'ACTIVE' : 'BLOCKED' %>
+                                                        </span></td>
+                                                    <td>
+                                                        <%= new Date(m.createdAt).toLocaleDateString() %>
+                                                    </td>
+                                                    <td>
+                                                        <form action="/admin/team/toggle/<%= m._id %>" method="POST"
+                                                            style="display:inline;">
+                                                            <button type="submit" class="btn-toggle-status">
+                                                                <%= m.isActive ? 'Block' : 'Activate' %>
+                                                            </button>
+                                                        </form>
+                                                        <form action="/admin/team/delete/<%= m._id %>" method="POST"
+                                                            style="display:inline;"
+                                                            data-confirm="Remove team member <%= m.name %> (@<%= m.username %>)?"
+                                                            data-confirm-title="Remove Team Member?"
+                                                            data-confirm-btn="Remove">
+                                                            <button type="submit" class="btn-delete-member"><i
+                                                                    class="fa-solid fa-trash-can"></i></button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mobile-team-cards">
+                                    <% members.forEach(m=> { %>
+                                        <div class="team-m-box">
+                                            <div class="team-m-top">
+                                                <div class="team-m-left">
+                                                    <div class="member-avatar">
+                                                        <%= m.name.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <div>
+                                                        <span class="team-m-name">
+                                                            <%= m.name %>
+                                                        </span>
+                                                        <span class="team-m-user">@<%= m.username %></span>
+                                                    </div>
+                                                </div>
+                                                <div><span class="role-badge role-<%= m.role %>">
+                                                        <%= m.role %>
+                                                    </span></div>
+                                            </div>
+                                            <div class="team-m-bottom">
+                                                <div><span
+                                                        class="status-pill <%= m.isActive ? 'status-active' : 'status-inactive' %>">
+                                                        <%= m.isActive ? 'ACTIVE' : 'BLOCKED' %>
+                                                    </span></div>
+                                                <div>
+                                                    <form action="/admin/team/toggle/<%= m._id %>" method="POST"
+                                                        style="display:inline;">
+                                                        <button type="submit" class="btn-toggle-status">
+                                                            <%= m.isActive ? 'Block' : 'Activate' %>
+                                                        </button>
+                                                    </form>
+                                                    <form action="/admin/team/delete/<%= m._id %>" method="POST"
+                                                        style="display:inline;" data-confirm="Remove <%= m.name %>?"
+                                                        data-confirm-title="Remove Member?" data-confirm-btn="Delete">
+                                                        <button type="submit" class="btn-delete-member"><i
+                                                                class="fa-solid fa-trash-can"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                </div>
+        </main>
+
+        <div class="modal-overlay" id="addMemberModal">
+            <div class="modal-card">
+                <h3>Add Team Member</h3>
+                <form action="/admin/team/add" method="POST">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" placeholder="e.g. Muhammad Noman" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Username / Login ID</label>
+                        <input type="text" name="username" placeholder="e.g. noman" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Set password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select name="role" required>
+                            <option value="Depositer">Depositer (Verify Deposits)</option>
+                            <option value="Withdrawer">Withdrawer (Process Withdraws)</option>
+                            <option value="Support Admin">Support Admin</option>
+                            <option value="Manager">Manager</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
+                        <button type="button" onclick="closeMemberModal()"
+                            style="background:#e2e8f0; border:none; padding:8px 14px; border-radius:10px; font-weight:700; font-size:11px; cursor:pointer;">Cancel</button>
+                        <button type="submit"
+                            style="background:#008069; color:#fff; border:none; padding:8px 18px; border-radius:10px; font-weight:800; font-size:11px; cursor:pointer;">Create
+                            Member</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            function openMemberModal() { document.getElementById('addMemberModal').classList.add('active'); }
+            function closeMemberModal() { document.getElementById('addMemberModal').classList.remove('active'); }
+        </script>
+
+</body>
+
+</html>

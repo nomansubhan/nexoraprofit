@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+
+    <title>Withdrawals Management - Nexora Capital</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f6fb;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 25px 28px 60px;
+            min-height: 100vh;
+        }
+
+        .withdraw-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 18px 0 22px;
+        }
+
+        .withdraw-heading h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .withdraw-heading p {
+            font-size: 12px;
+            color: #8993a5;
+            margin-top: 4px;
+        }
+
+        .heading-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3e8ff;
+            color: #7e22ce;
+            font-size: 20px;
+        }
+
+        .heading-left {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .request-count {
+            background: #f3e8ff;
+            color: #7e22ce;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #e9edf4;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 5px 25px rgba(15, 23, 42, 0.035);
+        }
+
+        .table-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .table-card-head h2 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #172033;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .table-card-head h2 i {
+            color: #7e22ce;
+        }
+
+        .live-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+        .item-row {
+            background: #fff;
+            border: 1px solid #e9edf4;
+            border-radius: 17px;
+            padding: 19px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: .25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-row::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 4px;
+            background: #d8b36a;
+        }
+
+        .item-row:hover {
+            border-color: #d8b36a;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, .06);
+            transform: translateY(-2px);
+        }
+
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-heading {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 9px;
+        }
+
+        .user-heading h4 {
+            font-size: 13px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .method-label {
+            background: #f3e8ff;
+            color: #7e22ce;
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .amount-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .amount-icon {
+            width: 39px;
+            height: 39px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3e8ff;
+            color: #7e22ce;
+            font-size: 16px;
+        }
+
+        .amount-info small {
+            display: block;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .item-amount {
+            font-size: 21px;
+            font-weight: 900;
+            color: #7e22ce;
+            line-height: 1.4;
+        }
+
+        .row-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .bank-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #f8fafc;
+            border: 1px solid #edf0f5;
+            padding: 7px 10px;
+            border-radius: 10px;
+            min-height: 38px;
+        }
+
+        .bank-logo-icon {
+            width: 27px;
+            height: 27px;
+            object-fit: contain;
+            border-radius: 6px;
+            background: #fff;
+            padding: 2px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .detail-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #94a3b8;
+            display: block;
+        }
+
+        .detail-value {
+            font-size: 10px;
+            font-weight: 700;
+            color: #334155;
+            overflow-wrap: anywhere;
+        }
+
+        /* Account Number Box with Attached Copy Button */
+        .account-box-group {
+            display: inline-flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            padding: 3px 3px 3px 10px;
+            min-height: 38px;
+        }
+
+        .account-number {
+            font-family: monospace;
+            font-size: 11px;
+            letter-spacing: .3px;
+        }
+
+        .btn-copy-acc {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            color: #0284c7;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: .2s;
+            margin-left: 8px;
+        }
+
+        .btn-copy-acc:hover {
+            background: #bae6fd;
+        }
+
+        .badge {
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-pending {
+            background: #fff7e6;
+            color: #d97706;
+        }
+
+        .status-paid,
+        .status-approved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .actions-cell {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-shrink: 0;
+        }
+
+        .actions-cell form {
+            margin: 0;
+        }
+
+        .btn-action {
+            padding: 11px 15px;
+            border-radius: 11px;
+            font-size: 11px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            white-space: nowrap;
+            transition: .2s;
+        }
+
+        .btn-approve {
+            background: #7e22ce;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(126, 34, 206, .15);
+        }
+
+        .btn-approve:hover {
+            background: #6b21a8;
+            transform: translateY(-2px);
+        }
+
+        .btn-reject {
+            background: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
+
+        .btn-reject:hover {
+            background: #ffe4e6;
+            transform: translateY(-2px);
+        }
+
+        .processed-label {
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 65px 15px;
+        }
+
+        .empty-icon {
+            width: 75px;
+            height: 75px;
+            border-radius: 23px;
+            background: #f3e8ff;
+            color: #7e22ce;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 17px;
+        }
+
+        .empty-state h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        .empty-state p {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: #172033;
+            color: #fff;
+            padding: 12px 19px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: .25s;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .15);
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+
+        .copy-toast i {
+            color: #4ade80;
+        }
+
+        @media (max-width: 1000px) {
+            .item-row {
+                align-items: flex-start;
+            }
+
+            .actions-cell {
+                flex-direction: column;
+            }
+
+            .actions-cell form,
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-main-content {
+                margin-left: 0;
+                padding: 68px 12px 80px;
+            }
+
+            .withdraw-heading {
+                margin-top: 10px;
+            }
+
+            .withdraw-heading h1 {
+                font-size: 19px;
+            }
+
+            .table-card {
+                padding: 14px;
+                border-radius: 16px;
+            }
+
+            .item-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                padding: 16px 14px;
+            }
+
+            .actions-cell {
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .actions-cell form {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .btn-action {
+                width: 100%;
+                padding: 11px 7px;
+                font-size: 10px;
+            }
+
+            .row-line {
+                gap: 7px;
+            }
+
+            .item-amount {
+                font-size: 20px;
+            }
+
+            .processed-label {
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('admin-sidebar') %>
+
+        <main class="admin-main-content">
+
+            <%- include('admin-header') %>
+
+                <div class="withdraw-heading">
+                    <div class="heading-left">
+                        <div class="heading-icon">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                        </div>
+                        <div>
+                            <h1>Withdrawals Management</h1>
+                            <p>Manage and process user withdrawal requests.</p>
+                        </div>
+                    </div>
+                    <div class="request-count">
+                        <i class="fa-solid fa-wallet"></i>
+                        <%= withdrawals ? withdrawals.length : 0 %> Requests
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-card-head">
+                        <h2>
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                            Withdrawal Requests
+                        </h2>
+                        <span class="live-label">
+                            <i class="fa-solid fa-circle"></i> MANAGEMENT
+                        </span>
+                    </div>
+
+                    <% if (!withdrawals || withdrawals.length===0) { %>
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <h3>No Withdrawal Requests</h3>
+                            <p>There are currently no withdrawal requests to process.</p>
+                        </div>
+                        <% } else { %>
+                            <% withdrawals.forEach(w=> {
+                                let logoPath = '/assets/Easypaisa-logo.png';
+                                const m = (w.method || '').toLowerCase();
+                                if (m.includes('allied')) logoPath = '/assets/allied-bank-limited-logo.png';
+                                else if (m.includes('alfalah')) logoPath = '/assets/bank-alfalah-logo.png';
+                                else if (m.includes('easypaisa')) logoPath = '/assets/Easypaisa-logo.png';
+                                else if (m.includes('faysal')) logoPath = '/assets/faysal-bank-logo.png';
+                                else if (m.includes('hbl')) logoPath = '/assets/HBL-logo.png';
+                                else if (m.includes('jazzcash')) logoPath = '/assets/Jazzcash-logo.png';
+                                else if (m.includes('js')) logoPath = '/assets/js-bank-logo.png';
+                                else if (m.includes('khushhali')) logoPath = '/assets/Khushhali-bank-logo.png';
+                                else if (m.includes('mashreq')) logoPath = '/assets/Mashreq-Bank-Logo.png';
+                                else if (m.includes('mcb')) logoPath = '/assets/mcb-logo.png';
+                                else if (m.includes('meezan')) logoPath = '/assets/meezan-bank-logo.png';
+                                else if (m.includes('nayapay')) logoPath = '/assets/nayapay-logo.png';
+                                else if (m.includes('sadapay')) logoPath = '/assets/SadaPay-Logo.png';
+                                else if (m.includes('ubl')) logoPath = '/assets/UBL-Bank-Logo.png';
+                                else if (m.includes('upaisa')) logoPath = '/assets/Upaisa-Logo.png';
+                                %>
+                                <div class="item-row">
+                                    <div class="item-details">
+                                        <!-- 1. Username & Method -->
+                                        <div class="user-heading">
+                                            <h4>
+                                                <i class="fa-solid fa-user-circle"></i>
+                                                <%= w.username %>
+                                            </h4>
+                                            <span class="method-label">
+                                                <i class="fa-solid fa-building-columns"></i>
+                                                <%= w.method %>
+                                            </span>
+                                        </div>
+
+                                        <!-- 2. Amount -->
+                                        <div class="amount-section">
+                                            <div class="amount-icon">
+                                                <i class="fa-solid fa-money-bill-wave"></i>
+                                            </div>
+                                            <div class="amount-info">
+                                                <small>Withdrawal Amount</small>
+                                                <div class="item-amount">
+                                                    Rs. <%= Number(w.amount || 0).toLocaleString('en-PK') %>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Details Row -->
+                                        <div class="row-line">
+                                            <!-- 3. Bank Logo & 4. Account Holder Name -->
+                                            <div class="bank-info">
+                                                <img src="<%= logoPath %>" class="bank-logo-icon" alt="<%= w.method %>"
+                                                    onerror="this.onerror=null;this.src='/assets/Easypaisa-logo.png'">
+                                                <div>
+                                                    <span class="detail-label">Account Title</span>
+                                                    <span class="detail-value">
+                                                        <%= w.accountTitle %>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <!-- 5. Account Number with Attached Copy Button -->
+                                            <div class="account-box-group">
+                                                <i class="fa-solid fa-credit-card"
+                                                    style="color:#7e22ce;font-size:14px;margin-right:6px;"></i>
+                                                <div>
+                                                    <span class="detail-label">Account Number</span>
+                                                    <span class="detail-value account-number" id="acc-num-<%= w._id %>">
+                                                        <%= w.accountNumber %>
+                                                    </span>
+                                                </div>
+                                                <button type="button" class="btn-copy-acc"
+                                                    data-account-number="<%= w.accountNumber || '' %>"
+                                                    onclick="copyAccountNumber(this, this.dataset.accountNumber)">
+                                                    <i class="fa-regular fa-copy"></i> Copy
+                                                </button>
+                                            </div>
+
+                                            <!-- 6. Status Badge -->
+                                            <span
+                                                class="badge status-<%= String(w.status || 'Pending').toLowerCase() %>">
+                                                <i class="fa-solid fa-circle"></i>
+                                                <%= w.status %>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- 7. Mark Paid & Refund Buttons -->
+                                    <div class="actions-cell">
+                                        <% if (w.status==='Pending' ) { %>
+                                            <form action="/admin/withdrawals/approve/<%= w._id %>" method="POST">
+                                                <button type="submit" class="btn-action btn-approve">
+                                                    <i class="fa-solid fa-check-circle"></i> Mark Paid
+                                                </button>
+                                            </form>
+                                            <form action="/admin/withdrawals/reject/<%= w._id %>" method="POST"
+                                                data-confirm="Are you sure you want to refund this withdrawal?"
+                                                data-confirm-title="Refund Withdrawal?" data-confirm-btn="Refund">
+                                                <button type="submit" class="btn-action btn-reject">
+                                                    <i class="fa-solid fa-rotate-left"></i> Refund
+                                                </button>
+                                            </form>
+                                            <% } else { %>
+                                                <span class="processed-label">
+                                                    <i class="fa-solid fa-check-double"></i> Processed
+                                                </span>
+                                                <% } %>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% } %>
+                </div>
+        </main>
+
+        <div class="copy-toast" id="copyToast">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Account number copied successfully!</span>
+        </div>
+
+        <script>
+            let toastTimer;
+
+            function showCopyToast() {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2200);
+            }
+
+            async function copyAccountNumber(button, accountNumber) {
+                try {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(accountNumber);
+                    } else {
+                        const input = document.createElement('textarea');
+                        input.value = accountNumber;
+                        input.style.position = 'fixed';
+                        input.style.opacity = '0';
+                        document.body.appendChild(input);
+                        input.select();
+                        const copied = document.execCommand('copy');
+                        input.remove();
+                        if (!copied) {
+                            throw new Error('Copy failed');
+                        }
+                    }
+
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+                    showCopyToast();
+
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                    }, 1800);
+
+                } catch (error) {
+                    alert('Unable to copy account number. Please copy it manually.');
+                }
+            }
+        </script>
+</body>
+
+</html>

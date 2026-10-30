@@ -1,0 +1,101 @@
+<style>
+    /* Top Capsule Header Row (Desktop Only) */
+    .dashboard-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    /* Floating Pill Nav Capsule - Full Width Adjusted */
+    .header-nav-capsule {
+        background: #ffffff;
+        border: 2px solid #ffd79d;
+        border-radius: 35px;
+        padding: 6px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(255, 183, 77, 0.12);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .header-pill {
+        padding: 8px 18px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        background: #f8fafc;
+        color: #475569;
+        border: 1.5px solid #e2e8f0;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+
+    .header-pill:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .header-pill.active {
+        background: #008069;
+        color: #ffffff;
+        border-color: #008069;
+        box-shadow: 0 4px 10px rgba(0, 128, 105, 0.25);
+    }
+
+    .header-pill.live-btn {
+        background: #f0fdf4;
+        color: #166534;
+        border-color: #bbf7d0;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .header-pill.logout {
+        background: #ffffff;
+        color: #b91c1c;
+        border-color: #ffd79d;
+    }
+
+    .header-pill.logout:hover {
+        background: #fee2e2;
+    }
+
+    /* Hidden in mobile viewport */
+    @media (max-width: 768px) {
+
+        .dashboard-top-row,
+        .live-site-pill {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="dashboard-top-row">
+    <div class="header-nav-capsule">
+        <a href="/admin/dashboard" class="header-pill <%= currentPath === '/admin/dashboard' ? 'active' : '' %>"><i
+                class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="/admin/deposits" class="header-pill <%= currentPath === '/admin/deposits' ? 'active' : '' %>"><i
+                class="fa-solid fa-building-columns"></i> Deposits</a>
+        <a href="/admin/withdrawals" class="header-pill <%= currentPath === '/admin/withdrawals' ? 'active' : '' %>"><i
+                class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+        <a href="/admin/banks" class="header-pill <%= currentPath === '/admin/banks' ? 'active' : '' %>"><i
+                class="fa-solid fa-wallet"></i> Banks</a>
+        <a href="/admin/users" class="header-pill <%= currentPath === '/admin/users' ? 'active' : '' %>"><i
+                class="fa-solid fa-users"></i> Users</a>
+        <a href="/" target="_blank" class="header-pill live-btn"><i class="fa-solid fa-globe"></i> Live Site</a>
+        <a href="/admin/logout" class="header-pill logout" onclick="return triggerCustomLogout(event, '/admin/logout')">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+</div>

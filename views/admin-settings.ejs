@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Project Settings - Nexora Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px;
+            min-height: 100vh;
+        }
+
+        .settings-card {
+            background: #ffffff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-card h2 {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus {
+            border-color: #008069;
+            background: #fff;
+        }
+
+        .file-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 6px;
+        }
+
+        .btn-save {
+            background: #008069;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 128, 105, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-delete-file {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-delete-file:hover {
+            background: #fecaca;
+        }
+
+        @media (max-width: 768px) {
+            .admin-main-content {
+                margin-left: 0;
+                padding: 68px 12px 80px;
+            }
+
+            .settings-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('admin-sidebar') %>
+
+        <main class="admin-main-content">
+            <%- include('admin-header') %>
+
+                <div class="settings-card">
+                    <h2><i class="fa-solid fa-sliders" style="color:#008069;"></i> Project Configuration Settings</h2>
+
+                    <% if (locals.success) { %>
+                        <div
+                            style="background:#dcfce7; color:#15803d; padding:12px 16px; border-radius:12px; font-size:12px; font-weight:700; margin-bottom:16px;">
+                            Settings updated successfully!
+                        </div>
+                        <% } %>
+
+                            <form action="/admin/settings" method="POST" enctype="multipart/form-data">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Project Title</label>
+                                        <input type="text" name="projectTitle"
+                                            value="<%= (setting && setting.projectTitle) ? setting.projectTitle : '' %>"
+                                            placeholder="Enter Project Title (e.g., Nexora Profit)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Project Name</label>
+                                        <input type="text" name="projectName"
+                                            value="<%= (setting && setting.projectName) ? setting.projectName : '' %>"
+                                            placeholder="Enter Project Name (e.g., Nexora Capital)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Project Type</label>
+                                        <input type="text" name="projectType"
+                                            value="<%= (setting && setting.projectType) ? setting.projectType : '' %>"
+                                            placeholder="Enter Project Type (e.g., Investment Platform)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>WhatsApp Helpline</label>
+                                        <input type="text" name="whatsappHelpline"
+                                            value="<%= (setting && setting.whatsappHelpline) ? setting.whatsappHelpline : '' %>"
+                                            placeholder="+923XXXXXXXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>WhatsApp Group Link</label>
+                                        <input type="url" name="whatsappGroupLink"
+                                            value="<%= (setting && setting.whatsappGroupLink) ? setting.whatsappGroupLink : '' %>"
+                                            placeholder="https://chat.whatsapp.com/...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>WhatsApp Channel Link</label>
+                                        <input type="url" name="whatsappChannelLink"
+                                            value="<%= (setting && setting.whatsappChannelLink) ? setting.whatsappChannelLink : '' %>"
+                                            placeholder="https://whatsapp.com/channel/...">
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <!-- FBR Certificate -->
+                                    <div class="form-group">
+                                        <label>FBR Certificate (Image/PDF)</label>
+                                        <div class="file-box">
+                                            <input type="file" name="fbrCertificate">
+                                            <% if (setting && setting.fbrCertificate) { %>
+                                                <div
+                                                    style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                                    <a href="<%= setting.fbrCertificate %>" target="_blank"
+                                                        style="font-size: 11px; font-weight: 700; color: #008069; text-decoration: underline;">View
+                                                        Current FBR File</a>
+                                                    <button type="submit" formaction="/admin/settings/delete/fbr"
+                                                        formmethod="POST" formnovalidate class="btn-delete-file">
+                                                        <i class="fa-solid fa-trash"></i> Remove
+                                                    </button>
+                                                </div>
+                                                <% } %>
+                                        </div>
+                                    </div>
+
+                                    <!-- SECP Certificate -->
+                                    <div class="form-group">
+                                        <label>SECP Certificate (Image/PDF)</label>
+                                        <div class="file-box">
+                                            <input type="file" name="secpCertificate">
+                                            <% if (setting && setting.secpCertificate) { %>
+                                                <div
+                                                    style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                                    <a href="<%= setting.secpCertificate %>" target="_blank"
+                                                        style="font-size: 11px; font-weight: 700; color: #008069; text-decoration: underline;">View
+                                                        Current SECP File</a>
+                                                    <button type="submit" formaction="/admin/settings/delete/secp"
+                                                        formmethod="POST" formnovalidate class="btn-delete-file">
+                                                        <i class="fa-solid fa-trash"></i> Remove
+                                                    </button>
+                                                </div>
+                                                <% } %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Android APK -->
+                                    <div class="form-group">
+                                        <label>Android App APK File</label>
+                                        <div class="file-box">
+                                            <input type="file" name="androidApk">
+                                            <% if (setting && setting.androidApk) { %>
+                                                <div
+                                                    style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                                    <a href="<%= setting.androidApk %>" download
+                                                        style="font-size: 11px; font-weight: 700; color: #008069; text-decoration: underline;">Download
+                                                        Current APK</a>
+                                                    <button type="submit" formaction="/admin/settings/delete/apk"
+                                                        formmethod="POST" formnovalidate class="btn-delete-file">
+                                                        <i class="fa-solid fa-trash"></i> Remove
+                                                    </button>
+                                                </div>
+                                                <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-save">
+                                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                                </button>
+                            </form>
+                </div>
+        </main>
+        <script>
+            document.querySelectorAll('.btn-delete-file').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    if (!confirm('Kya aap waqai ye file remove karna chahte hain?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        </script>
+</body>
+
+</html>

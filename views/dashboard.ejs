@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Dashboard - Nexora Capital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #060913;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: radial-gradient(circle at 50% 10%, #171f38 0%, #070b14 65%);
+            padding: 20px 16px 105px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            overflow-x: hidden;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .menu-toggle-btn,
+        .notification-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2), 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .dash-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.25);
+        }
+
+        /* 3D Dark Glassmorphism Main Card */
+        .user-main-card {
+            background: linear-gradient(145deg, rgba(22, 28, 50, 0.7), rgba(10, 14, 28, 0.85));
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 32px;
+            padding: 22px 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .user-tag {
+            font-size: 22px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .ref-tag {
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin: 2px 0 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .balance-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .balance-val {
+            font-size: 36px;
+            font-weight: 900;
+            color: #ff5c77;
+            line-height: 1.1;
+            margin: 2px 0 18px;
+            text-shadow: 0 0 25px rgba(255, 92, 119, 0.6);
+        }
+
+        /* 3D Glowing Avatar Ring (Exact match with screenshot) */
+        .user-avatar-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff4d6d, #8b5cf6, #14b8a6);
+            padding: 3.5px;
+            box-shadow: 0 0 35px rgba(255, 77, 109, 0.45), 0 0 15px rgba(20, 184, 166, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #0b1120;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .balance-actions {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* 3D Glossy Deposit Button */
+        .btn-deposit {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, #10b981, #047857);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 3D Glossy Withdraw Button */
+        .btn-withdraw {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, #f43f5e, #be123c);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Referral Card */
+        .referral-card {
+            background: linear-gradient(145deg, rgba(22, 28, 50, 0.6), rgba(10, 14, 28, 0.75));
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .referral-input-box {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .referral-input-box small {
+            font-size: 9px;
+            color: #94a3b8;
+            font-weight: 700;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .referral-input-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 11px;
+            font-weight: 600;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-copy {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Top 3 App Cards (FBR, SECP, Download App) */
+        .apps-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .app-card {
+            border-radius: 24px;
+            padding: 20px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #ffffff;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .app-card.fbr {
+            background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+        }
+
+        .app-card.secp {
+            background: linear-gradient(145deg, #14b8a6, #047857);
+        }
+
+        .app-card.download {
+            background: linear-gradient(145deg, #6366f1, #3730a3);
+        }
+
+        .app-badge-circle {
+            width: 48px;
+            height: 48px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 2px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-card strong {
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Circular Quick Menu */
+        .quick-circle-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .circle-item {
+            text-decoration: none;
+            color: #cbd5e1;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle-icon-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.35);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+        }
+
+        /* Menu Drawer */
+        .menu-drawer {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: #0b1120;
+            z-index: 1000;
+            box-shadow: 15px 0 40px rgba(0, 0, 0, 0.9);
+            transition: left 0.3s ease;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-drawer.open {
+            left: 0;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(6px);
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 12px;
+        }
+
+        .drawer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .drawer-link-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #f8fafc;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .drawer-link-item i {
+            color: #14b8a6;
+            font-size: 16px;
+        }
+
+        /* Floating Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(calc(100% - 24px), 400px);
+            height: 66px;
+            background: rgba(11, 17, 32, 0.9);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px);
+            border-radius: 36px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .nav-item.active {
+            color: #14b8a6;
+            text-shadow: 0 0 12px rgba(20, 184, 166, 0.6);
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        /* Center 'N' Floating Button */
+        .fab-center {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #ffffff;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: -34px;
+            border: 4px solid #060913;
+            box-shadow: 0 12px 30px rgba(20, 184, 166, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Reference dashboard: deep navy neon glass UI */
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+        }
+
+        .mobile-frame {
+            max-width: 420px;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 110px;
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .dash-header {
+            margin-bottom: 20px;
+        }
+
+        .menu-toggle-btn,
+        .notification-btn {
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            color: #8ff1ff;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13), inset 0 0 10px rgba(68, 213, 255, .06);
+        }
+
+        .dash-title {
+            font-size: 20px;
+            color: #eaf7ff;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .user-main-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .7);
+            border-radius: 32px;
+            padding: 25px 20px 22px;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, .58), inset 0 1px 2px rgba(255, 255, 255, .14);
+            gap: 12px;
+        }
+
+        .user-tag {
+            color: #f7e8f2;
+            text-shadow: 0 0 12px rgba(255, 102, 169, .24);
+        }
+
+        .ref-tag,
+        .balance-label {
+            color: #b7c4d9;
+        }
+
+        .balance-val {
+            color: #f1f5ff;
+            text-shadow: 0 0 20px rgba(93, 199, 255, .2);
+        }
+
+        .user-avatar-circle {
+            background: linear-gradient(135deg, #9befff, #ff6a9f, #9befff);
+            box-shadow: 0 0 22px rgba(255, 85, 151, .4), 0 0 12px rgba(69, 215, 255, .25);
+        }
+
+        .btn-deposit {
+            background: linear-gradient(145deg, #54e4bd, #087f70);
+            color: #eafffa;
+            box-shadow: 0 8px 18px rgba(16, 185, 129, .22), inset 0 2px 3px rgba(255, 255, 255, .45);
+            border: 1px solid rgba(161, 255, 225, .55);
+        }
+
+        .btn-withdraw {
+            background: linear-gradient(145deg, #ff8b9e, #a91e4a);
+            color: #fff0f4;
+            box-shadow: 0 8px 18px rgba(244, 63, 94, .25), inset 0 2px 3px rgba(255, 255, 255, .42);
+            border: 1px solid rgba(255, 179, 199, .55);
+        }
+
+        .referral-card {
+            background: linear-gradient(145deg, rgba(25, 32, 53, .9), rgba(12, 18, 35, .94));
+            border: 1.5px solid rgba(255, 116, 166, .52);
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .42), inset 0 1px 1px rgba(255, 255, 255, .12);
+        }
+
+        .btn-copy {
+            background: linear-gradient(145deg, rgba(148, 163, 184, .34), rgba(51, 65, 85, .55));
+            border: 1px solid rgba(203, 213, 225, .4);
+            color: #eaf1ff;
+        }
+
+        .app-card {
+            background: linear-gradient(145deg, rgba(28, 42, 68, .95), rgba(13, 21, 41, .98)) !important;
+            border: 1.5px solid rgba(187, 220, 255, .65);
+            border-radius: 24px;
+            min-height: 112px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .45), inset 0 1px 3px rgba(255, 255, 255, .18);
+        }
+
+        .app-badge-circle {
+            border: 1px solid rgba(210, 230, 255, .6);
+            box-shadow: 0 0 12px rgba(104, 196, 255, .2), 0 6px 12px rgba(0, 0, 0, .35);
+        }
+
+        .app-card strong {
+            color: #e9f1ff;
+        }
+
+        .quick-circle-menu {
+            gap: 18px 8px;
+        }
+
+        .circle-item {
+            color: #d5deef;
+        }
+
+        .circle-icon-btn {
+            background: linear-gradient(145deg, #253a5e, #0c1730) !important;
+            border: 1.5px solid rgba(178, 216, 255, .65);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .5), inset 0 2px 4px rgba(255, 255, 255, .2), 0 0 10px rgba(89, 185, 255, .12);
+        }
+
+        .bottom-nav {
+            background: rgba(13, 22, 43, .94);
+            border: 1.5px solid rgba(190, 220, 255, .72);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, .65), inset 0 1px 2px rgba(255, 255, 255, .2);
+        }
+
+        .nav-item {
+            color: #c4ccdd;
+        }
+
+        .nav-item.active {
+            color: #8deaff;
+            text-shadow: 0 0 12px rgba(20, 184, 166, .45);
+        }
+
+        .fab-center {
+            background: linear-gradient(145deg, #e6f7ff, #5d9bcf 55%, #192a4d);
+            color: #14203a;
+            border-color: #0a1022;
+            box-shadow: 0 0 16px rgba(93, 202, 255, .35), inset 0 2px 3px rgba(255, 255, 255, .65);
+        }
+
+        @media (max-width: 360px) {
+            .user-main-card {
+                padding: 20px 14px;
+            }
+
+            .user-tag {
+                font-size: 19px;
+            }
+
+            .user-avatar-circle {
+                width: 76px;
+                height: 76px;
+            }
+
+            .balance-val {
+                font-size: 30px;
+            }
+
+            .circle-icon-btn {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-frame">
+        <div class="dash-header">
+            <div class="menu-toggle-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
+            <div class="dash-title">Nexora Capital</div>
+            <div class="notification-btn"><i class="fa-solid fa-bell"></i></div>
+        </div>
+
+        <div class="user-main-card">
+            <div>
+                <div class="user-tag">
+                    <%= user.username %>
+                </div>
+                <div class="ref-tag">REF BY: <%= user.referredBy || 'N/A' %>
+                </div>
+                <div class="balance-label">AVAILABLE BALANCE</div>
+                <div class="balance-val">
+                    <%= user.balance ? user.balance.toFixed(0) : 0 %> Rs
+                </div>
+            </div>
+            <div class="user-avatar-circle">
+                <div class="avatar-inner">
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/male-avatars-3d-icon-png-download-10764490.png" alt="User Avatar"
+                        style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+
+            <div class="balance-actions">
+                <a href="/invest" class="btn-deposit">Deposit</a>
+                <a href="/withdraw" class="btn-withdraw">Withdraw</a>
+            </div>
+        </div>
+
+        <div class="referral-card">
+            <div class="referral-input-box">
+                <small>Referral Link</small>
+                <input type="text" id="refLink" value="http://localhost:3000/signup?ref=<%= user.username %>" readonly>
+            </div>
+            <button class="btn-copy" onclick="copyRef()"><i class="fa-regular fa-copy"></i> Copy</button>
+        </div>
+
+        <!-- 3 Action Cards with Modal Preview -->
+        <div class="apps-row">
+            <% const fbrImg=(locals.setting && setting.fbrCertificate) ? setting.fbrCertificate : '' ; const
+                secpImg=(locals.setting && setting.secpCertificate) ? setting.secpCertificate : '' ; const
+                apkFile=(locals.setting && setting.androidApk) ? setting.androidApk : '' ; %>
+
+                <!-- FBR Card -->
+                <a href="javascript:void(0);" onclick="openCertModal('<%= fbrImg %>', 'FBR Certificate')"
+                    class="app-card fbr">
+                    <div class="app-badge-circle" style="padding: 4px; overflow: hidden;">
+                        <img src="/assets/fbr-logo.png" alt="FBR"
+                            style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <strong>FBR</strong>
+                </a>
+
+                <!-- SECP Card -->
+                <a href="javascript:void(0);" onclick="openCertModal('<%= secpImg %>', 'SECP Certificate')"
+                    class="app-card secp">
+                    <div class="app-badge-circle" style="padding: 4px; overflow: hidden;">
+                        <img src="/assets/secp-logo.png" alt="SECP"
+                            style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <strong>SECP</strong>
+                </a>
+
+                <!-- Download App Card -->
+                <% if (apkFile) { %>
+                    <a href="<%= apkFile %>" download class="app-card download">
+                        <% } else { %>
+                            <a href="javascript:void(0);" onclick="openCertModal('', 'Android App')"
+                                class="app-card download">
+                                <% } %>
+                                    <div class="app-badge-circle" style="padding: 6px; overflow: hidden;">
+                                        <img src="/assets/paly-store.png" alt="Download App"
+                                            style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                    <strong>Download<br>App</strong>
+                            </a>
+        </div>
+
+        <!-- Custom Modal -->
+        <div id="certModal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+            <div
+                style="background: #0b1120; width: 100%; max-width: 340px; border-radius: 26px; padding: 22px; text-align: center; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.9); border: 1.5px solid rgba(255,255,255,0.2); animation: popIn 0.3s ease;">
+                <button onclick="closeCertModal()"
+                    style="position: absolute; top: 14px; right: 14px; background: rgba(239,68,68,0.2); color: #f87171; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; cursor: pointer; display: grid; place-items: center;"><i
+                        class="fa-solid fa-xmark"></i></button>
+
+                <div id="modalIconBox"
+                    style="width: 50px; height: 50px; background: rgba(16,185,129,0.2); color: #34d399; border-radius: 50%; display: grid; place-items: center; font-size: 20px; margin: 0 auto 12px;">
+                    <i id="modalFaIcon" class="fa-solid fa-certificate"></i>
+                </div>
+
+                <h3 id="certTitle" style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">
+                    Certificate Preview</h3>
+                <p id="modalMsg"
+                    style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 16px; display: none;"></p>
+
+                <div id="certImgContainer"
+                    style="max-height: 320px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 6px; background: #060913; margin-bottom: 14px;">
+                    <img id="certImg" src="" alt="Certificate"
+                        style="width: 100%; border-radius: 10px; object-fit: contain;">
+                </div>
+
+                <a id="downloadCertBtn" href="" target="_blank"
+                    style="display: block; width: 100%; padding: 11px; background: #0d9488; color: #fff; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 13px; box-shadow: 0 4px 15px rgba(13,148,136,0.4);">Open
+                    in Full View</a>
+                <button id="modalCloseBtn" onclick="closeCertModal()"
+                    style="display: none; width: 100%; padding: 11px; background: #374151; color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer;">Got
+                    It</button>
+            </div>
+        </div>
+
+        <div class="quick-circle-menu">
+            <!-- Tasks -->
+            <a href="/rewards" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #38bdf8, #0284c7);">
+                    <i class="fa-solid fa-money-bill-1"></i>
+                </div>
+                <span>Tasks</span>
+            </a>
+
+            <!-- Withdraw Logs -->
+            <a href="/withdraw-history" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #2dd4bf, #0d9488);">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+                <span>Withdraw Logs</span>
+            </a>
+
+            <!-- My Team -->
+            <a href="/team" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #fbbf24, #d97706);">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <span>My Team</span>
+            </a>
+
+            <!-- Admin -->
+            <a href="https://wa.me/<%= (locals.setting && setting.whatsappHelpline) ? setting.whatsappHelpline : '' %>"
+                target="_blank" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #f87171, #dc2626);">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <span>Admin</span>
+            </a>
+
+            <!-- Next Earning -->
+            <a href="/earnings" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #a855f7, #7e22ce);">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <span>Next Earning</span>
+            </a>
+
+            <!-- WhatsApp Channel -->
+            <a href="<%= (locals.setting && setting.whatsappChannelLink) ? setting.whatsappChannelLink : 'https://whatsapp.com/' %>"
+                target="_blank" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #22c55e, #15803d);">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <span>WhatsApp Channel</span>
+            </a>
+
+            <!-- Settings -->
+            <a href="/profile" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #0ea5e9, #0284c7);">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <span>Settings</span>
+            </a>
+
+            <!-- More -->
+            <a href="javascript:void(0);" onclick="toggleMenu()" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #ec4899, #be185d);">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </div>
+                <span>More</span>
+            </a>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="/" class="nav-item active"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="/invest" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Active</span></a>
+            <a href="/invest" class="fab-center">N</a>
+            <a href="/withdraw-history" class="nav-item"><i
+                    class="fa-solid fa-clock-rotate-left"></i><span>Logs</span></a>
+            <a href="/profile" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+        </nav>
+    </div>
+
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleMenu()"></div>
+    <div class="menu-drawer" id="menuDrawer">
+        <div>
+            <div class="drawer-header">
+                <h3 style="font-size: 16px; font-weight: 800; color: #ffffff;">Menu Options</h3>
+                <div onclick="toggleMenu()" style="cursor: pointer; font-size: 18px; color: #94a3b8;"><i
+                        class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="drawer-links">
+                <a href="/deposit-history" class="drawer-link-item"><i class="fa-solid fa-building-columns"></i> Deposit
+                    History</a>
+                <a href="/withdraw-history" class="drawer-link-item"><i class="fa-solid fa-money-bill-transfer"></i>
+                    Withdrawal History</a>
+                <a href="/invest" class="drawer-link-item"><i class="fa-solid fa-chart-line"></i> Investment
+                    Packages</a>
+                <a href="/fbr-info" class="drawer-link-item"><i class="fa-solid fa-file-shield"></i> FBR & PSP Info</a>
+                <a href="https://wa.me/<%= (locals.setting && setting.whatsappHelpline) ? setting.whatsappHelpline : '' %>"
+                    target="_blank" class="drawer-link-item"><i class="fa-brands fa-whatsapp"></i> WhatsApp Admin</a>
+                <a href="/logout" class="drawer-link-item" style="color: #f87171;"><i
+                        class="fa-solid fa-right-from-bracket" style="color: #f87171;"></i> Logout</a>
+            </div>
+        </div>
+        <div style="text-align: center; font-size: 11px; color: #64748b; font-weight: 600;">Nexora Capital &copy; 2026
+        </div>
+    </div>
+
+    <script>
+        function openCertModal(imgUrl, title) {
+            const modal = document.getElementById('certModal');
+            const imgContainer = document.getElementById('certImgContainer');
+            const downloadBtn = document.getElementById('downloadCertBtn');
+            const modalMsg = document.getElementById('modalMsg');
+            const iconBox = document.getElementById('modalIconBox');
+            const faIcon = document.getElementById('modalFaIcon');
+            const closeBtn = document.getElementById('modalCloseBtn');
+
+            document.getElementById('certTitle').innerText = title;
+
+            if (!imgUrl || imgUrl === '' || imgUrl === 'undefined') {
+                modalMsg.innerText = title + ' has not been uploaded from the admin panel yet.';
+                modalMsg.style.display = 'block';
+                imgContainer.style.display = 'none';
+                downloadBtn.style.display = 'none';
+                closeBtn.style.display = 'block';
+            } else {
+                modalMsg.style.display = 'none';
+                imgContainer.style.display = 'block';
+                downloadBtn.style.display = 'block';
+                closeBtn.style.display = 'none';
+                document.getElementById('certImg').src = imgUrl;
+                downloadBtn.href = imgUrl;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeCertModal() {
+            document.getElementById('certModal').style.display = 'none';
+        }
+
+        function toggleMenu() {
+            document.getElementById("menuDrawer").classList.toggle("open");
+            document.getElementById("drawerOverlay").classList.toggle("open");
+        }
+
+        function copyRef() {
+            const copyText = document.getElementById("refLink");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("Referral link copied!");
+        }
+    </script>
+</body>
+
+</html>

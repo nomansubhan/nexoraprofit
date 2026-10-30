@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Nexora Admin - Complete Deposits</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px;
+            min-height: 100vh;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 18px 16px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+
+        .table-card-head h2 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-card-head span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        thead th {
+            padding: 10px 12px;
+            border-bottom: 2px solid #fed7aa;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        tbody td {
+            padding: 12px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .status-Approved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-Pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-Canceled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-action-ok {
+            background: #008069;
+            color: #fff;
+            border: 0;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .btn-action-no {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #f87171;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-left: 4px;
+            font-size: 11px;
+        }
+
+        /* Stable Mobile Typography & Layout */
+        @media (max-width: 768px) {
+            .admin-main-content {
+                margin-left: 0 !important;
+                padding: 68px 12px 80px !important;
+                width: 100% !important;
+            }
+
+            .table-card {
+                padding: 14px 12px;
+                border-radius: 16px;
+            }
+
+            .table-card-head h2 {
+                font-size: 14px;
+                line-height: 1.2;
+            }
+
+            .table-card-head span {
+                font-size: 10px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            thead th {
+                padding: 8px 10px;
+                font-size: 9px;
+            }
+
+            tbody td {
+                padding: 10px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('admin-sidebar') %>
+
+        <main class="admin-main-content">
+            <%- include('admin-header') %>
+
+                <div class="table-card">
+                    <div class="table-card-head">
+                        <h2><i class="fa-solid fa-list-check" style="color:#008069;"></i> Deposit Records</h2>
+                        <span>Total: <%= deposits.length %></span>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Pkg</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>TID</th>
+                                <th>Receipt</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (deposits.length===0) { %>
+                                <tr>
+                                    <td colspan="9"
+                                        style="text-align:center; padding: 25px; color:#94a3b8; font-size:12px;">No
+                                        deposits recorded.</td>
+                                </tr>
+                                <% } else { %>
+                                    <% deposits.forEach(d=> { %>
+                                        <tr>
+                                            <td><strong>
+                                                    <%= d.username %>
+                                                </strong></td>
+                                            <td>P<%= d.packageId %>
+                                            </td>
+                                            <td style="font-weight:900; color:#dc2626;">Rs. <%= d.amount %>
+                                            </td>
+                                            <td>
+                                                <%= d.method %>
+                                            </td>
+                                            <td><code
+                                                    style="background:#f1f5f9; padding:2px 6px; border-radius:6px;"><%= d.transactionId %></code>
+                                            </td>
+                                            <td>
+                                                <% if (d.screenshot) { %>
+                                                    <a href="<%= d.screenshot %>" target="_blank"
+                                                        style="color:#008069; font-weight:800; text-decoration:none;"><i
+                                                            class="fa-solid fa-arrow-up-right-from-square"></i>
+                                                        Proof</a>
+                                                    <% } else { %> - <% } %>
+                                            </td>
+                                            <td>
+                                                <%= new Date(d.date).toLocaleDateString() %>
+                                            </td>
+                                            <td><span class="status-badge status-<%= d.status %>">
+                                                    <%= d.status %>
+                                                </span></td>
+                                            <td>
+                                                <% if (d.status==='Pending' ) { %>
+                                                    <form action="/admin/deposits/approve/<%= d._id %>" method="POST"
+                                                        style="display:inline;">
+                                                        <button type="submit" class="btn-action-ok">Approve</button>
+                                                    </form>
+                                                    <form action="/admin/deposits/cancel/<%= d._id %>" method="POST"
+                                                        style="display:inline;">
+                                                        <button type="submit" class="btn-action-no">Reject</button>
+                                                    </form>
+                                                    <% } else { %>
+                                                        <span
+                                                            style="font-size:10px; color:#94a3b8; font-weight:700;">Done</span>
+                                                        <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+        </main>
+
+</body>
+
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Registered Users - Nexora Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px;
+            min-height: 100vh;
+        }
+
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 10px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .members-count-badge {
+            font-size: 11px;
+            font-weight: 800;
+            color: #008069;
+            background: #d8f5ef;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 18px 16px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        thead th {
+            padding: 10px 8px;
+            border-bottom: 2px solid #fed7aa;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        tbody td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #fefce8;
+        }
+
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #d8f5ef;
+            color: #008069;
+            display: inline-grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 13px;
+            margin-right: 8px;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        .btn-switch {
+            background: #008069;
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.15s ease;
+        }
+
+        .btn-switch:hover {
+            background: #00604f;
+        }
+
+        .btn-delete-member {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+
+        .mobile-user-cards {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-m-box {
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(210, 135, 45, 0.06);
+        }
+
+        .user-m-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #fed7aa;
+        }
+
+        .user-m-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-m-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .user-m-phone {
+            font-size: 10px;
+            color: #64748b;
+            font-family: monospace;
+            display: block;
+        }
+
+        .user-m-balance {
+            font-size: 14px;
+            font-weight: 900;
+            color: #008069;
+            text-align: right;
+        }
+
+        .user-m-balance small {
+            display: block;
+            font-size: 8px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .user-m-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .user-m-ref {
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .user-m-ref strong {
+            color: #0f172a;
+        }
+
+        .user-m-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-main-content {
+                margin-left: 0;
+                padding: 66px 12px 80px;
+            }
+
+            .page-title {
+                font-size: 15px;
+            }
+
+            .desktop-table-view {
+                display: none;
+            }
+
+            .mobile-user-cards {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('admin-sidebar') %>
+
+        <main class="admin-main-content">
+            <%- include('admin-header') %>
+
+                <div class="page-header-bar">
+                    <h1 class="page-title"><i class="fa-solid fa-users" style="color:#008069;"></i> Registered Users
+                    </h1>
+                    <span class="members-count-badge">Total: <%= users.length %></span>
+                </div>
+
+                <% if (users.length===0) { %>
+                    <div
+                        style="background:#fff; border-radius:16px; padding:30px; text-align:center; color:#64748b; font-size:12px; border: 1.5px solid #fed7aa;">
+                        No registered users found.
+                    </div>
+                    <% } %>
+
+                        <div class="table-card desktop-table-view">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Mobile Phone</th>
+                                        <th>Account Balance</th>
+                                        <th>Referred By</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% users.forEach(u=> { %>
+                                        <tr>
+                                            <td>
+                                                <div class="member-avatar">
+                                                    <%= u.username.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <strong>
+                                                    <%= u.username %>
+                                                </strong>
+                                            </td>
+                                            <td><code><%= u.phone %></code></td>
+                                            <td style="font-weight:900; color:#008069; font-size:13px;">Rs. <%=
+                                                    u.balance ? u.balance.toFixed(2) : '0.00' %>
+                                            </td>
+                                            <td>
+                                                <%= u.referredBy || 'Direct' %>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/users/switch/<%= u._id %>" class="btn-switch"
+                                                    title="Login as User">
+                                                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Switch
+                                                </a>
+                                                <form action="/admin/users/delete/<%= u._id %>" method="POST"
+                                                    style="display:inline;"
+                                                    data-confirm="Are you sure you want to permanently delete user @<%= u.username %>?"
+                                                    data-confirm-title="Delete User Account?" data-confirm-btn="Delete">
+                                                    <button type="submit" class="btn-delete-member" title="Delete User">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mobile-user-cards">
+                            <% users.forEach(u=> { %>
+                                <div class="user-m-box">
+                                    <div class="user-m-top">
+                                        <div class="user-m-left">
+                                            <div class="member-avatar">
+                                                <%= u.username.charAt(0).toUpperCase() %>
+                                            </div>
+                                            <div>
+                                                <span class="user-m-name">
+                                                    <%= u.username %>
+                                                </span>
+                                                <span class="user-m-phone">
+                                                    <%= u.phone %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="user-m-balance">
+                                            <small>Balance</small>
+                                            Rs. <%= u.balance ? u.balance.toFixed(2) : '0.00' %>
+                                        </div>
+                                    </div>
+                                    <div class="user-m-bottom">
+                                        <div class="user-m-ref">Ref: <strong>
+                                                <%= u.referredBy || 'Direct' %>
+                                            </strong></div>
+                                        <div class="user-m-actions">
+                                            <a href="/admin/users/switch/<%= u._id %>" class="btn-switch"><i
+                                                    class="fa-solid fa-arrow-right-to-bracket"></i> Switch</a>
+                                            <form action="/admin/users/delete/<%= u._id %>" method="POST"
+                                                style="display:inline;" data-confirm="Delete user @<%= u.username %>?"
+                                                data-confirm-title="Delete User?" data-confirm-btn="Delete">
+                                                <button type="submit" class="btn-delete-member"><i
+                                                        class="fa-solid fa-trash-can"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                        </div>
+        </main>
+
+</body>
+
+</html>

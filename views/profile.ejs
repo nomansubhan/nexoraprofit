@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>My Profile - Nexora Capital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 40px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 0;
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #8ff1ff;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .profile-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 32px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 12px;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: #0b1120;
+            color: #fff;
+            font-size: 36px;
+            font-weight: 900;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            border: 3.5px solid #14b8a6;
+            box-shadow: 0 0 25px rgba(20, 184, 166, 0.5);
+            overflow: hidden;
+        }
+
+        .camera-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #fff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 11px;
+            border: 2px solid #0b1120;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .profile-card h3 {
+            font-size: 18px;
+            font-weight: 900;
+            color: #f8fafc;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-id {
+            font-size: 11px;
+            color: #b7c4d9;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #34d399;
+            background: rgba(20, 184, 166, 0.2);
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .menu-item {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 20px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:active {
+            transform: scale(0.98);
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .menu-text {
+            font-size: 13px;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .menu-arrow {
+            color: #14b8a6;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .btn-logout {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(145deg, #f43f5e, #be123c);
+            color: #ffffff;
+            border: 1px solid rgba(255, 179, 199, .5);
+            border-radius: 25px;
+            font-weight: 900;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-frame">
+        <div class="header">
+            <a href="/" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="title">My Profile</div>
+        </div>
+
+        <!-- Profile Top Card -->
+        <div class="profile-card">
+            <div class="avatar-container">
+                <div class="avatar">
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/male-avatars-3d-icon-png-download-10764490.png"
+                        alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="camera-badge"><i class="fa-solid fa-camera"></i></div>
+            </div>
+            <h3>
+                <%= (typeof user !=='undefined' && user.username) ? user.username : 'khan' %>
+            </h3>
+            <div class="profile-id">ID: ZXV-<%= (typeof user !=='undefined' && user._id) ?
+                    user._id.toString().slice(-6).toUpperCase() : '000166' %>
+            </div>
+            <div>
+                <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified Member</span>
+            </div>
+        </div>
+
+        <!-- Menu Options List -->
+        <div class="menu-list">
+            <a href="/my-info" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon"><i class="fa-solid fa-user"></i></div>
+                    <div class="menu-text">My Profile</div>
+                </div>
+                <div class="menu-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+
+            <a href="/change-password" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div class="menu-text">Change Password</div>
+                </div>
+                <div class="menu-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+
+            <a href="/fbr-info" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <div class="menu-text">FBR & PSP Info</div>
+                </div>
+                <div class="menu-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+
+            <a href="https://wa.me/<%= (typeof setting !== 'undefined' && setting.whatsappHelpline) ? setting.whatsappHelpline : '' %>"
+                target="_blank" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                    <div class="menu-text">WhatsApp Admin Contact</div>
+                </div>
+                <div class="menu-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+
+            <a href="<%= (typeof setting !== 'undefined' && setting.whatsappChannelLink) ? setting.whatsappChannelLink : 'https://whatsapp.com/' %>"
+                target="_blank" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                    <div class="menu-text">WhatsApp Channel</div>
+                </div>
+                <div class="menu-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+        </div>
+
+        <!-- Logout Button -->
+        <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket" style="margin-right: 6px;"></i>
+            Logout</a>
+    </div>
+</body>
+
+</html>
