@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Rewards Center - Nexora Capital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 110px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .rewards-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #8ff1ff;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .rewards-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .rewards-banner {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 28px;
+            padding: 22px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .rewards-banner small {
+            font-size: 11px;
+            font-weight: 700;
+            color: #b7c4d9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rewards-banner h2 {
+            font-size: 34px;
+            font-weight: 900;
+            color: #ff5c77;
+            margin: 4px 0;
+            text-shadow: 0 0 20px rgba(255, 92, 119, 0.5);
+        }
+
+        .rewards-banner p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 18px;
+            padding: 12px 8px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-card i {
+            font-size: 16px;
+            color: #14b8a6;
+            margin-bottom: 4px;
+        }
+
+        .stat-card span {
+            display: block;
+            font-size: 15px;
+            font-weight: 900;
+            color: #f8fafc;
+        }
+
+        .stat-card small {
+            font-size: 10px;
+            color: #b7c4d9;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #eaf7ff;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .85), rgba(10, 17, 36, .95));
+            border: 1.5px solid rgba(185, 218, 255, .3);
+            border-radius: 20px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .task-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .task-target {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .task-reward {
+            font-size: 12px;
+            font-weight: 900;
+            color: #ff5c77;
+            background: rgba(255, 92, 119, 0.15);
+            padding: 4px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 92, 119, 0.3);
+        }
+
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.08);
+            height: 6px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-fill {
+            background: #14b8a6;
+            width: 0%;
+            height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(20, 184, 166, 0.6);
+            transition: width 0.4s ease;
+        }
+
+        .btn-keep-going {
+            display: block;
+            width: 100%;
+            padding: 9px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: default;
+        }
+
+        .btn-claim-reward {
+            display: block;
+            width: 100%;
+            padding: 9px;
+            background: rgba(20, 184, 166, 0.2);
+            border: 1.5px solid rgba(20, 184, 166, 0.5);
+            border-radius: 12px;
+            text-align: center;
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-claim-reward:active {
+            transform: scale(0.98);
+            background: rgba(20, 184, 166, 0.35);
+        }
+
+        .btn-claimed-state {
+            display: block;
+            width: 100%;
+            padding: 9px;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1.5px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+            text-align: center;
+            color: #60a5fa;
+            font-size: 11px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: default;
+        }
+
+        .task-status-completed {
+            color: #34d399;
+        }
+
+        .task-status-in-progress {
+            color: #94a3b8;
+        }
+
+        /* Floating Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(calc(100% - 24px), 400px);
+            height: 66px;
+            background: rgba(13, 22, 43, .94);
+            border: 1.5px solid rgba(190, 220, 255, .72);
+            backdrop-filter: blur(25px);
+            border-radius: 36px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, .65), inset 0 1px 2px rgba(255, 255, 255, .2);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #c4ccdd;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .nav-item.active {
+            color: #8deaff;
+            text-shadow: 0 0 12px rgba(20, 184, 166, .45);
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .fab-center {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e6f7ff, #5d9bcf 55%, #192a4d);
+            color: #14203a;
+            border: 4px solid #0a1022;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: -34px;
+            box-shadow: 0 0 16px rgba(93, 202, 255, .35), inset 0 2px 3px rgba(255, 255, 255, .65);
+            text-decoration: none;
+        }
+
+        /* Toast Message */
+        .toast-msg {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: #0f172a;
+            border: 1px solid #38bdf8;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            z-index: 99999;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast-msg.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-frame">
+        <div class="rewards-header">
+            <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="rewards-title">Rewards Center</div>
+            <div style="width: 38px;"></div>
+        </div>
+
+        <div class="rewards-banner">
+            <small><i class="fa-solid fa-gift" style="color: #14b8a6; margin-right: 4px;"></i> Rewards Available</small>
+            <h2 id="unclaimedRewardBanner">Rs 0</h2>
+            <p>Complete your tasks to unlock rewards.</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <i class="fa-solid fa-list-check"></i>
+                <span id="totalTasksCount">10</span>
+                <small>Total Tasks</small>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-circle-check"></i>
+                <span id="completedTasksCount">0</span>
+                <small>Completed</small>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-trophy"></i>
+                <span id="claimedTasksCount">0</span>
+                <small>Claimed</small>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <span>Your Tasks</span>
+            <span style="font-size: 11px; color: #94a3b8; font-weight: 700;">10 Available</span>
+        </div>
+
+        <!-- Task Dynamic List Container -->
+        <div id="tasksListContainer"></div>
+
+        <!-- Floating Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="invest.html" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Active</span></a>
+            <a href="invest.html" class="fab-center">N</a>
+            <a href="withdraw-history.html" class="nav-item"><i
+                    class="fa-solid fa-clock-rotate-left"></i><span>Logs</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+        </nav>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-msg" id="toastMsg">
+        <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+        <span id="toastText">Reward claimed!</span>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        const TASK_REWARDS = [4500, 9000, 18000, 31000, 48000, 60000, 93000, 148000, 188000, 230000];
+        const TASK_TARGETS = [150000, 300000, 500000, 700000, 1000000, 1500000, 2000000, 2500000, 3000000, 4000000];
+
+        let userSession = JSON.parse(localStorage.getItem('user_session')) || {
+            username: "noman",
+            balance: 14500,
+            totalInvestment: 350000
+        };
+
+        // User's claimed task IDs stored in localStorage
+        let claimedTasks = JSON.parse(localStorage.getItem('user_claimed_rewards')) || [];
+
+        function renderTasks() {
+            const container = document.getElementById('tasksListContainer');
+            container.innerHTML = '';
+
+            const currentInvestment = Number(userSession.totalInvestment || 0);
+
+            let completedCount = 0;
+            let claimedCount = claimedTasks.length;
+            let unclaimedRewardSum = 0;
+
+            for (let i = 0; i < 10; i++) {
+                const target = TASK_TARGETS[i];
+                const reward = TASK_REWARDS[i];
+                const isClaimed = claimedTasks.includes(i + 1);
+
+                let progressPercent = Math.min(Math.floor((currentInvestment / target) * 100), 100);
+                let isCompleted = progressPercent >= 100;
+
+                if (isCompleted) {
+                    completedCount++;
+                    if (!isClaimed) {
+                        unclaimedRewardSum += reward;
+                    }
+                }
+
+                const card = document.createElement('div');
+                card.className = 'task-card';
+
+                let actionButtonHtml = '';
+                if (isClaimed) {
+                    actionButtonHtml = `
+                        <div class="btn-claimed-state">
+                            <i class="fa-solid fa-circle-check" style="margin-right: 4px;"></i> Reward Claimed
+                        </div>
+                    `;
+                } else if (isCompleted) {
+                    actionButtonHtml = `
+                        <button type="button" class="btn-claim-reward" onclick="claimReward(${i + 1}, ${reward})">
+                            <i class="fa-solid fa-gift" style="margin-right: 4px;"></i> Claim Reward
+                        </button>
+                    `;
+                } else {
+                    actionButtonHtml = `
+                        <div class="btn-keep-going">
+                            <i class="fa-regular fa-clock" style="margin-right: 4px;"></i> Keep going
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="task-header">
+                        <div class="task-info">
+                            <div class="task-icon"><i class="fa-solid fa-medal"></i></div>
+                            <div>
+                                <div class="task-title">Task ${i + 1}</div>
+                                <div class="task-target">Target: Rs ${target.toLocaleString()}</div>
+                            </div>
+                        </div>
+                        <div class="task-reward">Rs ${reward.toLocaleString()}</div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">
+                        <span>${progressPercent}% Completed</span>
+                        <span class="${isCompleted ? 'task-status-completed' : 'task-status-in-progress'}">
+                            ${isClaimed ? 'Claimed' : (isCompleted ? 'Completed' : 'In progress')}
+                        </span>
+                    </div>
+
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="background: ${isCompleted ? '#34d399' : '#14b8a6'}; width: ${progressPercent}%;"></div>
+                    </div>
+
+                    ${actionButtonHtml}
+                `;
+
+                container.appendChild(card);
+            }
+
+            document.getElementById('unclaimedRewardBanner').innerText = `Rs ${unclaimedRewardSum.toLocaleString()}`;
+            document.getElementById('completedTasksCount').innerText = completedCount;
+            document.getElementById('claimedTasksCount').innerText = claimedCount;
+            document.getElementById('totalTasksCount').innerText = 10;
+        }
+
+        function claimReward(taskId, amount) {
+            if (claimedTasks.includes(taskId)) return;
+
+            claimedTasks.push(taskId);
+            localStorage.setItem('user_claimed_rewards', JSON.stringify(claimedTasks));
+
+            // Credit reward to user balance
+            userSession.balance = Number(userSession.balance || 0) + amount;
+            localStorage.setItem('user_session', JSON.stringify(userSession));
+
+            // Log earning record
+            let earnings = JSON.parse(localStorage.getItem('user_earnings_data')) || [];
+            earnings.unshift({
+                id: Date.now(),
+                title: `Task ${taskId} Milestone Reward`,
+                type: 'credit',
+                amount: amount,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('user_earnings_data', JSON.stringify(earnings));
+
+            showToast(`Rs ${amount.toLocaleString()} reward added to your balance!`);
+            renderTasks();
+        }
+
+        let toastTimer;
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            document.getElementById('toastText').innerText = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2200);
+        }
+
+        document.addEventListener('DOMContentLoaded', renderTasks);
+    </script>
+</body>
+
+</html>

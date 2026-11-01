@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout Handler - Nexora Admin</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #081a38;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Demo Trigger Card */
+        .demo-card {
+            background: rgba(7, 24, 56, 0.85);
+            border: 1.5px solid rgba(251, 191, 36, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .demo-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fbbf24;
+            margin-bottom: 8px;
+        }
+
+        .demo-card p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-logout-demo {
+            background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-logout-demo:hover {
+            transform: translateY(-2px);
+        }
+
+        /* --- Dedicated Logout Animation & Loading Overlay --- */
+        #logoutOverlayModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 37, 78, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #logoutOverlayModal.active {
+            display: flex;
+        }
+
+        .logout-loader-card {
+            background: rgba(7, 24, 56, 0.98);
+            border: 1.5px solid rgba(251, 191, 36, 0.5);
+            border-radius: 26px;
+            padding: 40px 50px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+            max-width: 380px;
+            width: 90%;
+            animation: fadeInModal 0.25s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .spinner-container {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 22px;
+        }
+
+        .spinner-blade {
+            position: absolute;
+            left: 29px;
+            top: 2px;
+            width: 6px;
+            height: 16px;
+            border-radius: 3px;
+            background: #94a3b8;
+            transform-origin: 3px 30px;
+            animation: spinner-fade 1s linear infinite;
+        }
+
+        .spinner-blade:nth-child(1) { transform: rotate(0deg); animation-delay: -0.9167s; background: #ffffff; }
+        .spinner-blade:nth-child(2) { transform: rotate(30deg); animation-delay: -0.8333s; background: #fde047; }
+        .spinner-blade:nth-child(3) { transform: rotate(60deg); animation-delay: -0.75s; background: #cbd5e1; }
+        .spinner-blade:nth-child(4) { transform: rotate(90deg); animation-delay: -0.6667s; background: #94a3b8; }
+        .spinner-blade:nth-child(5) { transform: rotate(120deg); animation-delay: -0.5833s; background: #64748b; }
+        .spinner-blade:nth-child(6) { transform: rotate(150deg); animation-delay: -0.5s; background: #475569; }
+        .spinner-blade:nth-child(7) { transform: rotate(180deg); animation-delay: -0.4167s; background: #334155; }
+        .spinner-blade:nth-child(8) { transform: rotate(210deg); animation-delay: -0.3333s; background: #1e293b; }
+        .spinner-blade:nth-child(9) { transform: rotate(240deg); animation-delay: -0.25s; background: #475569; }
+        .spinner-blade:nth-child(10) { transform: rotate(270deg); animation-delay: -0.1667s; background: #64748b; }
+        .spinner-blade:nth-child(11) { transform: rotate(300deg); animation-delay: -0.0833s; background: #94a3b8; }
+        .spinner-blade:nth-child(12) { transform: rotate(330deg); animation-delay: 0s; background: #cbd5e1; }
+
+        @keyframes spinner-fade {
+            0% { opacity: 1; }
+            100% { opacity: 0.15; }
+        }
+
+        .logout-loader-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .logout-loader-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Demo Trigger Panel -->
+    <div class="demo-card">
+        <h3>Logout Component</h3>
+        <p>Click the button below to test the 3-second animated logout process.</p>
+        <button type="button" class="btn-logout-demo" onclick="triggerCustomLogout(event, 'admin-login.html')">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Test Logout</span>
+        </button>
+    </div>
+
+    <!-- Logout Overlay Modal -->
+    <div id="logoutOverlayModal">
+        <div class="logout-loader-card">
+            <div class="spinner-container">
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+            </div>
+            <div class="logout-loader-title">Logging Out...</div>
+            <div class="logout-loader-sub">Please wait 3 seconds.</div>
+        </div>
+    </div>
+
+    <script>
+        function triggerCustomLogout(e, logoutUrl = 'admin-login.html') {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            // Remove client-side admin session
+            localStorage.removeItem('admin_session');
+
+            const modal = document.getElementById('logoutOverlayModal');
+            if (modal) {
+                modal.classList.add('active');
+            }
+
+            setTimeout(function () {
+                window.location.href = logoutUrl;
+            }, 3000);
+
+            return false;
+        }
+    </script>
+
+</body>
+
+</html>

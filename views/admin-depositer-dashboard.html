@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depositer Dashboard - Nexora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Mock Sidebar */
+        .sidebar-mock {
+            width: 250px;
+            background: #0f172a;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 24px 16px;
+            color: #94a3b8;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .sidebar-mock h2 {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-left: 8px;
+        }
+
+        .sidebar-mock a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-mock a:hover,
+        .sidebar-mock a.active {
+            background: #1e293b;
+            color: #38bdf8;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+        }
+
+        h2 {
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th,
+        td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        th {
+            background: #008069;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        .badge-status.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-status.approved {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .badge-status.canceled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .actions-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-approve {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-cancel {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .sidebar-mock {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 16px;
+            }
+
+            h2 {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mock Sidebar -->
+    <aside class="sidebar-mock">
+        <h2>Nexora Portal</h2>
+        <a href="admin-dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="admin-depositer-dashboard.html" class="active"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+        <a href="admin-withdrawals.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+        <a href="admin-banks.html"><i class="fa-solid fa-wallet"></i> Banks</a>
+        <a href="login.html" style="margin-top: auto; color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <div class="main-content">
+        <h2><i class="fa-solid fa-building-columns" style="color: #008069;"></i> Deposits Management (Depositer Portal)</h2>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Transaction ID</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="depositsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        let depositsData = JSON.parse(localStorage.getItem('admin_deposits_list')) || [
+            { id: 1, username: "usman_khan", amount: 15000, method: "EasyPaisa", transactionId: "TRX88291039", status: "Pending" },
+            { id: 2, username: "ahmad_ali", amount: 20000, method: "JazzCash", transactionId: "TRX99201948", status: "Pending" },
+            { id: 3, username: "hamza99", amount: 10000, method: "Nayapay", transactionId: "TRX33849102", status: "Approved" }
+        ];
+
+        function renderDeposits() {
+            const tbody = document.getElementById('depositsTableBody');
+            tbody.innerHTML = '';
+
+            if (depositsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #94a3b8;">Koi deposit request mojood nahi hai.</td></tr>`;
+                return;
+            }
+
+            depositsData.forEach(dep => {
+                const tr = document.createElement('tr');
+                const badgeClass = dep.status === 'Approved' ? 'approved' : dep.status === 'Canceled' ? 'canceled' : 'pending';
+
+                let actionHtml = '';
+                if (dep.status === 'Pending') {
+                    actionHtml = `
+                        <div class="actions-group">
+                            <button type="button" class="btn btn-approve" onclick="approveDeposit(${dep.id})">Approve</button>
+                            <button type="button" class="btn btn-cancel" onclick="cancelDeposit(${dep.id})">Cancel</button>
+                        </div>
+                    `;
+                } else {
+                    actionHtml = `<span style="font-weight: 600; color: #64748b;">${dep.status}</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td>${dep.username}</td>
+                    <td><strong>Rs. ${Number(dep.amount).toLocaleString()}</strong></td>
+                    <td>${dep.method}</td>
+                    <td><span style="font-family: monospace; color: #0284c7; font-weight: 600;">${dep.transactionId}</span></td>
+                    <td><span class="badge-status ${badgeClass}">${dep.status}</span></td>
+                    <td>${actionHtml}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+
+            localStorage.setItem('admin_deposits_list', JSON.stringify(depositsData));
+        }
+
+        function approveDeposit(id) {
+            depositsData = depositsData.map(dep => dep.id === id ? { ...dep, status: 'Approved' } : dep);
+            renderDeposits();
+        }
+
+        function cancelDeposit(id) {
+            depositsData = depositsData.map(dep => dep.id === id ? { ...dep, status: 'Canceled' } : dep);
+            renderDeposits();
+        }
+
+        // Run on load
+        renderDeposits();
+    </script>
+</body>
+
+</html>

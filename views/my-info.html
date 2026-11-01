@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>My Information - Nexora Capital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 40px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            font-size: 16px;
+            color: #8ff1ff;
+            text-decoration: none;
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        /* Avatar Header Card */
+        .profile-banner-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 26px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .avatar-wrap {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9befff, #ff6a9f, #9befff);
+            padding: 3px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(255, 85, 151, .35);
+        }
+
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #0b1120;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-banner-card h3 {
+            font-size: 18px;
+            font-weight: 900;
+            color: #f8fafc;
+            text-transform: uppercase;
+        }
+
+        .profile-banner-card p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Information Details List Card */
+        .info-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 22px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(20, 184, 166, 0.15);
+            border: 1px solid rgba(20, 184, 166, 0.35);
+            color: #34d399;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+        }
+
+        .info-text small {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: #b7c4d9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-text strong {
+            font-size: 14px;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .copy-btn {
+            background: rgba(20, 184, 166, 0.2);
+            border: 1px solid rgba(20, 184, 166, 0.4);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: #34d399;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            transition: transform 0.15s ease;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.9);
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: #0f172a;
+            border: 1px solid #38bdf8;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            z-index: 99999;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast-msg.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-frame">
+        <div class="screen-header">
+            <a href="profile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div>
+                <h2 class="header-title">My Information</h2>
+                <div style="font-size: 11px; color: #b7c4d9; font-weight: 600;">Personal account credentials</div>
+            </div>
+        </div>
+
+        <!-- User Banner Card -->
+        <div class="profile-banner-card">
+            <div class="avatar-wrap">
+                <div class="avatar-inner">
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/male-avatars-3d-icon-png-download-10764490.png"
+                        alt="User Profile">
+                </div>
+            </div>
+            <h3 id="userCardName">NOMAN</h3>
+            <p>Verified Investor Account</p>
+        </div>
+
+        <!-- Username -->
+        <div class="info-card">
+            <div class="info-left">
+                <div class="info-icon"><i class="fa-regular fa-user"></i></div>
+                <div class="info-text">
+                    <small>Username</small>
+                    <strong id="infoUsername">noman</strong>
+                </div>
+            </div>
+            <button type="button" class="copy-btn" onclick="copyInfo('infoUsername', 'Username')">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="info-card">
+            <div class="info-left">
+                <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                <div class="info-text">
+                    <small>Mobile Phone</small>
+                    <strong id="infoPhone">03001234567</strong>
+                </div>
+            </div>
+            <button type="button" class="copy-btn" onclick="copyInfo('infoPhone', 'Mobile phone')">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+        </div>
+
+        <!-- Sponser / Referred By -->
+        <div class="info-card">
+            <div class="info-left">
+                <div class="info-icon"><i class="fa-solid fa-user-tag"></i></div>
+                <div class="info-text">
+                    <small>Referred By</small>
+                    <strong id="infoRefBy">Direct</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Balance -->
+        <div class="info-card">
+            <div class="info-left">
+                <div class="info-icon"><i class="fa-solid fa-wallet"></i></div>
+                <div class="info-text">
+                    <small>Account Balance</small>
+                    <strong style="color: #ff5c77;" id="infoBalance">Rs. 14,500</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- User ID / Unique Reference Code -->
+        <div class="info-card">
+            <div class="info-left">
+                <div class="info-icon"><i class="fa-solid fa-hashtag"></i></div>
+                <div class="info-text">
+                    <small>Member ID</small>
+                    <strong id="infoMemberId">#NX-9082</strong>
+                </div>
+            </div>
+            <button type="button" class="copy-btn" onclick="copyInfo('infoMemberId', 'Member ID')">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-msg" id="toastMsg">
+        <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+        <span id="toastText">Copied to clipboard</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const session = JSON.parse(localStorage.getItem('user_session')) || {
+                id: 1,
+                username: "noman",
+                phone: "03001234567",
+                balance: 14500,
+                referredBy: "Direct"
+            };
+
+            document.getElementById('userCardName').innerText = (session.username || 'User').toUpperCase();
+            document.getElementById('infoUsername').innerText = session.username || 'noman';
+            document.getElementById('infoPhone').innerText = session.phone || '03001234567';
+            document.getElementById('infoRefBy').innerText = session.referredBy || 'Direct';
+            document.getElementById('infoBalance').innerText = `Rs. ${Number(session.balance || 0).toLocaleString()}`;
+            document.getElementById('infoMemberId').innerText = `#NX-${session.id ? String(session.id).padStart(4, '0') : '1001'}`;
+        });
+
+        let toastTimer;
+        function copyInfo(elementId, label) {
+            const val = document.getElementById(elementId).innerText.trim();
+            navigator.clipboard.writeText(val).then(() => {
+                const toast = document.getElementById('toastMsg');
+                document.getElementById('toastText').innerText = `${label} copied!`;
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>

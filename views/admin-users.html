@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Registered Users - Nexora Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Mock Sidebar */
+        .admin-sidebar-mock {
+            width: 250px;
+            background: #008069;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 24px 16px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .admin-sidebar-mock h2 {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-left: 8px;
+        }
+
+        .admin-sidebar-mock a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .admin-sidebar-mock a:hover,
+        .admin-sidebar-mock a.active {
+            background: #ffffff;
+            color: #008069;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px 60px;
+            min-height: 100vh;
+            width: calc(100% - 250px);
+            background: #fdf6ec;
+        }
+
+        /* Desktop Top Header Bar */
+        .desktop-top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #ffffff;
+            padding: 14px 18px;
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            border: 1.5px solid #ffd79d;
+            margin-bottom: 22px;
+        }
+
+        .desktop-top-bar a {
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s ease;
+        }
+
+        .desktop-top-bar a.active-link {
+            background: #008069;
+            color: #ffffff;
+        }
+
+        .desktop-top-bar a.regular-link {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .desktop-top-bar a.live-link {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .desktop-top-bar a.logout-link {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            margin-left: auto;
+        }
+
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .page-title {
+            font-size: 19px;
+            font-weight: 900;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-right-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            border-radius: 20px;
+            padding: 8px 14px 8px 34px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e293b;
+            outline: none;
+        }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .members-count-badge {
+            font-size: 11px;
+            font-weight: 800;
+            color: #008069;
+            background: #d8f5ef;
+            padding: 7px 14px;
+            border-radius: 20px;
+            border: 1px solid #a7f3d0;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        thead th {
+            padding: 10px 12px;
+            border-bottom: 2px solid #fed7aa;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            background: #fff8f0;
+        }
+
+        tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #fffbf5;
+        }
+
+        .member-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #d8f5ef;
+            color: #008069;
+            display: inline-grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 14px;
+            margin-right: 8px;
+            vertical-align: middle;
+            flex-shrink: 0;
+            border: 1px solid #a7f3d0;
+        }
+
+        .btn-switch {
+            background: #008069;
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+        }
+
+        .btn-switch:hover {
+            opacity: 0.9;
+        }
+
+        .btn-delete-member {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 4px;
+            transition: background 0.15s ease;
+        }
+
+        .btn-delete-member:hover {
+            background: #fecaca;
+        }
+
+        .mobile-user-cards {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-m-box {
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(210, 135, 45, 0.06);
+        }
+
+        .user-m-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #fed7aa;
+        }
+
+        .user-m-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-m-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .user-m-phone {
+            font-size: 11px;
+            color: #64748b;
+            font-family: monospace;
+            display: block;
+        }
+
+        .user-m-balance {
+            font-size: 14px;
+            font-weight: 900;
+            color: #008069;
+            text-align: right;
+        }
+
+        .user-m-balance small {
+            display: block;
+            font-size: 9px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .user-m-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .user-m-ref {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .user-m-ref strong {
+            color: #0f172a;
+        }
+
+        .user-m-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .empty-users-box {
+            display: none;
+            background: #fff;
+            border-radius: 18px;
+            padding: 35px 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            border: 2px dashed #fed7aa;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar-mock,
+            .desktop-top-bar {
+                display: none !important;
+            }
+
+            body {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-left: 0;
+                padding: 16px 12px 70px;
+                width: 100%;
+            }
+
+            .search-input-wrap {
+                width: 100%;
+            }
+
+            .desktop-table-view {
+                display: none;
+            }
+
+            .mobile-user-cards {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mock Sidebar -->
+    <aside class="admin-sidebar-mock">
+        <h2>Nexora Admin</h2>
+        <a href="admin-dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="admin-deposits.html"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+        <a href="admin-withdrawals.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+        <a href="admin-banks.html"><i class="fa-solid fa-wallet"></i> Currency Account</a>
+        <a href="admin-users.html" class="active"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="admin-team.html"><i class="fa-solid fa-user-shield"></i> Admin Members</a>
+        <a href="admin-settings.html"><i class="fa-solid fa-sliders"></i> Project Setting</a>
+        <a href="dashboard.html" target="_blank"><i class="fa-solid fa-globe"></i> Live User App</a>
+        <a href="javascript:void(0);" onclick="handleAdminLogout()" style="margin-top: auto; color: #fee2e2;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <main class="admin-main-content">
+        <!-- Desktop Top Navigation Bar -->
+        <div class="desktop-top-bar">
+            <a href="admin-dashboard.html" class="regular-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="admin-deposits.html" class="regular-link"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+            <a href="admin-withdrawals.html" class="regular-link"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+            <a href="admin-banks.html" class="regular-link"><i class="fa-solid fa-wallet"></i> Banks</a>
+            <a href="admin-users.html" class="active-link"><i class="fa-solid fa-users"></i> Users</a>
+            <a href="admin-team.html" class="regular-link"><i class="fa-solid fa-user-shield"></i> Team</a>
+            <a href="admin-settings.html" class="regular-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+            <a href="dashboard.html" target="_blank" class="live-link"><i class="fa-solid fa-globe"></i> Live Site</a>
+            <a href="javascript:void(0);" onclick="handleAdminLogout()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+
+        <div class="page-header-bar">
+            <h1 class="page-title"><i class="fa-solid fa-users" style="color:#008069;"></i> Registered Users</h1>
+            <div class="header-right-tools">
+                <div class="search-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="userSearchInput" oninput="handleSearch()" placeholder="Search user, mobile, ref...">
+                </div>
+                <span class="members-count-badge" id="usersCountBadge">Total: 0</span>
+            </div>
+        </div>
+
+        <!-- Empty Box -->
+        <div class="empty-users-box" id="emptyUsersNotice">
+            No registered users found matching the search query.
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="table-card desktop-table-view" id="desktopUsersCard">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Mobile Phone</th>
+                        <th>Account Balance</th>
+                        <th>Referred By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="mobile-user-cards" id="mobileUsersContainer"></div>
+    </main>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        const DEFAULT_USERS = [
+            { id: 1, username: "noman", phone: "03001234567", balance: 14500.00, referredBy: "Direct", totalInvestment: 35000 },
+            { id: 2, username: "usman_khan", phone: "03129876543", balance: 5200.50, referredBy: "noman", totalInvestment: 15000 },
+            { id: 3, username: "ahmad_ali", phone: "03217654321", balance: 3000.00, referredBy: "noman", totalInvestment: 10000 },
+            { id: 4, username: "hamza99", phone: "03451122334", balance: 890.00, referredBy: "usman_khan", totalInvestment: 5000 },
+            { id: 5, username: "tariq_dev", phone: "03125566778", balance: 35000.75, referredBy: "Direct", totalInvestment: 45000 }
+        ];
+
+        let registeredUsers = JSON.parse(localStorage.getItem('nexora_registered_users')) || DEFAULT_USERS;
+        let searchQuery = '';
+
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const mobileContainer = document.getElementById('mobileUsersContainer');
+            const emptyNotice = document.getElementById('emptyUsersNotice');
+            const desktopCard = document.getElementById('desktopUsersCard');
+            const countBadge = document.getElementById('usersCountBadge');
+
+            tbody.innerHTML = '';
+            mobileContainer.innerHTML = '';
+
+            const filtered = registeredUsers.filter(u => {
+                const q = searchQuery.toLowerCase();
+                return !q || 
+                    (u.username || '').toLowerCase().includes(q) || 
+                    (u.phone || '').toLowerCase().includes(q) || 
+                    (u.referredBy || '').toLowerCase().includes(q);
+            });
+
+            countBadge.innerText = `Total: ${filtered.length}`;
+
+            if (filtered.length === 0) {
+                emptyNotice.style.display = 'block';
+                desktopCard.style.display = 'none';
+                return;
+            }
+
+            emptyNotice.style.display = 'none';
+            desktopCard.style.display = 'block';
+
+            filtered.forEach(u => {
+                const initial = (u.username || 'U').charAt(0).toUpperCase();
+                const balNum = Number(u.balance || 0);
+                const ref = u.referredBy || 'Direct';
+
+                // Desktop Table Row
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="member-avatar">${initial}</div>
+                        <strong>${u.username}</strong>
+                    </td>
+                    <td><code>${u.phone}</code></td>
+                    <td style="font-weight:900; color:#008069; font-size:13px;">Rs. ${balNum.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>${ref}</td>
+                    <td>
+                        <button type="button" class="btn-switch" onclick="switchUserAccount(${u.id}, '${u.username}')" title="Login as User">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i> Switch
+                        </button>
+                        <button type="button" class="btn-delete-member" onclick="deleteUserAccount(${u.id}, '${u.username}')" title="Delete User">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // Mobile Card Item
+                const card = document.createElement('div');
+                card.className = 'user-m-box';
+                card.innerHTML = `
+                    <div class="user-m-top">
+                        <div class="user-m-left">
+                            <div class="member-avatar">${initial}</div>
+                            <div>
+                                <span class="user-m-name">${u.username}</span>
+                                <span class="user-m-phone">${u.phone}</span>
+                            </div>
+                        </div>
+                        <div class="user-m-balance">
+                            <small>Balance</small>
+                            Rs. ${balNum.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                        </div>
+                    </div>
+                    <div class="user-m-bottom">
+                        <div class="user-m-ref">Ref: <strong>${ref}</strong></div>
+                        <div class="user-m-actions">
+                            <button type="button" class="btn-switch" onclick="switchUserAccount(${u.id}, '${u.username}')">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i> Switch
+                            </button>
+                            <button type="button" class="btn-delete-member" onclick="deleteUserAccount(${u.id}, '${u.username}')">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            });
+
+            localStorage.setItem('nexora_registered_users', JSON.stringify(registeredUsers));
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('userSearchInput').value.trim();
+            renderUsers();
+        }
+
+        function switchUserAccount(id, username) {
+            const user = registeredUsers.find(u => u.id === id);
+            if (!user) return;
+
+            if (confirm(`Do you want to switch session and log in as @${username}?`)) {
+                const userSession = {
+                    id: user.id,
+                    username: user.username,
+                    phone: user.phone,
+                    balance: user.balance || 0,
+                    referredBy: user.referredBy || 'Direct',
+                    totalInvestment: user.totalInvestment || 0,
+                    switchedByAdmin: true,
+                    loginTime: new Date().toISOString()
+                };
+                localStorage.setItem('user_session', JSON.stringify(userSession));
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        function deleteUserAccount(id, username) {
+            if (confirm(`Are you sure you want to permanently delete user @${username}?`)) {
+                registeredUsers = registeredUsers.filter(u => u.id !== id);
+                renderUsers();
+            }
+        }
+
+        function handleAdminLogout() {
+            if (confirm('Are you sure you want to logout of the admin panel?')) {
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderUsers);
+    </script>
+</body>
+
+</html>

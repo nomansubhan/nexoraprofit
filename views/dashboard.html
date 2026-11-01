@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Dashboard - Nexora Capital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 110px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+            overflow-x: hidden;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .menu-toggle-btn,
+        .notification-btn {
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #8ff1ff;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13), inset 0 0 10px rgba(68, 213, 255, .06);
+            transition: transform 0.2s ease;
+        }
+
+        .menu-toggle-btn:active,
+        .notification-btn:active {
+            transform: scale(0.95);
+        }
+
+        .dash-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #eaf7ff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .user-main-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .7);
+            border-radius: 32px;
+            padding: 25px 20px 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, .58), inset 0 1px 2px rgba(255, 255, 255, .14);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .user-tag {
+            font-size: 22px;
+            font-weight: 900;
+            color: #f7e8f2;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 12px rgba(255, 102, 169, .24);
+        }
+
+        .ref-tag {
+            font-size: 11px;
+            font-weight: 600;
+            color: #b7c4d9;
+            margin: 2px 0 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .balance-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #b7c4d9;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .balance-val {
+            font-size: 34px;
+            font-weight: 900;
+            color: #f1f5ff;
+            line-height: 1.1;
+            margin: 2px 0 18px;
+            text-shadow: 0 0 20px rgba(93, 199, 255, .2);
+        }
+
+        .user-avatar-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9befff, #ff6a9f, #9befff);
+            padding: 3.5px;
+            box-shadow: 0 0 22px rgba(255, 85, 151, .4), 0 0 12px rgba(69, 215, 255, .25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #0b1120;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .balance-actions {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-deposit {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, #54e4bd, #087f70);
+            color: #eafffa;
+            font-size: 15px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 8px 18px rgba(16, 185, 129, .22), inset 0 2px 3px rgba(255, 255, 255, .45);
+            border: 1px solid rgba(161, 255, 225, .55);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-withdraw {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, #ff8b9e, #a91e4a);
+            color: #fff0f4;
+            font-size: 15px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 8px 18px rgba(244, 63, 94, .25), inset 0 2px 3px rgba(255, 255, 255, .42);
+            border: 1px solid rgba(255, 179, 199, .55);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .referral-card {
+            background: linear-gradient(145deg, rgba(25, 32, 53, .9), rgba(12, 18, 35, .94));
+            border: 1.5px solid rgba(255, 116, 166, .52);
+            border-radius: 24px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .42), inset 0 1px 1px rgba(255, 255, 255, .12);
+        }
+
+        .referral-input-box {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .referral-input-box small {
+            font-size: 9px;
+            color: #94a3b8;
+            font-weight: 700;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .referral-input-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 11px;
+            font-weight: 600;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-copy {
+            background: linear-gradient(145deg, rgba(148, 163, 184, .34), rgba(51, 65, 85, .55));
+            border: 1px solid rgba(203, 213, 225, .4);
+            color: #eaf1ff;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .apps-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .app-card {
+            background: linear-gradient(145deg, rgba(28, 42, 68, .95), rgba(13, 21, 41, .98)) !important;
+            border: 1.5px solid rgba(187, 220, 255, .65);
+            border-radius: 24px;
+            min-height: 112px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .45), inset 0 1px 3px rgba(255, 255, 255, .18);
+            padding: 20px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .app-card:active {
+            transform: scale(0.97);
+        }
+
+        .app-badge-circle {
+            width: 48px;
+            height: 48px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin-bottom: 10px;
+            border: 1px solid rgba(210, 230, 255, .6);
+            box-shadow: 0 0 12px rgba(104, 196, 255, .2), 0 6px 12px rgba(0, 0, 0, .35);
+        }
+
+        .app-card strong {
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.1;
+            color: #e9f1ff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .quick-circle-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .circle-item {
+            text-decoration: none;
+            color: #d5deef;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.15s ease;
+        }
+
+        .circle-item:active {
+            transform: scale(0.94);
+        }
+
+        .circle-icon-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 6px;
+            border: 1.5px solid rgba(178, 216, 255, .65);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .5), inset 0 2px 4px rgba(255, 255, 255, .2), 0 0 10px rgba(89, 185, 255, .12);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(calc(100% - 24px), 400px);
+            height: 66px;
+            background: rgba(13, 22, 43, .94);
+            border: 1.5px solid rgba(190, 220, 255, .72);
+            backdrop-filter: blur(25px);
+            border-radius: 36px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, .65), inset 0 1px 2px rgba(255, 255, 255, .2);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #c4ccdd;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .nav-item.active {
+            color: #8deaff;
+            text-shadow: 0 0 12px rgba(20, 184, 166, .45);
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .fab-center {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e6f7ff, #5d9bcf 55%, #192a4d);
+            color: #14203a;
+            border: 4px solid #0a1022;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: -34px;
+            box-shadow: 0 0 16px rgba(93, 202, 255, .35), inset 0 2px 3px rgba(255, 255, 255, .65);
+            text-decoration: none;
+        }
+
+        /* Drawer */
+        .menu-drawer {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: #0b1120;
+            z-index: 1000;
+            box-shadow: 15px 0 40px rgba(0, 0, 0, 0.9);
+            transition: left 0.3s ease;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-drawer.open {
+            left: 0;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(6px);
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 12px;
+        }
+
+        .drawer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .drawer-link-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #f8fafc;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .drawer-link-item i {
+            color: #14b8a6;
+            font-size: 16px;
+        }
+
+        /* Toast Feedback */
+        .toast-msg {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: #0f172a;
+            border: 1px solid #38bdf8;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            z-index: 99999;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast-msg.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-frame">
+        <div class="dash-header">
+            <div class="menu-toggle-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
+            <div class="dash-title" id="displayProjectTitle">Nexora Capital</div>
+            <div class="notification-btn" onclick="showNotificationAlert()"><i class="fa-solid fa-bell"></i></div>
+        </div>
+
+        <div class="user-main-card">
+            <div>
+                <div class="user-tag" id="displayUsername">NOMAN</div>
+                <div class="ref-tag">REF BY: <span id="displayReferredBy">Direct</span></div>
+                <div class="balance-label">AVAILABLE BALANCE</div>
+                <div class="balance-val"><span id="displayBalance">0</span> Rs</div>
+            </div>
+            <div class="user-avatar-circle">
+                <div class="avatar-inner">
+                    <img id="userAvatarImg"
+                        src="https://cdn3d.iconscout.com/3d/premium/thumb/male-avatars-3d-icon-png-download-10764490.png"
+                        alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+
+            <div class="balance-actions">
+                <a href="invest.html" class="btn-deposit">Deposit</a>
+                <a href="withdraw.html" class="btn-withdraw">Withdraw</a>
+            </div>
+        </div>
+
+        <div class="referral-card">
+            <div class="referral-input-box">
+                <small>Referral Link</small>
+                <input type="text" id="refLink" value="" readonly>
+            </div>
+            <button class="btn-copy" onclick="copyRef()"><i class="fa-regular fa-copy"></i> Copy</button>
+        </div>
+
+        <!-- 3 Action Cards with Modal Preview -->
+        <div class="apps-row">
+            <!-- FBR Card -->
+            <a href="javascript:void(0);" onclick="openCertModal('fbrCertificate', 'FBR Certificate')"
+                class="app-card fbr">
+                <div class="app-badge-circle" style="padding: 4px; overflow: hidden;">
+                    <img src="/public/assets/fbr-logo.png" alt="FBR"
+                        onerror="this.onerror=null;this.src='https://placehold.co/48x48/0b1120/ffffff?text=FBR'"
+                        style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <strong>FBR</strong>
+            </a>
+
+            <!-- SECP Card -->
+            <a href="javascript:void(0);" onclick="openCertModal('secpCertificate', 'SECP Certificate')"
+                class="app-card secp">
+                <div class="app-badge-circle" style="padding: 4px; overflow: hidden;">
+                    <img src="/public/assets/secp-logo.png" alt="SECP"
+                        onerror="this.onerror=null;this.src='https://placehold.co/48x48/0b1120/ffffff?text=SECP'"
+                        style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <strong>SECP</strong>
+            </a>
+
+            <!-- Download App Card -->
+            <a href="javascript:void(0);" id="apkDownloadLink" onclick="handleApkAction()" class="app-card download">
+                <div class="app-badge-circle" style="padding: 6px; overflow: hidden;">
+                    <img src="/public/assets/paly-store.png" alt="Download App"
+                        onerror="this.onerror=null;this.src='https://placehold.co/48x48/0b1120/ffffff?text=APK'"
+                        style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <strong>Download<br>App</strong>
+            </a>
+        </div>
+
+        <!-- Custom Certificate Modal -->
+        <div id="certModal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+            <div
+                style="background: #0b1120; width: 100%; max-width: 340px; border-radius: 26px; padding: 22px; text-align: center; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.9); border: 1.5px solid rgba(255,255,255,0.2);">
+                <button onclick="closeCertModal()"
+                    style="position: absolute; top: 14px; right: 14px; background: rgba(239,68,68,0.2); color: #f87171; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; cursor: pointer; display: grid; place-items: center;"><i
+                        class="fa-solid fa-xmark"></i></button>
+
+                <div id="modalIconBox"
+                    style="width: 50px; height: 50px; background: rgba(16,185,129,0.2); color: #34d399; border-radius: 50%; display: grid; place-items: center; font-size: 20px; margin: 0 auto 12px;">
+                    <i id="modalFaIcon" class="fa-solid fa-certificate"></i>
+                </div>
+
+                <h3 id="certTitle" style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">
+                    Certificate Preview</h3>
+                <p id="modalMsg"
+                    style="font-size: 12px; color: #94a3b8; font-weight: 600; margin-bottom: 16px; display: none;"></p>
+
+                <div id="certImgContainer"
+                    style="max-height: 320px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 6px; background: #060913; margin-bottom: 14px;">
+                    <img id="certImg" src="" alt="Certificate"
+                        style="width: 100%; border-radius: 10px; object-fit: contain;">
+                </div>
+
+                <a id="downloadCertBtn" href="" target="_blank"
+                    style="display: block; width: 100%; padding: 11px; background: #0d9488; color: #fff; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 13px; box-shadow: 0 4px 15px rgba(13,148,136,0.4);">Open
+                    in Full View</a>
+                <button id="modalCloseBtn" onclick="closeCertModal()"
+                    style="display: none; width: 100%; padding: 11px; background: #374151; color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer;">Got
+                    It</button>
+            </div>
+        </div>
+
+        <div class="quick-circle-menu">
+            <!-- Tasks -->
+            <a href="rewards.html" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #38bdf8, #0284c7);">
+                    <i class="fa-solid fa-money-bill-1"></i>
+                </div>
+                <span>Tasks</span>
+            </a>
+
+            <!-- Withdraw Logs -->
+            <a href="withdraw-history.html" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #2dd4bf, #0d9488);">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+                <span>Withdraw Logs</span>
+            </a>
+
+            <!-- My Team -->
+            <a href="team.html" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #fbbf24, #d97706);">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <span>My Team</span>
+            </a>
+
+            <!-- Admin -->
+            <a href="javascript:void(0);" id="adminWhatsAppBtn" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #f87171, #dc2626);">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <span>Admin</span>
+            </a>
+
+            <!-- Next Earning -->
+            <a href="earnings.html" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #a855f7, #7e22ce);">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <span>Next Earning</span>
+            </a>
+
+            <!-- WhatsApp Channel -->
+            <a href="javascript:void(0);" id="channelWhatsAppBtn" target="_blank" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #22c55e, #15803d);">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <span>WhatsApp Channel</span>
+            </a>
+
+            <!-- Settings -->
+            <a href="profile.html" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #0ea5e9, #0284c7);">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <span>Settings</span>
+            </a>
+
+            <!-- More -->
+            <a href="javascript:void(0);" onclick="toggleMenu()" class="circle-item">
+                <div class="circle-icon-btn" style="background: linear-gradient(145deg, #ec4899, #be185d);">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </div>
+                <span>More</span>
+            </a>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="invest.html" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Active</span></a>
+            <a href="invest.html" class="fab-center">N</a>
+            <a href="withdraw-history.html" class="nav-item"><i
+                    class="fa-solid fa-clock-rotate-left"></i><span>Logs</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+        </nav>
+    </div>
+
+    <!-- Slide-in Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleMenu()"></div>
+    <div class="menu-drawer" id="menuDrawer">
+        <div>
+            <div class="drawer-header">
+                <h3 style="font-size: 16px; font-weight: 800; color: #ffffff;">Menu Options</h3>
+                <div onclick="toggleMenu()" style="cursor: pointer; font-size: 18px; color: #94a3b8;"><i
+                        class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="drawer-links">
+                <a href="deposit-history.html" class="drawer-link-item"><i class="fa-solid fa-building-columns"></i>
+                    Deposit History</a>
+                <a href="withdraw-history.html" class="drawer-link-item"><i class="fa-solid fa-money-bill-transfer"></i>
+                    Withdrawal History</a>
+                <a href="invest.html" class="drawer-link-item"><i class="fa-solid fa-chart-line"></i> Investment
+                    Packages</a>
+                <a href="fbr-info.html" class="drawer-link-item"><i class="fa-solid fa-file-shield"></i> FBR & SECP
+                    Info</a>
+                <a href="javascript:void(0);" id="drawerAdminWa" target="_blank" class="drawer-link-item"><i
+                        class="fa-brands fa-whatsapp"></i> WhatsApp Admin</a>
+                <a href="javascript:void(0);" onclick="handleUserLogout()" class="drawer-link-item"
+                    style="color: #f87171;"><i class="fa-solid fa-right-from-bracket" style="color: #f87171;"></i>
+                    Logout</a>
+            </div>
+        </div>
+        <div style="text-align: center; font-size: 11px; color: #64748b; font-weight: 600;">Nexora Capital &copy; 2026
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast-msg" id="toastMsg">
+        <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+        <span id="toastText">Action completed</span>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        let userSession = JSON.parse(localStorage.getItem('user_session')) || {
+            username: "Noman",
+            balance: 14500,
+            referredBy: "Direct"
+        };
+
+        const projectSettings = JSON.parse(localStorage.getItem('nexora_project_settings')) || {
+            projectTitle: "Nexora Capital",
+            whatsappHelpline: "+923001234567",
+            whatsappChannelLink: "https://whatsapp.com/",
+            fbrCertificate: null,
+            secpCertificate: null,
+            androidApk: null
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Synchronize user balance from users dataset if exists
+            const allUsers = JSON.parse(localStorage.getItem('nexora_registered_users')) || [];
+            const matchedUser = allUsers.find(u => u.username.toLowerCase() === userSession.username.toLowerCase());
+            if (matchedUser) {
+                userSession.balance = matchedUser.balance;
+                userSession.referredBy = matchedUser.referredBy;
+                localStorage.setItem('user_session', JSON.stringify(userSession));
+            }
+
+            // Render user profile details
+            document.getElementById('displayUsername').innerText = (userSession.username || 'User').toUpperCase();
+            document.getElementById('displayReferredBy').innerText = userSession.referredBy || 'Direct';
+            document.getElementById('displayBalance').innerText = Number(userSession.balance || 0).toLocaleString();
+            document.getElementById('displayProjectTitle').innerText = projectSettings.projectTitle || "Nexora Capital";
+
+            // Custom Avatar preview if uploaded in Profile
+            const customAvatar = localStorage.getItem('user_profile_avatar');
+            if (customAvatar) {
+                document.getElementById('userAvatarImg').src = customAvatar;
+            }
+
+            // Build dynamic referral link
+            const currentOrigin = window.location.origin;
+            const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            const refUrl = `${currentOrigin}${currentPath}/signup.html?ref=${encodeURIComponent(userSession.username)}`;
+            document.getElementById('refLink').value = refUrl;
+
+            // WhatsApp helpline configuration
+            const waNumber = (projectSettings.whatsappHelpline || '').replace(/[^0-9]/g, '');
+            const waUrl = waNumber ? `https://wa.me/${waNumber}` : 'javascript:alert("Helpline number not configured yet.");';
+
+            const adminWaBtn = document.getElementById('adminWhatsAppBtn');
+            const drawerAdminWa = document.getElementById('drawerAdminWa');
+            if (waNumber) {
+                adminWaBtn.setAttribute('href', waUrl);
+                adminWaBtn.setAttribute('target', '_blank');
+                drawerAdminWa.setAttribute('href', waUrl);
+            } else {
+                adminWaBtn.onclick = () => alert("WhatsApp helpline not set by admin.");
+                drawerAdminWa.onclick = () => alert("WhatsApp helpline not set by admin.");
+            }
+
+            const channelBtn = document.getElementById('channelWhatsAppBtn');
+            if (projectSettings.whatsappChannelLink) {
+                channelBtn.setAttribute('href', projectSettings.whatsappChannelLink);
+            } else {
+                channelBtn.setAttribute('href', 'https://whatsapp.com/');
+            }
+        });
+
+        function handleApkAction() {
+            if (projectSettings.androidApk) {
+                window.location.href = projectSettings.androidApk;
+            } else {
+                openCertModal('', 'Android App');
+            }
+        }
+
+        function openCertModal(certKey, title) {
+            const modal = document.getElementById('certModal');
+            const imgContainer = document.getElementById('certImgContainer');
+            const downloadBtn = document.getElementById('downloadCertBtn');
+            const modalMsg = document.getElementById('modalMsg');
+            const closeBtn = document.getElementById('modalCloseBtn');
+            const certImg = document.getElementById('certImg');
+
+            document.getElementById('certTitle').innerText = title;
+            const fileData = projectSettings[certKey];
+
+            if (!fileData) {
+                modalMsg.innerText = `${title} has not been uploaded by the admin yet.`;
+                modalMsg.style.display = 'block';
+                imgContainer.style.display = 'none';
+                downloadBtn.style.display = 'none';
+                closeBtn.style.display = 'block';
+            } else {
+                modalMsg.style.display = 'none';
+                imgContainer.style.display = 'block';
+                downloadBtn.style.display = 'block';
+                closeBtn.style.display = 'none';
+                certImg.src = fileData;
+                downloadBtn.href = fileData;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeCertModal() {
+            document.getElementById('certModal').style.display = 'none';
+        }
+
+        function toggleMenu() {
+            document.getElementById("menuDrawer").classList.toggle("open");
+            document.getElementById("drawerOverlay").classList.toggle("open");
+        }
+
+        let toastTimer;
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            document.getElementById('toastText').innerText = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2200);
+        }
+
+        function copyRef() {
+            const copyText = document.getElementById("refLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                showToast("Referral link copied!");
+            }).catch(() => {
+                showToast("Copied to clipboard!");
+            });
+        }
+
+        function showNotificationAlert() {
+            const deposits = JSON.parse(localStorage.getItem('admin_deposits_all')) || [];
+            const userDep = deposits.filter(d => (d.username || '').toLowerCase() === userSession.username.toLowerCase());
+            if (userDep.length > 0) {
+                showToast(`Latest Deposit: ${userDep[0].status} (Rs. ${Number(userDep[0].amount).toLocaleString()})`);
+            } else {
+                showToast("No new notifications at this time.");
+            }
+        }
+
+        function handleUserLogout() {
+            if (confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem('user_session');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

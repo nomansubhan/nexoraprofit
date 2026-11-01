@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Admin Members (Team) - Nexora Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Mock Sidebar */
+        .admin-sidebar-mock {
+            width: 250px;
+            background: #008069;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 24px 16px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .admin-sidebar-mock h2 {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-left: 8px;
+        }
+
+        .admin-sidebar-mock a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .admin-sidebar-mock a:hover,
+        .admin-sidebar-mock a.active {
+            background: #ffffff;
+            color: #008069;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px 60px;
+            min-height: 100vh;
+            width: calc(100% - 250px);
+            background: #fdf6ec;
+        }
+
+        /* Desktop Top Header Bar */
+        .desktop-top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #ffffff;
+            padding: 14px 18px;
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            border: 1.5px solid #ffd79d;
+            margin-bottom: 22px;
+        }
+
+        .desktop-top-bar a {
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s ease;
+        }
+
+        .desktop-top-bar a.active-link {
+            background: #008069;
+            color: #ffffff;
+        }
+
+        .desktop-top-bar a.regular-link {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .desktop-top-bar a.live-link {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .desktop-top-bar a.logout-link {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            margin-left: auto;
+        }
+
+        .page-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-team {
+            background: #008069;
+            color: #ffffff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0, 128, 105, 0.25);
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-add-team:hover {
+            opacity: 0.9;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        thead th {
+            padding: 10px 12px;
+            border-bottom: 2px solid #fed7aa;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            background: #fff8f0;
+        }
+
+        tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #fffbf5;
+        }
+
+        .member-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #d8f5ef;
+            color: #008069;
+            display: inline-grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 14px;
+            margin-right: 8px;
+            vertical-align: middle;
+            flex-shrink: 0;
+            border: 1px solid #a7f3d0;
+        }
+
+        .role-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .role-Depositer {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .role-Withdrawer {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        .role-Support,
+        .role-SupportAdmin {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .role-Manager {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .role-SuperAdmin {
+            background: #fef08a;
+            color: #854d0e;
+        }
+
+        .status-pill {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-toggle-status {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-toggle-status:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-delete-member {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete-member:hover {
+            background: #fecaca;
+        }
+
+        .mobile-team-cards {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team-m-box {
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(210, 135, 45, 0.06);
+        }
+
+        .team-m-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #fed7aa;
+        }
+
+        .team-m-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-m-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0f172a;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .team-m-user {
+            font-size: 11px;
+            color: #64748b;
+            font-family: monospace;
+            display: block;
+        }
+
+        .team-m-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            place-items: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: grid;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 2px solid #ffd79d;
+        }
+
+        .modal-card h3 {
+            font-size: 17px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #fed7aa;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            background: #fff8f0;
+            color: #1e293b;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #008069;
+            background: #ffffff;
+        }
+
+        .empty-team-box {
+            display: none;
+            background: #fff;
+            border-radius: 18px;
+            padding: 35px 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            border: 2px dashed #fed7aa;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar-mock,
+            .desktop-top-bar {
+                display: none !important;
+            }
+
+            body {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-left: 0;
+                padding: 16px 12px 70px;
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 15px;
+            }
+
+            .desktop-table-view {
+                display: none;
+            }
+
+            .mobile-team-cards {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mock Sidebar -->
+    <aside class="admin-sidebar-mock">
+        <h2>Nexora Admin</h2>
+        <a href="admin-dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="admin-deposits.html"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+        <a href="admin-withdrawals.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+        <a href="admin-banks.html"><i class="fa-solid fa-wallet"></i> Currency Account</a>
+        <a href="admin-users.html"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="admin-team.html" class="active"><i class="fa-solid fa-user-shield"></i> Admin Members</a>
+        <a href="admin-settings.html"><i class="fa-solid fa-sliders"></i> Project Setting</a>
+        <a href="dashboard.html" target="_blank"><i class="fa-solid fa-globe"></i> Live User App</a>
+        <a href="javascript:void(0);" onclick="handleAdminLogout()" style="margin-top: auto; color: #fee2e2;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <main class="admin-main-content">
+        <!-- Desktop Top Navigation Bar -->
+        <div class="desktop-top-bar">
+            <a href="admin-dashboard.html" class="regular-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="admin-deposits.html" class="regular-link"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+            <a href="admin-withdrawals.html" class="regular-link"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+            <a href="admin-banks.html" class="regular-link"><i class="fa-solid fa-wallet"></i> Banks</a>
+            <a href="admin-users.html" class="regular-link"><i class="fa-solid fa-users"></i> Users</a>
+            <a href="admin-team.html" class="active-link"><i class="fa-solid fa-user-shield"></i> Team</a>
+            <a href="admin-settings.html" class="regular-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+            <a href="dashboard.html" target="_blank" class="live-link"><i class="fa-solid fa-globe"></i> Live Site</a>
+            <a href="javascript:void(0);" onclick="handleAdminLogout()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+
+        <div class="page-header-bar">
+            <h1 class="page-title"><i class="fa-solid fa-user-shield" style="color:#008069;"></i> Admin Members (Internal Team)</h1>
+            <button class="btn-add-team" onclick="openMemberModal()"><i class="fa-solid fa-user-plus"></i> Add Team Member</button>
+        </div>
+
+        <!-- Empty Notification -->
+        <div class="empty-team-box" id="emptyTeamNotice">
+            No admin team members found. Click <strong>Add Team Member</strong> to create one.
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="table-card desktop-table-view" id="desktopTableCard">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="teamTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="mobile-team-cards" id="mobileCardsContainer"></div>
+    </main>
+
+    <!-- Add Team Member Modal -->
+    <div class="modal-overlay" id="addMemberModal">
+        <div class="modal-card">
+            <h3><i class="fa-solid fa-user-shield" style="color:#008069;"></i> Add Team Member</h3>
+            <form id="addTeamMemberForm" onsubmit="handleAddMember(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="memberName" placeholder="e.g. Tariq Mahmood" required>
+                </div>
+                <div class="form-group">
+                    <label>Username / Login ID</label>
+                    <input type="text" id="memberUsername" placeholder="e.g. tariq_dep" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="memberPassword" placeholder="Set member password" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="memberRole" required>
+                        <option value="Depositer">Depositer (Verify Deposits)</option>
+                        <option value="Withdrawer">Withdrawer (Process Withdraws)</option>
+                        <option value="Support Admin">Support Admin</option>
+                        <option value="Manager">Manager</option>
+                    </select>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+                    <button type="button" onclick="closeMemberModal()"
+                        style="background:#f1f5f9; border:1px solid #e2e8f0; padding:10px 16px; border-radius:10px; font-weight:700; font-size:12px; cursor:pointer;">Cancel</button>
+                    <button type="submit"
+                        style="background:#008069; color:#fff; border:none; padding:10px 20px; border-radius:10px; font-weight:800; font-size:12px; cursor:pointer;">Create Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        const DEFAULT_TEAM = [
+            { id: 1, name: "Muhammad Noman", username: "noman", password: "password123", role: "Super Admin", isActive: true, createdAt: "2026-06-15" },
+            { id: 2, name: "Tariq Mahmood", username: "tariq_dep", password: "password123", role: "Depositer", isActive: true, createdAt: "2026-08-10" },
+            { id: 3, name: "Usman Abbas", username: "usman_wtd", password: "password123", role: "Withdrawer", isActive: true, createdAt: "2026-09-01" },
+            { id: 4, name: "Ali Raza", username: "ali_support", password: "password123", role: "Support Admin", isActive: true, createdAt: "2026-09-20" }
+        ];
+
+        let teamMembers = JSON.parse(localStorage.getItem('nexora_admin_team')) || DEFAULT_TEAM;
+
+        function getRoleBadgeClass(role) {
+            const clean = role.replace(/\s+/g, '');
+            return 'role-' + clean;
+        }
+
+        function renderTeam() {
+            const tbody = document.getElementById('teamTableBody');
+            const mobileContainer = document.getElementById('mobileCardsContainer');
+            const emptyNotice = document.getElementById('emptyTeamNotice');
+            const desktopCard = document.getElementById('desktopTableCard');
+
+            tbody.innerHTML = '';
+            mobileContainer.innerHTML = '';
+
+            if (teamMembers.length === 0) {
+                emptyNotice.style.display = 'block';
+                desktopCard.style.display = 'none';
+                return;
+            }
+
+            emptyNotice.style.display = 'none';
+            desktopCard.style.display = 'block';
+
+            teamMembers.forEach(m => {
+                const initial = (m.name || 'M').charAt(0).toUpperCase();
+                const roleClass = getRoleBadgeClass(m.role || 'Depositer');
+                const statusClass = m.isActive ? 'status-active' : 'status-inactive';
+                const statusText = m.isActive ? 'ACTIVE' : 'BLOCKED';
+                const toggleText = m.isActive ? 'Block' : 'Activate';
+                const joinDate = m.createdAt ? new Date(m.createdAt).toLocaleDateString() : 'Active Member';
+                const isSuperAdmin = (m.role || '').toLowerCase() === 'super admin';
+
+                // Desktop Table Row
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="member-avatar">${initial}</div>
+                        <strong>${m.name}</strong>
+                    </td>
+                    <td><code>@${m.username}</code></td>
+                    <td><span class="role-badge ${roleClass}">${m.role}</span></td>
+                    <td><span class="status-pill ${statusClass}">${statusText}</span></td>
+                    <td>${joinDate}</td>
+                    <td>
+                        ${!isSuperAdmin ? `
+                            <button type="button" class="btn-toggle-status" onclick="toggleMemberStatus(${m.id})">${toggleText}</button>
+                            <button type="button" class="btn-delete-member" onclick="deleteMember(${m.id}, '${m.name}')">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        ` : '<span style="font-size:10px; font-weight:700; color:#854d0e;">Protected</span>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // Mobile Card View
+                const card = document.createElement('div');
+                card.className = 'team-m-box';
+                card.innerHTML = `
+                    <div class="team-m-top">
+                        <div class="team-m-left">
+                            <div class="member-avatar">${initial}</div>
+                            <div>
+                                <span class="team-m-name">${m.name}</span>
+                                <span class="team-m-user">@${m.username}</span>
+                            </div>
+                        </div>
+                        <div><span class="role-badge ${roleClass}">${m.role}</span></div>
+                    </div>
+                    <div class="team-m-bottom">
+                        <div><span class="status-pill ${statusClass}">${statusText}</span></div>
+                        <div>
+                            ${!isSuperAdmin ? `
+                                <button type="button" class="btn-toggle-status" onclick="toggleMemberStatus(${m.id})">${toggleText}</button>
+                                <button type="button" class="btn-delete-member" onclick="deleteMember(${m.id}, '${m.name}')">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            ` : '<span style="font-size:10px; font-weight:700; color:#854d0e;">Protected</span>'}
+                        </div>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            });
+
+            localStorage.setItem('nexora_admin_team', JSON.stringify(teamMembers));
+        }
+
+        function toggleMemberStatus(id) {
+            teamMembers = teamMembers.map(m => m.id === id ? { ...m, isActive: !m.isActive } : m);
+            renderTeam();
+        }
+
+        function deleteMember(id, name) {
+            if (confirm(`Are you sure you want to remove team member ${name}?`)) {
+                teamMembers = teamMembers.filter(m => m.id !== id);
+                renderTeam();
+            }
+        }
+
+        function handleAddMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memberName').value.trim();
+            const username = document.getElementById('memberUsername').value.trim().toLowerCase();
+            const password = document.getElementById('memberPassword').value.trim();
+            const role = document.getElementById('memberRole').value;
+
+            if (!name || !username || !password) return;
+
+            // Check if username already exists
+            const existing = teamMembers.find(m => m.username.toLowerCase() === username);
+            if (existing) {
+                alert(`Username @${username} is already taken by another team member.`);
+                return;
+            }
+
+            teamMembers.push({
+                id: Date.now(),
+                name,
+                username,
+                password,
+                role,
+                isActive: true,
+                createdAt: new Date().toISOString()
+            });
+
+            closeMemberModal();
+            e.target.reset();
+            renderTeam();
+        }
+
+        function openMemberModal() {
+            document.getElementById('addMemberModal').classList.add('active');
+        }
+
+        function closeMemberModal() {
+            document.getElementById('addMemberModal').classList.remove('active');
+        }
+
+        function handleAdminLogout() {
+            if (confirm('Are you sure you want to logout of the admin panel?')) {
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderTeam);
+    </script>
+</body>
+
+</html>

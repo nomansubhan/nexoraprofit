@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Global Confirm Modal Component</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #e2e8f0;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 16px;
+        }
+
+        .demo-panel {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .demo-panel h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .demo-panel p {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .demo-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-test {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-test:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger-test {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-info-test {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        /* --- Global Confirm Modal Styles --- */
+        .global-confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            place-items: center;
+            padding: 16px;
+        }
+
+        .global-confirm-overlay.active {
+            display: grid;
+        }
+
+        .global-confirm-box {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+            text-align: center;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .global-confirm-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+
+        .global-confirm-box h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .global-confirm-box p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+
+        .global-confirm-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-global-cancel {
+            flex: 1;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 11px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-global-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-global-confirm {
+            flex: 1;
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            padding: 11px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        }
+
+        .btn-global-confirm:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Demo Controls (Testing only) -->
+    <div class="demo-panel">
+        <h2>Confirm Modal Demo</h2>
+        <p>Click the buttons below to test both confirmation and alert dialogs.</p>
+        <div class="demo-btn-group">
+            <form onsubmit="handleFormDemo(event)" 
+                  data-confirm="Are you sure you want to permanently delete this record?" 
+                  data-confirm-title="Delete Confirmation" 
+                  data-confirm-btn="Yes, Delete">
+                <button type="submit" class="btn-test btn-danger-test" style="width: 100%;">
+                    Test Delete Form Confirmation
+                </button>
+            </form>
+            <button type="button" class="btn-test btn-info-test" 
+                    onclick="showGlobalAlert('Access Restricted', 'You do not have permission to view this section.')">
+                Test Alert Popup
+            </button>
+        </div>
+    </div>
+
+    <!-- Global Confirm Modal Overlay -->
+    <div class="global-confirm-overlay" id="globalConfirmOverlay">
+        <div class="global-confirm-box">
+            <div class="global-confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3 id="globalConfirmTitle">Are you sure?</h3>
+            <p id="globalConfirmMessage">Do you really want to proceed with this action? This cannot be undone.</p>
+            <div class="global-confirm-actions" id="globalConfirmActions">
+                <button type="button" class="btn-global-cancel" id="globalCancelBtn"
+                    onclick="cancelGlobalConfirm()">Cancel</button>
+                <button type="button" class="btn-global-confirm" id="globalConfirmOkBtn"
+                    onclick="executeGlobalConfirm()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendingConfirmCallback = null;
+        let isAlertMode = false;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Form interceptor with data-confirm support
+            document.body.addEventListener('submit', function (e) {
+                const form = e.target;
+                if (form && form.hasAttribute('data-confirm')) {
+                    e.preventDefault();
+                    isAlertMode = false;
+
+                    const title = form.getAttribute('data-confirm-title') || 'Confirm Action';
+                    const message = form.getAttribute('data-confirm') || 'Are you sure?';
+                    const btnText = form.getAttribute('data-confirm-btn') || 'Proceed';
+
+                    document.getElementById('globalConfirmTitle').textContent = title;
+                    document.getElementById('globalConfirmMessage').textContent = message;
+                    document.getElementById('globalConfirmOkBtn').textContent = btnText;
+                    document.getElementById('globalCancelBtn').style.display = 'block';
+
+                    pendingConfirmCallback = () => {
+                        form.removeAttribute('data-confirm');
+                        if (typeof form.onsubmit === 'function') {
+                            form.onsubmit(new Event('submit'));
+                        } else {
+                            form.submit();
+                        }
+                    };
+
+                    document.getElementById('globalConfirmOverlay').classList.add('active');
+                }
+            }, true);
+        });
+
+        // Trigger an alert notification (No cancel button)
+        function showGlobalAlert(title, message) {
+            isAlertMode = true;
+            pendingConfirmCallback = null;
+            document.getElementById('globalConfirmTitle').textContent = title;
+            document.getElementById('globalConfirmMessage').textContent = message;
+            document.getElementById('globalConfirmOkBtn').textContent = 'OK';
+            document.getElementById('globalCancelBtn').style.display = 'none';
+            document.getElementById('globalConfirmOverlay').classList.add('active');
+        }
+
+        // Functional confirm via direct JS call
+        function askConfirmation(title, message, btnText, onConfirm) {
+            isAlertMode = false;
+            pendingConfirmCallback = onConfirm;
+            document.getElementById('globalConfirmTitle').textContent = title;
+            document.getElementById('globalConfirmMessage').textContent = message;
+            document.getElementById('globalConfirmOkBtn').textContent = btnText || 'Confirm';
+            document.getElementById('globalCancelBtn').style.display = 'block';
+            document.getElementById('globalConfirmOverlay').classList.add('active');
+        }
+
+        function executeGlobalConfirm() {
+            document.getElementById('globalConfirmOverlay').classList.remove('active');
+            if (isAlertMode) {
+                isAlertMode = false;
+                return;
+            }
+            if (typeof pendingConfirmCallback === 'function') {
+                const action = pendingConfirmCallback;
+                pendingConfirmCallback = null;
+                action();
+            }
+        }
+
+        function cancelGlobalConfirm() {
+            document.getElementById('globalConfirmOverlay').classList.remove('active');
+            pendingConfirmCallback = null;
+            isAlertMode = false;
+        }
+
+        // Demo submission handler
+        function handleFormDemo(e) {
+            alert('Action confirmed and executed successfully!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Select Payment Method - Nexora Capital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 40px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            font-size: 16px;
+            color: #8ff1ff;
+            text-decoration: none;
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .bank-card-item {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 20px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: #f8fafc;
+            margin-bottom: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .bank-card-item:active {
+            transform: scale(0.98);
+        }
+
+        .bank-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .bank-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 1px solid rgba(187, 220, 255, .3);
+            padding: 4px;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            color: #008069;
+        }
+
+        .bank-info strong {
+            font-size: 15px;
+            font-weight: 800;
+            display: block;
+            color: #f8fafc;
+        }
+
+        .bank-info small {
+            font-size: 11px;
+            color: #b7c4d9;
+            font-weight: 600;
+        }
+
+        .chevron {
+            color: #14b8a6;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .empty-bank-box {
+            display: none;
+            background: linear-gradient(145deg, rgba(23, 34, 59, .7), rgba(10, 17, 36, .85));
+            border: 2px dashed rgba(185, 218, 255, .3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-frame">
+        <div class="screen-header">
+            <a href="invest.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="header-title">Select Gateway</h2>
+        </div>
+
+        <p style="font-size:12px; color:#b7c4d9; margin-bottom:18px; font-weight: 600;">
+            Package <span id="displayPkgId">1</span> — <strong
+                style="color: #ff5c77; text-shadow: 0 0 10px rgba(255, 92, 119, 0.4);" id="displayPkgPrice">Rs.
+                1,500</strong> deposit karne ke liye payment method select karein:
+        </p>
+
+        <!-- Empty State Container -->
+        <div class="empty-bank-box" id="emptyBankNotice">
+            Filhal koi payment method active nahi hai. Barah-e-karam baad mein koshish karein.
+        </div>
+
+        <!-- Dynamic Payment Method List -->
+        <div id="banksListContainer"></div>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        let currentPkg = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Read selected package from URL or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const pkgParam = urlParams.get('pkg');
+
+            const storedPkg = JSON.parse(localStorage.getItem('selected_investment_package'));
+            const defaultPackages = [
+                { id: 1, name: "Bronze Starter", price: 1500 },
+                { id: 2, name: "Silver Growth", price: 3500 },
+                { id: 3, name: "Gold Executive", price: 7000 },
+                { id: 4, name: "Platinum Elite", price: 15000 }
+            ];
+
+            const allPackages = JSON.parse(localStorage.getItem('nexora_investment_packages')) || defaultPackages;
+
+            if (pkgParam) {
+                currentPkg = allPackages.find(p => String(p.id) === String(pkgParam)) || storedPkg || allPackages[0];
+            } else {
+                currentPkg = storedPkg || allPackages[0];
+            }
+
+            // Update UI with package details
+            if (currentPkg) {
+                document.getElementById('displayPkgId').innerText = currentPkg.id;
+                document.getElementById('displayPkgPrice').innerText = `Rs. ${Number(currentPkg.price).toLocaleString()}`;
+                localStorage.setItem('selected_investment_package', JSON.stringify(currentPkg));
+            }
+
+            renderBankGateways();
+        });
+
+        function renderBankGateways() {
+            // Fetch banks from localStorage (configured by admin) or fallback default
+            const defaultBanks = [
+                { id: 1, bankName: "EasyPaisa", accountTitle: "Noman Subhan", accountNumber: "03001234567", isActive: true },
+                { id: 2, bankName: "JazzCash", accountTitle: "Noman Subhan", accountNumber: "03219876543", isActive: true },
+                { id: 3, bankName: "Nayapay", accountTitle: "Muhammad Noman", accountNumber: "03001122334", isActive: true },
+                { id: 4, bankName: "Meezan Bank", accountTitle: "Muhammad Noman", accountNumber: "01020304050607", isActive: true }
+            ];
+
+            const storedBanks = JSON.parse(localStorage.getItem('admin_banks_data')) || defaultBanks;
+            const activeBanks = storedBanks.filter(b => b.isActive);
+
+            const container = document.getElementById('banksListContainer');
+            const emptyNotice = document.getElementById('emptyBankNotice');
+
+            container.innerHTML = '';
+
+            if (activeBanks.length === 0) {
+                emptyNotice.style.display = 'block';
+                return;
+            }
+
+            emptyNotice.style.display = 'none';
+
+            activeBanks.forEach(b => {
+                const card = document.createElement('a');
+                card.className = 'bank-card-item';
+                card.href = `payment-details.html?pkg=${currentPkg ? currentPkg.id : 1}&bank=${b.id}`;
+                card.onclick = () => selectBank(b);
+
+                card.innerHTML = `
+                    <div class="bank-left">
+                        <div class="bank-logo">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div class="bank-info">
+                            <strong>${b.bankName}</strong>
+                            <small>${b.accountTitle}</small>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function selectBank(bank) {
+            localStorage.setItem('selected_payment_bank', JSON.stringify(bank));
+        }
+    </script>
+</body>
+
+</html>

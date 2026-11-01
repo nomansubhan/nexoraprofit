@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Withdrawals Management - Nexora Capital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Mock Sidebar */
+        .admin-sidebar-mock {
+            width: 250px;
+            background: #008069;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 24px 16px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .admin-sidebar-mock h2 {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-left: 8px;
+        }
+
+        .admin-sidebar-mock a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .admin-sidebar-mock a:hover,
+        .admin-sidebar-mock a.active {
+            background: #ffffff;
+            color: #008069;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px 60px;
+            min-height: 100vh;
+            width: calc(100% - 250px);
+            background: #fdf6ec;
+        }
+
+        /* Desktop Top Header Bar */
+        .desktop-top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #ffffff;
+            padding: 14px 18px;
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            border: 1.5px solid #ffd79d;
+            margin-bottom: 22px;
+        }
+
+        .desktop-top-bar a {
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s ease;
+        }
+
+        .desktop-top-bar a.active-link {
+            background: #008069;
+            color: #ffffff;
+        }
+
+        .desktop-top-bar a.regular-link {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .desktop-top-bar a.live-link {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .desktop-top-bar a.logout-link {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            margin-left: auto;
+        }
+
+        .withdraw-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 10px 0 20px;
+        }
+
+        .heading-left {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .heading-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3e8ff;
+            color: #7e22ce;
+            font-size: 20px;
+        }
+
+        .withdraw-heading h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .withdraw-heading p {
+            font-size: 12px;
+            color: #8993a5;
+            margin-top: 2px;
+        }
+
+        .request-count {
+            background: #f3e8ff;
+            color: #7e22ce;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            border: 1px solid #e9d5ff;
+        }
+
+        /* Filter Controls */
+        .filter-controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tabs-btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-pill.active {
+            background: #7e22ce;
+            color: #ffffff;
+            border-color: #7e22ce;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            min-width: 240px;
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            border-radius: 20px;
+            padding: 8px 14px 8px 34px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e293b;
+            outline: none;
+        }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+        }
+
+        .table-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px dashed #fed7aa;
+        }
+
+        .table-card-head h2 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #172033;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .live-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .item-row {
+            background: #fff;
+            border: 1px solid #e9edf4;
+            border-radius: 17px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: .25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-row::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 4px;
+            background: #7e22ce;
+        }
+
+        .item-row:hover {
+            border-color: #ffd79d;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, .06);
+            transform: translateY(-2px);
+        }
+
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-heading {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 9px;
+        }
+
+        .user-heading h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .method-label {
+            background: #f3e8ff;
+            color: #7e22ce;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .amount-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .amount-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3e8ff;
+            color: #7e22ce;
+            font-size: 16px;
+        }
+
+        .amount-info small {
+            display: block;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .item-amount {
+            font-size: 20px;
+            font-weight: 900;
+            color: #7e22ce;
+            line-height: 1.2;
+        }
+
+        .row-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .bank-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #edf0f5;
+            padding: 6px 10px;
+            border-radius: 10px;
+            min-height: 36px;
+        }
+
+        .bank-logo-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            color: #008069;
+        }
+
+        .detail-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #94a3b8;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .account-box-group {
+            display: inline-flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #edf0f5;
+            border-radius: 10px;
+            padding: 3px 4px 3px 10px;
+            min-height: 36px;
+        }
+
+        .account-number {
+            font-family: monospace;
+            font-size: 12px;
+            letter-spacing: .3px;
+            font-weight: 700;
+        }
+
+        .btn-copy-acc {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            color: #0284c7;
+            padding: 5px 9px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: .2s;
+            margin-left: 8px;
+        }
+
+        .btn-copy-acc:hover {
+            background: #bae6fd;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff7e6;
+            color: #d97706;
+        }
+
+        .status-paid,
+        .status-approved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .actions-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: .2s;
+        }
+
+        .btn-approve {
+            background: #7e22ce;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(126, 34, 206, .15);
+        }
+
+        .btn-approve:hover {
+            background: #6b21a8;
+            transform: translateY(-2px);
+        }
+
+        .btn-reject {
+            background: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
+
+        .btn-reject:hover {
+            background: #ffe4e6;
+            transform: translateY(-2px);
+        }
+
+        .processed-label {
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 15px;
+            display: none;
+        }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: #f3e8ff;
+            color: #7e22ce;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .empty-state p {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: #172033;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: .25s ease;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .2);
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+
+        @media (max-width: 1000px) {
+            .item-row {
+                align-items: flex-start;
+            }
+
+            .actions-cell {
+                flex-direction: column;
+            }
+
+            .actions-cell .btn-action {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .admin-sidebar-mock,
+            .desktop-top-bar {
+                display: none !important;
+            }
+
+            body {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-left: 0;
+                padding: 16px 12px 70px;
+                width: 100%;
+            }
+
+            .item-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+                padding: 16px 14px;
+            }
+
+            .actions-cell {
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .btn-action {
+                width: 100%;
+                padding: 10px 8px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mock Sidebar -->
+    <aside class="admin-sidebar-mock">
+        <h2>Nexora Admin</h2>
+        <a href="admin-dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="admin-deposits.html"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+        <a href="admin-withdrawals.html" class="active"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+        <a href="admin-banks.html"><i class="fa-solid fa-wallet"></i> Currency Account</a>
+        <a href="admin-users.html"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="admin-team.html"><i class="fa-solid fa-user-shield"></i> Admin Members</a>
+        <a href="admin-settings.html"><i class="fa-solid fa-sliders"></i> Project Setting</a>
+        <a href="dashboard.html" target="_blank"><i class="fa-solid fa-globe"></i> Live User App</a>
+        <a href="javascript:void(0);" onclick="handleAdminLogout()" style="margin-top: auto; color: #fee2e2;"><i
+                class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <main class="admin-main-content">
+        <!-- Desktop Top Navigation Bar -->
+        <div class="desktop-top-bar">
+            <a href="admin-dashboard.html" class="regular-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="admin-deposits.html" class="regular-link"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+            <a href="admin-withdrawals.html" class="active-link"><i class="fa-solid fa-money-bill-transfer"></i>
+                Withdrawals</a>
+            <a href="admin-banks.html" class="regular-link"><i class="fa-solid fa-wallet"></i> Banks</a>
+            <a href="admin-users.html" class="regular-link"><i class="fa-solid fa-users"></i> Users</a>
+            <a href="admin-team.html" class="regular-link"><i class="fa-solid fa-user-shield"></i> Team</a>
+            <a href="admin-settings.html" class="regular-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+            <a href="dashboard.html" target="_blank" class="live-link"><i class="fa-solid fa-globe"></i> Live Site</a>
+            <a href="javascript:void(0);" onclick="handleAdminLogout()" class="logout-link"><i
+                    class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+
+        <div class="withdraw-heading">
+            <div class="heading-left">
+                <div class="heading-icon">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+                <div>
+                    <h1>Withdrawals Management</h1>
+                    <p>Review, pay, and refund user cashout requests.</p>
+                </div>
+            </div>
+            <div class="request-count" id="withdrawalsCountBadge">
+                <i class="fa-solid fa-wallet"></i> 0 Requests
+            </div>
+        </div>
+
+        <!-- Filter and Search Controls -->
+        <div class="filter-controls-row">
+            <div class="tabs-btn-group">
+                <button type="button" class="filter-pill active" onclick="setWithdrawalFilter('all', this)">All</button>
+                <button type="button" class="filter-pill"
+                    onclick="setWithdrawalFilter('Pending', this)">Pending</button>
+                <button type="button" class="filter-pill" onclick="setWithdrawalFilter('Paid', this)">Paid</button>
+                <button type="button" class="filter-pill"
+                    onclick="setWithdrawalFilter('Rejected', this)">Rejected</button>
+            </div>
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="withdrawalSearchInput" oninput="handleSearch()"
+                    placeholder="Search user or account...">
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-card-head">
+                <h2>
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    Withdrawal Requests
+                </h2>
+                <span class="live-label">
+                    <i class="fa-solid fa-circle"></i> MANAGEMENT
+                </span>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyWithdrawalsState">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <h3>No Withdrawal Requests Found</h3>
+                <p>No withdrawal requests match your active filters.</p>
+            </div>
+
+            <!-- Rendered Rows Container -->
+            <div id="withdrawalsRowsContainer"></div>
+        </div>
+    </main>
+
+    <!-- Copy Toast -->
+    <div class="copy-toast" id="copyToast">
+        <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+        <span>Account number copied successfully!</span>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        const defaultWithdrawals = [
+            { id: 1, username: "noman", amount: 8000, method: "Sadapay", accountTitle: "Muhammad Noman", accountNumber: "03001234567", status: "Pending", date: "2026-10-31T12:00:00.000Z" },
+            { id: 2, username: "sabi_writer", amount: 10000, method: "Meezan Bank", accountTitle: "Muhammad Noman", accountNumber: "01020304050607", status: "Pending", date: "2026-10-30T10:15:00.000Z" },
+            { id: 3, username: "usman_khan", amount: 4500, method: "EasyPaisa", accountTitle: "Muhammad Usman", accountNumber: "03129876543", status: "Paid", date: "2026-10-24T15:30:00.000Z" },
+            { id: 4, username: "ahmad_ali", amount: 3000, method: "JazzCash", accountTitle: "Ahmad Ali", accountNumber: "03217654321", status: "Rejected", date: "2026-10-15T09:20:00.000Z" }
+        ];
+
+        function getWithdrawals() {
+            let data = JSON.parse(localStorage.getItem('nexora_admin_withdrawals'));
+            if (!data || data.length === 0) {
+                data = defaultWithdrawals;
+                localStorage.setItem('nexora_admin_withdrawals', JSON.stringify(data));
+            }
+            return data;
+        }
+
+        let toastTimer;
+        function showCopyToast() {
+            const toast = document.getElementById('copyToast');
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        async function copyAccountNumber(button, accountNumber) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(accountNumber);
+                } else {
+                    const input = document.createElement('textarea');
+                    input.value = accountNumber;
+                    input.style.position = 'fixed';
+                    input.style.opacity = '0';
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    input.remove();
+                }
+
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+                showCopyToast();
+
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                }, 1800);
+            } catch (error) {
+                showCopyToast();
+            }
+        }
+
+        function renderWithdrawals() {
+            const allWithdrawals = getWithdrawals();
+            const container = document.getElementById('withdrawalsRowsContainer');
+            const emptyState = document.getElementById('emptyWithdrawalsState');
+            const countBadge = document.getElementById('withdrawalsCountBadge');
+
+            container.innerHTML = '';
+
+            const filtered = allWithdrawals.filter(w => {
+                const s = (w.status || 'Pending').toLowerCase();
+                let matchesFilter = currentFilter === 'all';
+                if (currentFilter === 'Pending') matchesFilter = s === 'pending';
+                if (currentFilter === 'Paid') matchesFilter = s === 'paid' || s === 'approved';
+                if (currentFilter === 'Rejected') matchesFilter = s === 'rejected';
+
+                const q = searchQuery.toLowerCase();
+                const matchesSearch = !q ||
+                    (w.username || '').toLowerCase().includes(q) ||
+                    (w.accountTitle || '').toLowerCase().includes(q) ||
+                    (w.accountNumber || '').toLowerCase().includes(q) ||
+                    (w.method || '').toLowerCase().includes(q);
+
+                return matchesFilter && matchesSearch;
+            });
+
+            countBadge.innerHTML = `<i class="fa-solid fa-wallet"></i> ${filtered.length} Requests`;
+
+            if (filtered.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            filtered.forEach(w => {
+                const row = document.createElement('div');
+                row.className = 'item-row';
+
+                const statusLower = String(w.status || 'Pending').toLowerCase();
+                let statusBadgeClass = 'status-pending';
+                if (statusLower === 'paid' || statusLower === 'approved') statusBadgeClass = 'status-paid';
+                else if (statusLower === 'rejected') statusBadgeClass = 'status-rejected';
+
+                let actionHtml = '';
+                if (statusLower === 'pending') {
+                    actionHtml = `
+                        <button type="button" class="btn-action btn-approve" onclick="updateWithdrawStatus(${w.id}, 'Paid')">
+                            <i class="fa-solid fa-check-circle"></i> Mark Paid
+                        </button>
+                        <button type="button" class="btn-action btn-reject" onclick="updateWithdrawStatus(${w.id}, 'Rejected')">
+                            <i class="fa-solid fa-rotate-left"></i> Refund
+                        </button>
+                    `;
+                } else {
+                    actionHtml = `
+                        <span class="processed-label">
+                            <i class="fa-solid fa-check-double"></i> Processed (${w.status})
+                        </span>
+                    `;
+                }
+
+                row.innerHTML = `
+                    <div class="item-details">
+                        <div class="user-heading">
+                            <h4>
+                                <i class="fa-solid fa-user-circle"></i>
+                                ${w.username}
+                            </h4>
+                            <span class="method-label">
+                                <i class="fa-solid fa-building-columns"></i>
+                                ${w.method}
+                            </span>
+                        </div>
+
+                        <div class="amount-section">
+                            <div class="amount-icon">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                            </div>
+                            <div class="amount-info">
+                                <small>Withdrawal Amount</small>
+                                <div class="item-amount">
+                                    Rs. ${Number(w.amount || 0).toLocaleString('en-PK')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-line">
+                            <div class="bank-info">
+                                <div class="bank-logo-icon">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </div>
+                                <div>
+                                    <span class="detail-label">Account Title</span>
+                                    <span class="detail-value">${w.accountTitle}</span>
+                                </div>
+                            </div>
+
+                            <div class="account-box-group">
+                                <i class="fa-solid fa-credit-card" style="color:#7e22ce;font-size:14px;margin-right:6px;"></i>
+                                <div>
+                                    <span class="detail-label">Account Number</span>
+                                    <span class="detail-value account-number">${w.accountNumber}</span>
+                                </div>
+                                <button type="button" class="btn-copy-acc" onclick="copyAccountNumber(this, '${w.accountNumber}')">
+                                    <i class="fa-regular fa-copy"></i> Copy
+                                </button>
+                            </div>
+
+                            <span class="badge ${statusBadgeClass}">
+                                <i class="fa-solid fa-circle"></i>
+                                ${w.status}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="actions-cell">
+                        ${actionHtml}
+                    </div>
+                `;
+
+                container.appendChild(row);
+            });
+        }
+
+        function updateWithdrawStatus(id, newStatus) {
+            let allWithdrawals = getWithdrawals();
+            const targetWithdrawal = allWithdrawals.find(w => w.id === id);
+
+            if (!targetWithdrawal) return;
+
+            const confirmMsg = newStatus === 'Paid'
+                ? `Confirm payment of Rs. ${Number(targetWithdrawal.amount).toLocaleString()} to ${targetWithdrawal.username}?`
+                : `Reject and refund Rs. ${Number(targetWithdrawal.amount).toLocaleString()} back to ${targetWithdrawal.username}'s account?`;
+
+            if (confirm(confirmMsg)) {
+                targetWithdrawal.status = newStatus;
+                localStorage.setItem('nexora_admin_withdrawals', JSON.stringify(allWithdrawals));
+
+                // If rejected, refund balance back to user
+                if (newStatus === 'Rejected') {
+                    let users = JSON.parse(localStorage.getItem('nexora_registered_users')) || [];
+                    users = users.map(u => {
+                        if (u.username.toLowerCase() === targetWithdrawal.username.toLowerCase()) {
+                            return { ...u, balance: Number(u.balance || 0) + Number(targetWithdrawal.amount) };
+                        }
+                        return u;
+                    });
+                    localStorage.setItem('nexora_registered_users', JSON.stringify(users));
+
+                    // If active user session matches, refund session balance too
+                    let userSession = JSON.parse(localStorage.getItem('user_session'));
+                    if (userSession && userSession.username.toLowerCase() === targetWithdrawal.username.toLowerCase()) {
+                        userSession.balance = Number(userSession.balance || 0) + Number(targetWithdrawal.amount);
+                        localStorage.setItem('user_session', JSON.stringify(userSession));
+                    }
+                }
+
+                renderWithdrawals();
+            }
+        }
+
+        function setWithdrawalFilter(filterType, element) {
+            currentFilter = filterType;
+            document.querySelectorAll('.filter-pill').forEach(pill => pill.classList.remove('active'));
+            element.classList.add('active');
+            renderWithdrawals();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('withdrawalSearchInput').value.trim();
+            renderWithdrawals();
+        }
+
+        function handleAdminLogout() {
+            if (confirm('Are you sure you want to logout of the admin panel?')) {
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderWithdrawals);
+    </script>
+</body>
+
+</html>

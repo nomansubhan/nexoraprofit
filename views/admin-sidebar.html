@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Nexora Admin - Sidebar Component</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #fdf6ec;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #008069;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 14px;
+            z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            font-size: 17px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-bottom: 18px;
+            padding-left: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            padding: 4px 8px;
+        }
+
+        .admin-profile-box {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 10px 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .admin-profile-box .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #008069;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .admin-profile-box .name {
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.2;
+            word-break: break-all;
+        }
+
+        .admin-profile-box .role {
+            font-size: 10px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: #ffffff;
+            color: #008069;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-logout-sidebar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 800;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+
+        .btn-logout-sidebar:hover {
+            background: #dc2626;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #b91c1c;
+            color: #ffffff;
+            padding: 9px;
+            border-radius: 10px;
+            border: none;
+            font-size: 11px;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset-panel:hover {
+            background: #991b1b;
+        }
+
+        /* Mobile App-like Top Header Bar */
+        .mobile-app-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 58px;
+            background: #008069;
+            color: #ffffff;
+            z-index: 1100;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .mobile-app-title {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .mobile-menu-toggle {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        /* Overlay for Mobile Sidebar Drawer */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Custom Alert Modal */
+        .global-confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            place-items: center;
+            padding: 16px;
+        }
+
+        .global-confirm-overlay.active {
+            display: grid;
+        }
+
+        .global-confirm-box {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            padding: 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+            text-align: center;
+            border: 2px solid #ffd79d;
+        }
+
+        .global-confirm-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+
+        .global-confirm-box h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .global-confirm-box p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+
+        .btn-global-confirm {
+            width: 100%;
+            background: #008069;
+            color: #ffffff;
+            border: none;
+            padding: 11px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 128, 105, 0.25);
+            transition: background 0.2s;
+        }
+
+        .btn-global-confirm:hover {
+            background: #006652;
+        }
+
+        /* 3-Second Logout Spinner Overlay Modal */
+        #logoutOverlayModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 37, 78, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #logoutOverlayModal.active {
+            display: flex;
+        }
+
+        .logout-loader-card {
+            background: rgba(7, 24, 56, 0.98);
+            border: 1.5px solid rgba(251, 191, 36, 0.5);
+            border-radius: 26px;
+            padding: 40px 50px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+            max-width: 380px;
+            width: 90%;
+        }
+
+        .spinner-container {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 22px;
+        }
+
+        .spinner-blade {
+            position: absolute;
+            left: 29px;
+            top: 2px;
+            width: 6px;
+            height: 16px;
+            border-radius: 3px;
+            background: #94a3b8;
+            transform-origin: 3px 30px;
+            animation: spinner-fade 1s linear infinite;
+        }
+
+        .spinner-blade:nth-child(1) {
+            transform: rotate(0deg);
+            animation-delay: -0.9167s;
+            background: #ffffff;
+        }
+
+        .spinner-blade:nth-child(2) {
+            transform: rotate(30deg);
+            animation-delay: -0.8333s;
+            background: #fde047;
+        }
+
+        .spinner-blade:nth-child(3) {
+            transform: rotate(60deg);
+            animation-delay: -0.75s;
+            background: #cbd5e1;
+        }
+
+        .spinner-blade:nth-child(4) {
+            transform: rotate(90deg);
+            animation-delay: -0.6667s;
+            background: #94a3b8;
+        }
+
+        .spinner-blade:nth-child(5) {
+            transform: rotate(120deg);
+            animation-delay: -0.5833s;
+            background: #64748b;
+        }
+
+        .spinner-blade:nth-child(6) {
+            transform: rotate(150deg);
+            animation-delay: -0.5s;
+            background: #475569;
+        }
+
+        .spinner-blade:nth-child(7) {
+            transform: rotate(180deg);
+            animation-delay: -0.4167s;
+            background: #334155;
+        }
+
+        .spinner-blade:nth-child(8) {
+            transform: rotate(210deg);
+            animation-delay: -0.3333s;
+            background: #1e293b;
+        }
+
+        .spinner-blade:nth-child(9) {
+            transform: rotate(240deg);
+            animation-delay: -0.25s;
+            background: #475569;
+        }
+
+        .spinner-blade:nth-child(10) {
+            transform: rotate(270deg);
+            animation-delay: -0.1667s;
+            background: #64748b;
+        }
+
+        .spinner-blade:nth-child(11) {
+            transform: rotate(300deg);
+            animation-delay: -0.0833s;
+            background: #94a3b8;
+        }
+
+        .spinner-blade:nth-child(12) {
+            transform: rotate(330deg);
+            animation-delay: 0s;
+            background: #cbd5e1;
+        }
+
+        @keyframes spinner-fade {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.15;
+            }
+        }
+
+        .logout-loader-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .logout-loader-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* Responsive Mobile Drawer */
+        @media(max-width: 768px) {
+            .mobile-app-header {
+                display: flex !important;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px !important;
+                height: 100vh !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                right: auto !important;
+                z-index: 1200 !important;
+                padding: 20px 14px !important;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .mobile-close-btn {
+                display: block !important;
+            }
+
+            .sidebar-menu {
+                flex-direction: column !important;
+                overflow-y: auto !important;
+                white-space: normal !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Header Bar -->
+    <div class="mobile-app-header">
+        <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="mobile-app-title" id="mobileBrandTitle">NEXORA ADMIN</div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <a href="dashboard.html" target="_blank" title="View Live User App"
+                style="color: #ffffff; font-size: 18px; text-decoration: none; display: grid; place-items: center;">
+                <i class="fa-solid fa-globe"></i>
+            </a>
+            <a href="admin-login.html" onclick="return triggerCustomLogout(event, 'admin-login.html')" title="Logout"
+                style="color: #fee2e2; font-size: 18px; text-decoration: none; display: grid; place-items: center;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+
+    <!-- Main Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+        <div>
+            <div class="sidebar-brand">
+                <span id="desktopBrandTitle">NEXORA ADMIN</span>
+                <button class="mobile-close-btn" onclick="toggleMobileSidebar()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <div class="admin-profile-box">
+                <div class="avatar" id="adminAvatarInitial">A</div>
+                <div>
+                    <div class="name" id="adminProfileName">Admin User</div>
+                    <div class="role" id="adminProfileRole">Super Admin</div>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="admin-dashboard.html" onclick="return checkAccess('Dashboard')">
+                        <i class="fa-solid fa-chart-pie"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="admin-deposits.html" onclick="return checkAccess('Depositer')">
+                        <i class="fa-solid fa-building-columns"></i> Deposits
+                    </a>
+                </li>
+                <li>
+                    <a href="admin-withdrawals.html" onclick="return checkAccess('Withdrawer')">
+                        <i class="fa-solid fa-money-bill-transfer"></i> Withdrawals
+                    </a>
+                </li>
+                <li>
+                    <a href="admin-users.html" onclick="return checkAccess('Manager')">
+                        <i class="fa-solid fa-users"></i> Users
+                    </a>
+                </li>
+                <li>
+                    <a href="admin-banks.html" onclick="return checkAccess('Super Admin')">
+                        <i class="fa-solid fa-wallet"></i> Currency Account
+                    </a>
+                </li>
+                <li>
+                    <a href="admin-team.html" onclick="return checkAccess('Super Admin')">
+                        <i class="fa-solid fa-user-shield"></i> Admin Members
+                    </a>
+                </li>
+                <li>
+                    <a href="admin-settings.html" onclick="return checkAccess('Super Admin')">
+                        <i class="fa-solid fa-sliders"></i> Project Setting
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <button type="button" class="btn-reset-panel" id="resetPanelBtn" onclick="handleResetPanel()">
+                <i class="fa-solid fa-rotate-right"></i> Reset Panel
+            </button>
+            <a href="admin-login.html" class="btn-logout-sidebar"
+                onclick="return triggerCustomLogout(event, 'admin-login.html')">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Custom Access Alert Modal -->
+    <div class="global-confirm-overlay" id="sidebarAlertOverlay">
+        <div class="global-confirm-box">
+            <div class="global-confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3 id="sidebarAlertTitle">Access Denied</h3>
+            <p id="sidebarAlertMessage">Yeh action aapke role ke liye unauthorized hai.</p>
+            <button type="button" class="btn-global-confirm" onclick="closeSidebarAlert()">OK</button>
+        </div>
+    </div>
+
+    <!-- 3-Second Logout Spinner Overlay Modal -->
+    <div id="logoutOverlayModal">
+        <div class="logout-loader-card">
+            <div class="spinner-container">
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+            </div>
+            <div class="logout-loader-title">Logging Out...</div>
+            <div class="logout-loader-sub">Please wait 3 seconds.</div>
+        </div>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        const adminSession = JSON.parse(localStorage.getItem('admin_session')) || {
+            username: "Noman Subhan",
+            role: "Super Admin"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Synchronize brand project title from settings
+            const settings = JSON.parse(localStorage.getItem('nexora_project_settings'));
+            if (settings && settings.projectName) {
+                const brand = `${settings.projectName.toUpperCase()} ADMIN`;
+                document.getElementById('desktopBrandTitle').innerText = brand;
+                document.getElementById('mobileBrandTitle').innerText = brand;
+            }
+
+            // Populate administrator profile info
+            const name = adminSession.username || 'Admin';
+            const role = adminSession.role || 'Staff';
+
+            document.getElementById('adminProfileName').innerText = name;
+            document.getElementById('adminProfileRole').innerText = role;
+            document.getElementById('adminAvatarInitial').innerText = name.charAt(0).toUpperCase();
+
+            // Hide Reset button if not Super Admin
+            const resetBtn = document.getElementById('resetPanelBtn');
+            if (role !== 'Super Admin' && resetBtn) {
+                resetBtn.style.display = 'none';
+            }
+
+            // Auto-detect and highlight active page
+            const currentPage = window.location.pathname.split('/').pop() || 'admin-dashboard.html';
+            const links = document.querySelectorAll('.sidebar-menu li a');
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('appSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+        }
+
+        function checkAccess(requiredRole) {
+            const currentRole = adminSession.role;
+            if (currentRole === 'Super Admin') return true;
+            if (currentRole === requiredRole) return true;
+
+            // Allow Manager access to view dashboard metrics
+            if (currentRole === 'Manager' && requiredRole === 'Dashboard') return true;
+
+            document.getElementById('sidebarAlertTitle').textContent = "Access Denied";
+            document.getElementById('sidebarAlertMessage').textContent = `Aapka current role (${currentRole}) is section ko access karne ki ijazat nahi deta.`;
+            document.getElementById('sidebarAlertOverlay').classList.add('active');
+            return false;
+        }
+
+        function closeSidebarAlert() {
+            document.getElementById('sidebarAlertOverlay').classList.remove('active');
+        }
+
+        function handleResetPanel() {
+            if (confirm("WARNING: Kya aap waqai sara local data (deposits, users, withdrawals) reset karna chahte hain?")) {
+                localStorage.removeItem('nexora_registered_users');
+                localStorage.removeItem('admin_deposits_all');
+                localStorage.removeItem('nexora_admin_withdrawals');
+                localStorage.removeItem('user_session');
+                alert("Panel data factory default par reset ho chuka hai.");
+                window.location.reload();
+            }
+        }
+
+        function triggerCustomLogout(e, logoutUrl = 'admin-login.html') {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            localStorage.removeItem('admin_session');
+            const modal = document.getElementById('logoutOverlayModal');
+            if (modal) {
+                modal.classList.add('active');
+            }
+            setTimeout(function () {
+                window.location.href = logoutUrl;
+            }, 3000);
+            return false;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Deposit History - Nexora Capital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 110px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #8ff1ff;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-align: center;
+            line-height: 1.1;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        /* Summary Metric Banner */
+        .summary-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 28px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .summary-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .summary-info small {
+            font-size: 11px;
+            font-weight: 700;
+            color: #b7c4d9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-info h2 {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ff5c77;
+            line-height: 1.1;
+            text-shadow: 0 0 20px rgba(255, 92, 119, 0.4);
+        }
+
+        .summary-info p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 20px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .stat-box.pending .stat-icon {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 16px;
+            font-weight: 900;
+            color: #f8fafc;
+        }
+
+        .stat-box small {
+            font-size: 11px;
+            color: #b7c4d9;
+            font-weight: 700;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .filter-tab {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 14px;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #b7c4d9;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #ffffff;
+            border-color: rgba(161, 255, 225, .6);
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.4);
+        }
+
+        /* Deposit Cards List */
+        .deposits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .deposit-item-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .9), rgba(10, 17, 36, .95));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 20px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .deposit-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: rgba(20, 184, 166, 0.15);
+            border: 1px solid rgba(20, 184, 166, 0.35);
+            color: #34d399;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+        }
+
+        .deposit-method-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #f8fafc;
+            line-height: 1.2;
+        }
+
+        .deposit-trx-sub {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-top: 2px;
+            font-family: monospace;
+        }
+
+        .deposit-date {
+            font-size: 9px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .deposit-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .deposit-amount {
+            font-size: 15px;
+            font-weight: 900;
+            color: #34d399;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .badge.pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+
+        .badge.approved {
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .badge.rejected,
+        .badge.canceled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .receipt-pill-btn {
+            font-size: 9px;
+            font-weight: 800;
+            color: #38bdf8;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .empty-history-box {
+            display: none;
+            background: linear-gradient(145deg, rgba(23, 34, 59, .7), rgba(10, 17, 36, .85));
+            border: 2px dashed rgba(185, 218, 255, .3);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            margin: 0 auto 14px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .empty-history-box h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 4px;
+        }
+
+        .empty-history-box p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .btn-deposit-more {
+            display: inline-block;
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #ffffff;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(161, 255, 225, .5);
+        }
+
+        /* Modal Preview */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            padding: 18px;
+        }
+
+        .modal-body {
+            background: #0f172a;
+            border: 1.5px solid rgba(185, 218, 255, 0.3);
+            border-radius: 20px;
+            max-width: 380px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header {
+            padding: 12px 16px;
+            background: #1e293b;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .modal-img-container {
+            padding: 14px;
+            text-align: center;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+
+        .modal-img-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Floating Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(calc(100% - 24px), 400px);
+            height: 66px;
+            background: rgba(13, 22, 43, .94);
+            border: 1.5px solid rgba(190, 220, 255, .72);
+            backdrop-filter: blur(25px);
+            border-radius: 36px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, .65), inset 0 1px 2px rgba(255, 255, 255, .2);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #c4ccdd;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .nav-item.active {
+            color: #8deaff;
+            text-shadow: 0 0 12px rgba(20, 184, 166, .45);
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .fab-center {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e6f7ff, #5d9bcf 55%, #192a4d);
+            color: #14203a;
+            border: 4px solid #0a1022;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: -34px;
+            box-shadow: 0 0 16px rgba(93, 202, 255, .35), inset 0 2px 3px rgba(255, 255, 255, .65);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-frame">
+        <div class="screen-header">
+            <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="header-title">Deposit<br>History</div>
+            <div style="width: 38px;"></div>
+        </div>
+
+        <!-- Metric Summary Card -->
+        <div class="summary-card">
+            <div class="summary-icon"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="summary-info">
+                <small>Total Approved Deposits</small>
+                <h2 id="totalDepositsSum">Rs 0</h2>
+                <p id="totalRecordsText">0 deposit records</p>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <span id="approvedCountText">0</span>
+                    <small>Approved</small>
+                </div>
+            </div>
+            <div class="stat-box pending">
+                <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <span id="pendingCountText">0</span>
+                    <small>Pending</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <a href="javascript:void(0);" class="filter-tab active" onclick="setDepositFilter('all', this)">All</a>
+            <a href="javascript:void(0);" class="filter-tab" onclick="setDepositFilter('approved', this)">Approved</a>
+            <a href="javascript:void(0);" class="filter-tab" onclick="setDepositFilter('pending', this)">Pending</a>
+            <a href="javascript:void(0);" class="filter-tab" onclick="setDepositFilter('canceled', this)">Canceled</a>
+        </div>
+
+        <!-- Dynamic List -->
+        <div class="deposits-list" id="depositsListContainer"></div>
+
+        <!-- Empty State -->
+        <div class="empty-history-box" id="emptyDepositState">
+            <div class="empty-icon"><i class="fa-solid fa-building-columns"></i></div>
+            <h3>No Deposits Recorded</h3>
+            <p>You have not made any deposit payments yet.</p>
+            <a href="invest.html" class="btn-deposit-more">Invest in Plan <i class="fa-solid fa-arrow-right"
+                    style="margin-left: 4px;"></i></a>
+        </div>
+
+        <!-- Floating Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="invest.html" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Active</span></a>
+            <a href="invest.html" class="fab-center">N</a>
+            <a href="withdraw-history.html" class="nav-item"><i
+                    class="fa-solid fa-clock-rotate-left"></i><span>Logs</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+        </nav>
+    </div>
+
+    <!-- Receipt Preview Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal-body">
+            <div class="modal-header">
+                <span>Payment Screenshot</span>
+                <button type="button" class="modal-close-btn" onclick="closeReceiptModal()"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-img-container">
+                <img id="modalPreviewImg" src="" alt="Proof Receipt">
+            </div>
+        </div>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        let currentFilter = 'all';
+
+        function getActiveUser() {
+            return JSON.parse(localStorage.getItem('user_session')) || {
+                username: "noman"
+            };
+        }
+
+        function loadDeposits() {
+            const user = getActiveUser();
+            const currentUsername = (user.username || 'noman').toLowerCase();
+
+            const defaultDeposits = [
+                { id: 1, username: "noman", amount: 15000, method: "EasyPaisa", transactionId: "TRX88291039", date: "2026-10-31T14:32:00.000Z", status: "Pending", screenshot: null },
+                { id: 2, username: "noman", amount: 10000, method: "Nayapay", transactionId: "TRX33849102", date: "2026-10-25T09:15:00.000Z", status: "Approved", screenshot: null },
+                { id: 3, username: "noman", amount: 5000, method: "JazzCash", transactionId: "TRX11223344", date: "2026-10-18T18:40:00.000Z", status: "Canceled", screenshot: null }
+            ];
+
+            let all = JSON.parse(localStorage.getItem('admin_deposits_all'));
+            if (!all || all.length === 0) {
+                all = defaultDeposits;
+                localStorage.setItem('admin_deposits_all', JSON.stringify(all));
+            }
+
+            return all.filter(d => (d.username || '').toLowerCase() === currentUsername);
+        }
+
+        function renderDepositHistory() {
+            const userDeposits = loadDeposits();
+            const container = document.getElementById('depositsListContainer');
+            const emptyState = document.getElementById('emptyDepositState');
+
+            container.innerHTML = '';
+
+            let totalApprovedSum = 0;
+            let approvedCount = 0;
+            let pendingCount = 0;
+
+            userDeposits.forEach(d => {
+                const s = (d.status || 'Pending').toLowerCase();
+                if (s === 'approved') {
+                    approvedCount++;
+                    totalApprovedSum += Number(d.amount || 0);
+                } else if (s === 'pending') {
+                    pendingCount++;
+                }
+            });
+
+            document.getElementById('totalDepositsSum').innerText = `Rs ${totalApprovedSum.toLocaleString()}`;
+            document.getElementById('totalRecordsText').innerText = `${userDeposits.length} deposit records`;
+            document.getElementById('approvedCountText').innerText = approvedCount;
+            document.getElementById('pendingCountText').innerText = pendingCount;
+
+            const filtered = userDeposits.filter(d => {
+                const s = (d.status || 'Pending').toLowerCase();
+                if (currentFilter === 'approved') return s === 'approved';
+                if (currentFilter === 'pending') return s === 'pending';
+                if (currentFilter === 'canceled') return s === 'canceled' || s === 'cancelled' || s === 'rejected';
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            filtered.forEach(d => {
+                const card = document.createElement('div');
+                card.className = 'deposit-item-card';
+
+                const statusLower = (d.status || 'Pending').toLowerCase();
+                const displayDate = d.date ? new Date(d.date).toLocaleDateString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                }) : 'Recent';
+
+                let receiptBtnHtml = '';
+                if (d.screenshot) {
+                    receiptBtnHtml = `<span class="receipt-pill-btn" onclick="openReceiptModal('${d.screenshot}')"><i class="fa-solid fa-receipt"></i> View Slip</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="deposit-left">
+                        <div class="method-icon-box">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div>
+                            <div class="deposit-method-title">${d.method}</div>
+                            <div class="deposit-trx-sub">TID: ${d.transactionId}</div>
+                            <div class="deposit-date">${displayDate}</div>
+                        </div>
+                    </div>
+                    <div class="deposit-right">
+                        <div class="deposit-amount">Rs ${Number(d.amount || 0).toLocaleString()}</div>
+                        <span class="badge ${statusLower}">${d.status}</span>
+                        ${receiptBtnHtml}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function setDepositFilter(filterType, tabElement) {
+            currentFilter = filterType;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tabElement.classList.add('active');
+            renderDepositHistory();
+        }
+
+        function openReceiptModal(src) {
+            document.getElementById('modalPreviewImg').src = src;
+            document.getElementById('receiptModal').style.display = 'flex';
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', renderDepositHistory);
+    </script>
+</body>
+
+</html>

@@ -66,7 +66,7 @@ app.use(async (req, res, next) => {
     next();
 });
 
-// Auth Guards & Professional 403 Error Responses
+// Auth Guards & Role Verification
 const isAuth = (req, res, next) => {
     if (req.session.user) return next();
     res.redirect('/login');
@@ -164,6 +164,7 @@ const AVAILABLE_BANKS = [
 ];
 
 // ================= USER ROUTES =================
+
 app.get('/', async (req, res) => {
     if (req.session.user) {
         const user = await User.findById(req.session.user.id);
@@ -182,37 +183,59 @@ app.get('/signup', (req, res) => res.render('signup', { error: null, ref: req.qu
 
 app.post('/signup', async (req, res) => {
     try {
-        const { username, mobile, password, referral } = req.body;
+        const { username, phone, mobile, password, ref, referral } = req.body;
+        const targetPhone = phone || mobile;
+        const targetRef = ref || referral || 'Direct';
 
-        // Check karein ke user pehle se mojood toh nahi
-        const existingUser = await User.findOne({ username });
+        const existingUser = await User.findOne({
+            $or: [{ username: username.trim() }, { phone: targetPhone }]
+        });
+
         if (existingUser) {
-            return res.render('signup', { error: 'Username already exists' });
+            return res.render('signup', { error: 'Username ya mobile number pehle se mojood hai!', ref: targetRef });
         }
 
-        // Naya user create karein
-        const newUser = new User({ username, mobile, password, referral });
-        await newUser.save();
+        const hashedPassword = await bcrypt.hash(password.trim(), 10);
+        const newUser = new User({
+            username: username.trim(),
+            phone: targetPhone,
+            password: hashedPassword,
+            referredBy: targetRef,
+            balance: 0
+        });
 
-        res.redirect('/login');
+        await newUser.save();
+        req.session.user = { id: newUser._id, username: newUser.username };
+        res.redirect('/dashboard');
     } catch (err) {
         console.error(err);
-        // Agar yahan error aaye ga toh "Registration failed" show hoga
-        res.render('signup', { error: 'Registration failed; please try again.' });
+        res.render('signup', { error: 'Registration failed; please try again.', ref: req.body.ref || '' });
     }
 });
 
 app.post('/login', async (req, res) => {
     const { phone, password } = req.body;
     try {
-        const user = await User.findOne({ phone });
-        if (!user || !(await bcrypt.compare(password, user.password))) {
+        const user = await User.findOne({
+            $or: [{ phone: phone.trim() }, { username: phone.trim() }]
+        });
+        if (!user || !(await bcrypt.compare(password.trim(), user.password))) {
             return res.render('login', { error: 'Incorrect mobile number or password' });
         }
         req.session.user = { id: user._id, username: user.username };
-        res.redirect('/');
+        res.redirect('/dashboard');
     } catch (e) {
         res.render('login', { error: 'Login process failed' });
+    }
+});
+
+app.get('/dashboard', isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user.id);
+        const setting = await Setting.findOne();
+        res.render('dashboard', { user, setting });
+    } catch (err) {
+        res.redirect('/login');
     }
 });
 
@@ -250,12 +273,10 @@ app.get('/payment-details/:packageId', isAuth, async (req, res) => {
 app.post('/submit-payment', isAuth, upload.single('screenshot'), async (req, res) => {
     try {
         const { packageId, transactionId, bankId } = req.body;
-        console.log("Received Payment Data:", { packageId, transactionId, bankId });
-
         const pkg = packages.find(p => String(p.id) === String(packageId)) || { id: packageId || 1, price: 500 };
         const bank = bankId ? await Bank.findById(bankId) : null;
 
-        const newDeposit = await Deposit.create({
+        await Deposit.create({
             userId: req.session.user.id,
             username: req.session.user.username,
             packageId: pkg.id,
@@ -268,10 +289,9 @@ app.post('/submit-payment', isAuth, upload.single('screenshot'), async (req, res
             status: 'Pending'
         });
 
-        console.log("Deposit Saved Successfully ID:", newDeposit._id);
         return res.redirect('/payment-status');
     } catch (err) {
-        console.error('Payment Submission Critical Error:', err);
+        console.error('Payment Submission Error:', err);
         return res.redirect('/invest');
     }
 });
@@ -279,11 +299,15 @@ app.post('/submit-payment', isAuth, upload.single('screenshot'), async (req, res
 app.get('/payment-status', isAuth, (req, res) => res.render('payment-status'));
 
 app.get('/deposit-history', isAuth, async (req, res) => {
-    const deposits = await Deposit.find({ userId: req.session.user.id }).sort({ date: -1 });
-    const approvedTotal = deposits.filter(d => d.status === 'Approved').reduce((acc, curr) => acc + curr.amount, 0);
-    const approvedCount = deposits.filter(d => d.status === 'Approved').length;
-    const pendingCount = deposits.filter(d => d.status === 'Pending').length;
-    res.render('deposit-history', { deposits, approvedTotal, approvedCount, pendingCount });
+    try {
+        const deposits = await Deposit.find({ userId: req.session.user.id }).sort({ date: -1, createdAt: -1 });
+        const approvedTotal = deposits.filter(d => d.status === 'Approved').reduce((acc, curr) => acc + curr.amount, 0);
+        const approvedCount = deposits.filter(d => d.status === 'Approved').length;
+        const pendingCount = deposits.filter(d => d.status === 'Pending').length;
+        res.render('deposit-history', { deposits, approvedTotal, approvedCount, pendingCount });
+    } catch (err) {
+        res.redirect('/dashboard');
+    }
 });
 
 app.get('/withdraw', isAuth, async (req, res) => {
@@ -292,22 +316,18 @@ app.get('/withdraw', isAuth, async (req, res) => {
         const activeBanks = await Bank.find({ isActive: true, type: { $in: ['both', 'withdraw'] } });
         res.render('withdraw', { user, activeBanks, error: null, success: null });
     } catch (err) {
-        res.redirect('/');
+        res.redirect('/dashboard');
     }
 });
 
 app.post('/withdraw', isAuth, async (req, res) => {
     try {
         const { amount, method, accountTitle, accountNumber } = req.body;
-        console.log("Withdrawal Form Data Received:", { amount, method, accountTitle, accountNumber });
-
         const withdrawAmount = Number(amount);
         const user = await User.findById(req.session.user.id);
         const activeBanks = await Bank.find({ isActive: true, type: { $in: ['both', 'withdraw'] } });
 
-        if (!user) {
-            return res.redirect('/login');
-        }
+        if (!user) return res.redirect('/login');
 
         if (withdrawAmount < 60) {
             return res.render('withdraw', { user, activeBanks, error: 'The minimum withdrawal amount is Rs. 60!', success: null });
@@ -317,12 +337,10 @@ app.post('/withdraw', isAuth, async (req, res) => {
             return res.render('withdraw', { user, activeBanks, error: 'There is not enough balance in your account!', success: null });
         }
 
-        // Balance deduct karein
         user.balance -= withdrawAmount;
         await user.save();
 
-        // Withdraw request create karein
-        const newWithdraw = await Withdraw.create({
+        await Withdraw.create({
             userId: user._id,
             username: user.username,
             amount: withdrawAmount,
@@ -332,21 +350,165 @@ app.post('/withdraw', isAuth, async (req, res) => {
             status: 'Pending'
         });
 
-        console.log("Withdrawal Request Created Successfully ID:", newWithdraw._id);
-
         return res.render('withdraw', { user, activeBanks, error: null, success: 'Withdrawal request successfully submit ho chuki hai!' });
     } catch (err) {
-        console.error('CRITICAL WITHDRAWAL ERROR:', err);
+        console.error('Withdrawal Error:', err);
         const user = await User.findById(req.session.user.id).catch(() => null);
         const activeBanks = await Bank.find({ isActive: true, type: { $in: ['both', 'withdraw'] } }).catch(() => []);
         return res.render('withdraw', { user, activeBanks, error: 'Failed: ' + err.message, success: null });
     }
 });
 
-
 app.get('/withdraw-history', isAuth, async (req, res) => {
-    const withdrawals = await Withdraw.find({ userId: req.session.user.id }).sort({ date: -1 });
-    res.render('withdraw-history', { withdrawals });
+    try {
+        const withdrawals = await Withdraw.find({ userId: req.session.user.id }).sort({ date: -1, createdAt: -1 });
+        const approvedCount = withdrawals.filter(w => w.status === 'Approved').length;
+        const pendingCount = withdrawals.filter(w => w.status === 'Pending').length;
+        const totalWithdrawn = withdrawals.filter(w => w.status === 'Approved').reduce((acc, curr) => acc + curr.amount, 0);
+
+        res.render('withdraw-history', {
+            withdrawals,
+            totalWithdrawn,
+            approvedCount,
+            pendingCount
+        });
+    } catch (err) {
+        res.redirect('/dashboard');
+    }
+});
+
+app.get('/rewards', isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user.id);
+        const setting = await Setting.findOne();
+        res.render('rewards', { user, setting });
+    } catch (err) {
+        res.redirect('/dashboard');
+    }
+});
+
+app.get('/team', isAuth, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user.id);
+        if (!user) {
+            req.session.destroy();
+            return res.redirect('/login');
+        }
+
+        const keys = [user.username, user.phone, String(user._id)].filter(Boolean);
+        const members = await User.find({ referredBy: { $in: keys } }).sort({ createdAt: -1 });
+
+        let teamInvestment = 0;
+        if (members.length) {
+            const ids = members.map(m => m._id);
+            const deposits = await Deposit.find({ userId: { $in: ids }, status: 'Approved' });
+            teamInvestment = deposits.reduce((sum, d) => sum + (d.amount || 0), 0);
+        }
+
+        const referralCommission = user.referralEarnings || 0;
+
+        res.render('team', {
+            user,
+            members,
+            totalMembers: members.length,
+            level1Count: members.length,
+            teamInvestment,
+            referralCommission
+        });
+    } catch (err) {
+        console.error('Team error:', err);
+        res.redirect('/dashboard');
+    }
+});
+
+app.get('/profile', isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user.id);
+        const setting = await Setting.findOne();
+        res.render('profile', { user, setting });
+    } catch (err) {
+        res.redirect('/dashboard');
+    }
+});
+
+app.get('/my-info', isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user.id);
+        res.render('my-info', { user });
+    } catch (err) {
+        res.redirect('/profile');
+    }
+});
+
+app.get('/earnings', isAuth, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user.id);
+        if (!user) {
+            req.session.destroy();
+            return res.redirect('/login');
+        }
+
+        const deposits = await Deposit.find({ userId: user._id, status: 'Approved' });
+        const totalInvested = deposits.reduce((sum, d) => sum + (d.amount || 0), 0);
+
+        let transactions = [];
+        try {
+            transactions = await Transaction.find({
+                $or: [{ user: user._id }, { userId: user._id }]
+            }).sort({ createdAt: -1 }).limit(50).lean();
+        } catch (e) {
+            transactions = [];
+        }
+
+        res.render('earnings', {
+            user,
+            balance: user.balance || 0,
+            totalInvested,
+            totalEarnings: user.balance || 0,
+            referralCommission: user.referralEarnings || 0,
+            transactions
+        });
+    } catch (err) {
+        console.error('Earnings error:', err);
+        res.redirect('/dashboard');
+    }
+});
+
+app.get('/change-password', isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user.id);
+        res.render('change-password', { user, message: null, error: null });
+    } catch (err) {
+        res.redirect('/profile');
+    }
+});
+
+app.post('/change-password', isAuthenticated, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const dbUser = await User.findById(req.session.user.id);
+
+        const isMatch = await bcrypt.compare(currentPassword, dbUser.password);
+        if (!isMatch) {
+            return res.render('change-password', { user: dbUser, error: 'Current password is incorrect', message: null });
+        }
+
+        dbUser.password = await bcrypt.hash(newPassword, 10);
+        await dbUser.save();
+        res.render('change-password', { user: dbUser, message: 'Password changed successfully!', error: null });
+    } catch (err) {
+        const user = await User.findById(req.session.user.id);
+        res.render('change-password', { user, error: 'Something went wrong; please try again.', message: null });
+    }
+});
+
+app.get('/fbr-info', isAuthenticated, async (req, res) => {
+    try {
+        const setting = await Setting.findOne();
+        res.render('fbr-info', { setting });
+    } catch (err) {
+        res.redirect('/profile');
+    }
 });
 
 app.get('/logout', (req, res) => {
@@ -389,7 +551,7 @@ app.post('/admin/login', async (req, res) => {
         }
 
         if (!member.isActive) {
-            return res.render('admin-login', { error: 'this account is blocked' });
+            return res.render('admin-login', { error: 'This account is blocked' });
         }
 
         const isMatch = await bcrypt.compare(rawPassword, member.password);
@@ -420,8 +582,8 @@ app.post('/admin/login', async (req, res) => {
 app.get('/admin/dashboard', isAdmin, async (req, res) => {
     try {
         const users = await User.find();
-        const deposits = await Deposit.find().sort({ date: -1 });
-        const withdrawals = await Withdraw.find().sort({ date: -1 });
+        const deposits = await Deposit.find().sort({ date: -1, createdAt: -1 });
+        const withdrawals = await Withdraw.find().sort({ date: -1, createdAt: -1 });
 
         const startOfToday = new Date();
         startOfToday.setHours(0, 0, 0, 0);
@@ -434,14 +596,14 @@ app.get('/admin/dashboard', isAdmin, async (req, res) => {
         const approvedDeposits = deposits.filter(d => d.status === 'Approved');
         const canceledDeposits = deposits.filter(d => d.status === 'Canceled');
         const pendingDepositAmount = pendingDeposits.reduce((acc, d) => acc + d.amount, 0);
-        const todayDepositsList = approvedDeposits.filter(d => new Date(d.date) >= startOfToday);
+        const todayDepositsList = approvedDeposits.filter(d => new Date(d.date || d.createdAt) >= startOfToday);
         const todayDepositsAmount = todayDepositsList.reduce((acc, d) => acc + d.amount, 0);
 
         const pendingWithdrawals = withdrawals.filter(w => w.status === 'Pending');
         const approvedWithdrawals = withdrawals.filter(w => w.status === 'Approved');
         const rejectedWithdrawals = withdrawals.filter(w => w.status === 'Rejected');
         const pendingWithdrawAmount = pendingWithdrawals.reduce((acc, w) => acc + w.amount, 0);
-        const todayWithdrawalsList = approvedWithdrawals.filter(w => new Date(w.date) >= startOfToday);
+        const todayWithdrawalsList = approvedWithdrawals.filter(w => new Date(w.date || w.createdAt) >= startOfToday);
         const todayWithdrawAmount = todayWithdrawalsList.reduce((acc, w) => acc + w.amount, 0);
 
         const stats = {
@@ -495,10 +657,7 @@ app.get('/admin/dashboard', isAdmin, async (req, res) => {
 });
 
 app.get('/admin/deposits', checkRole(['Super Admin', 'Depositer']), async (req, res) => {
-    const deposits = await Deposit.find().sort({ date: -1 });
-    if (req.session.adminRole === 'Depositer') {
-        return res.render('admin-depositer-dashboard', { deposits });
-    }
+    const deposits = await Deposit.find().sort({ date: -1, createdAt: -1 });
     res.render('admin-deposits', { deposits });
 });
 
@@ -510,19 +669,23 @@ app.post('/admin/deposits/approve/:id', checkRole(['Super Admin', 'Depositer']),
             await deposit.save();
             await User.findByIdAndUpdate(deposit.userId, { $inc: { balance: deposit.amount } });
         }
-        res.redirect(req.session.adminRole === 'Depositer' ? '/admin/deposits' : '/admin/dashboard');
-    } catch (err) { res.redirect('/admin/dashboard'); }
+        res.redirect('/admin/deposits');
+    } catch (err) {
+        res.redirect('/admin/dashboard');
+    }
 });
 
 app.post('/admin/deposits/cancel/:id', checkRole(['Super Admin', 'Depositer']), async (req, res) => {
     try {
         await Deposit.findByIdAndUpdate(req.params.id, { status: 'Canceled' });
-        res.redirect(req.session.adminRole === 'Depositer' ? '/admin/deposits' : '/admin/dashboard');
-    } catch (err) { res.redirect('/admin/dashboard'); }
+        res.redirect('/admin/deposits');
+    } catch (err) {
+        res.redirect('/admin/dashboard');
+    }
 });
 
 app.get('/admin/withdrawals', checkRole(['Super Admin', 'Withdrawer']), async (req, res) => {
-    const withdrawals = await Withdraw.find().sort({ date: -1 });
+    const withdrawals = await Withdraw.find().sort({ date: -1, createdAt: -1 });
     res.render('admin-withdrawals', { withdrawals });
 });
 
@@ -530,7 +693,9 @@ app.post('/admin/withdrawals/approve/:id', checkRole(['Super Admin', 'Withdrawer
     try {
         await Withdraw.findByIdAndUpdate(req.params.id, { status: 'Approved' });
         res.redirect('/admin/withdrawals');
-    } catch (err) { res.redirect('/admin/dashboard'); }
+    } catch (err) {
+        res.redirect('/admin/dashboard');
+    }
 });
 
 app.post('/admin/withdrawals/reject/:id', checkRole(['Super Admin', 'Withdrawer']), async (req, res) => {
@@ -542,7 +707,9 @@ app.post('/admin/withdrawals/reject/:id', checkRole(['Super Admin', 'Withdrawer'
             await User.findByIdAndUpdate(withdraw.userId, { $inc: { balance: withdraw.amount } });
         }
         res.redirect('/admin/withdrawals');
-    } catch (err) { res.redirect('/admin/dashboard'); }
+    } catch (err) {
+        res.redirect('/admin/dashboard');
+    }
 });
 
 app.get('/admin/banks', isSuperAdmin, async (req, res) => {
@@ -557,20 +724,31 @@ app.post('/admin/banks/add', isSuperAdmin, async (req, res) => {
         const logo = selectedBank ? selectedBank.logo : '/assets/Easypaisa-logo.png';
         await Bank.create({ bankName, accountTitle, accountNumber, logo, type: type || 'both', isActive: true });
         res.redirect('/admin/banks');
-    } catch (err) { res.redirect('/admin/banks'); }
+    } catch (err) {
+        res.redirect('/admin/banks');
+    }
 });
 
 app.post('/admin/banks/toggle/:id', isSuperAdmin, async (req, res) => {
     try {
         const bank = await Bank.findById(req.params.id);
-        if (bank) { bank.isActive = !bank.isActive; await bank.save(); }
+        if (bank) {
+            bank.isActive = !bank.isActive;
+            await bank.save();
+        }
         res.redirect('/admin/banks');
-    } catch (err) { res.redirect('/admin/banks'); }
+    } catch (err) {
+        res.redirect('/admin/banks');
+    }
 });
 
 app.post('/admin/banks/delete/:id', isSuperAdmin, async (req, res) => {
-    try { await Bank.findByIdAndDelete(req.params.id); res.redirect('/admin/banks'); }
-    catch (err) { res.redirect('/admin/banks'); }
+    try {
+        await Bank.findByIdAndDelete(req.params.id);
+        res.redirect('/admin/banks');
+    } catch (err) {
+        res.redirect('/admin/banks');
+    }
 });
 
 const settingUpload = upload.fields([
@@ -603,6 +781,34 @@ app.post('/admin/settings', isAdmin, settingUpload, async (req, res) => {
     res.redirect('/admin/settings?saved=true');
 });
 
+app.post('/admin/settings/delete/:type', isAdmin, async (req, res) => {
+    try {
+        const setting = await Setting.findOne();
+        if (setting) {
+            const fileType = req.params.type;
+            const fieldMap = {
+                fbr: 'fbrCertificate',
+                secp: 'secpCertificate',
+                apk: 'androidApk'
+            };
+            const field = fieldMap[fileType];
+
+            if (field && setting[field]) {
+                const filePath = path.join(__dirname, 'public', setting[field]);
+                fs.unlink(filePath, (err) => {
+                    if (err) console.log('File delete skip:', err.message);
+                });
+                setting[field] = '';
+                await setting.save();
+            }
+        }
+        res.redirect('/admin/settings');
+    } catch (err) {
+        console.error('Delete error:', err);
+        res.redirect('/admin/settings');
+    }
+});
+
 app.get('/admin/users', checkRole(['Super Admin', 'Manager']), async (req, res) => {
     const users = await User.find().sort({ createdAt: -1 });
     res.render('admin-users', { users });
@@ -610,7 +816,10 @@ app.get('/admin/users', checkRole(['Super Admin', 'Manager']), async (req, res) 
 
 app.get('/admin/users/switch/:id', isSuperAdmin, async (req, res) => {
     const user = await User.findById(req.params.id);
-    if (user) { req.session.user = { id: user._id, username: user.username }; return res.redirect('/'); }
+    if (user) {
+        req.session.user = { id: user._id, username: user.username };
+        return res.redirect('/dashboard');
+    }
     res.redirect('/admin/users');
 });
 
@@ -642,12 +851,17 @@ app.post('/admin/team/add', isSuperAdmin, async (req, res) => {
             isActive: true
         });
         res.redirect('/admin/team');
-    } catch (err) { res.redirect('/admin/team'); }
+    } catch (err) {
+        res.redirect('/admin/team');
+    }
 });
 
 app.post('/admin/team/toggle/:id', isSuperAdmin, async (req, res) => {
     const member = await AdminMember.findById(req.params.id);
-    if (member) { member.isActive = !member.isActive; await member.save(); }
+    if (member) {
+        member.isActive = !member.isActive;
+        await member.save();
+    }
     res.redirect('/admin/team');
 });
 
@@ -666,184 +880,10 @@ app.post('/admin/reset-panel', isSuperAdmin, async (req, res) => {
     res.redirect('/admin/dashboard');
 });
 
-app.post('/admin/settings/delete/:type', isAdmin, async (req, res) => {
-    try {
-        const setting = await Setting.findOne();
-        if (setting) {
-            const fileType = req.params.type;
-            const fieldMap = {
-                fbr: 'fbrCertificate',
-                secp: 'secpCertificate',
-                apk: 'androidApk'
-            };
-            const field = fieldMap[fileType];
-
-            if (field && setting[field]) {
-                const filePath = path.join(__dirname, setting[field]);
-                fs.unlink(filePath, (err) => {
-                    if (err) console.log('File delete skip:', err.message);
-                });
-                setting[field] = '';
-                await setting.save();
-            }
-        }
-        res.redirect('/admin/settings');
-    } catch (err) {
-        console.error('Delete error:', err);
-        res.redirect('/admin/settings');
-    }
-});
-
-app.get('/rewards', isAuthenticated, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user.id);
-        const setting = await Setting.findOne();
-        res.render('rewards', { user, setting });
-    } catch (err) {
-        res.redirect('/dashboard');
-    }
-});
-
-app.get('/dashboard', isAuthenticated, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user.id);
-        const setting = await Setting.findOne();
-        res.render('dashboard', { user, setting });
-    } catch (err) {
-        res.redirect('/');
-    }
-});
-
-app.get('/team', isAuth, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user.id);
-        if (!user) {
-            req.session.destroy();
-            return res.redirect('/login');
-        }
-
-        const keys = [user.username, user.phone, String(user._id)].filter(Boolean);
-        const members = await User.find({ referredBy: { $in: keys } }).sort({ createdAt: -1 });
-
-        let teamInvestment = 0;
-        if (members.length) {
-            const ids = members.map(m => m._id);
-            const deposits = await Deposit.find({ userId: { $in: ids }, status: 'Approved' });
-            teamInvestment = deposits.reduce((sum, d) => sum + (d.amount || 0), 0);
-        }
-
-        const referralCommission = user.referralEarnings || 0;
-
-        res.render('team', {
-            user,
-            members,
-            totalMembers: members.length,
-            level1Count: members.length,
-            teamInvestment,
-            referralCommission
-        });
-    } catch (err) {
-        console.error('Team error:', err);
-        res.redirect('/');
-    }
-});
-
-// Profile / Personal Info Route
-app.get('/profile', isAuthenticated, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user.id);
-        const setting = await Setting.findOne();
-        res.render('profile', { user, setting });
-    } catch (err) {
-        res.redirect('/');
-    }
-});
-
-app.get('/earnings', isAuth, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user.id);
-        if (!user) {
-            req.session.destroy();
-            return res.redirect('/login');
-        }
-
-        const deposits = await Deposit.find({ userId: user._id, status: 'Approved' });
-        const totalInvested = deposits.reduce((sum, d) => sum + (d.amount || 0), 0);
-
-        let transactions = [];
-        try {
-            transactions = await Transaction.find({
-                $or: [{ user: user._id }, { userId: user._id }]
-            }).sort({ createdAt: -1 }).limit(50).lean();
-        } catch (e) {
-            console.log('Transactions skip:', e.message);
-        }
-
-        res.render('earnings', {
-            user,
-            balance: user.balance || 0,
-            totalInvested,
-            referralCommission: user.referralEarnings || 0,
-            transactions
-        });
-    } catch (err) {
-        console.error('Earnings error:', err);
-        res.redirect('/');
-    }
-});
-
-// 1. My Profile Info Route
-app.get('/my-info', isAuthenticated, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user.id);
-        res.render('my-info', { user });
-    } catch (err) {
-        res.redirect('/profile');
-    }
-});
-
-// 2. Change Password Page Route
-app.get('/change-password', isAuthenticated, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user.id);
-        res.render('change-password', { user, message: null, error: null });
-    } catch (err) {
-        res.redirect('/profile');
-    }
-});
-
-// 3. Change Password Post Route
-app.post('/change-password', isAuthenticated, async (req, res) => {
-    try {
-        const { currentPassword, newPassword } = req.body;
-        const dbUser = await User.findById(req.session.user.id);
-
-        const isMatch = await bcrypt.compare(currentPassword, dbUser.password);
-        if (!isMatch) {
-            return res.render('change-password', { user: dbUser, error: 'Current password is incorrect', message: null });
-        }
-
-        dbUser.password = await bcrypt.hash(newPassword, 10);
-        await dbUser.save();
-        res.render('change-password', { user: dbUser, message: 'Password changed successfully!', error: null });
-    } catch (err) {
-        const user = await User.findById(req.session.user.id);
-        res.render('change-password', { user, error: 'Something went wrong; please try again.', message: null });
-    }
-});
-
-// 4. FBR & SECP Info Route (Admin settings se images uthayega)
-app.get('/fbr-info', isAuthenticated, async (req, res) => {
-    try {
-        const setting = await Setting.findOne();
-        res.render('fbr-info', { setting });
-    } catch (err) {
-        res.redirect('/profile');
-    }
-});
-
 app.get('/admin/logout', (req, res) => {
-    req.session.destroy(() => { res.redirect('/admin/login'); });
+    req.session.destroy(() => {
+        res.redirect('/admin/login');
+    });
 });
 
 app.listen(PORT, () => {

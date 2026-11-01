@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1">
+    <title>Nexora Admin - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #fdf6ec;
+            color: #1e293b;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Mock Sidebar for Admin */
+        .admin-sidebar-mock {
+            width: 250px;
+            background: #008069;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 24px 16px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .admin-sidebar-mock h2 {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-left: 8px;
+        }
+
+        .admin-sidebar-mock a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .admin-sidebar-mock a:hover,
+        .admin-sidebar-mock a.active {
+            background: #ffffff;
+            color: #008069;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px 60px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            background: #fdf6ec;
+        }
+
+        .desktop-top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #ffffff;
+            padding: 14px 18px;
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            border: 1.5px solid #ffd79d;
+            margin-bottom: 22px;
+        }
+
+        .desktop-top-bar a {
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s ease;
+        }
+
+        .desktop-top-bar a.active-link {
+            background: #008069;
+            color: #ffffff;
+        }
+
+        .desktop-top-bar a.regular-link {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .desktop-top-bar a.live-link {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .desktop-top-bar a.logout-link {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            margin-left: auto;
+        }
+
+        .section-header-title {
+            font-size: 14px;
+            font-weight: 900;
+            color: #0f172a;
+            margin: 22px 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 16px;
+            padding: 16px 18px;
+            color: #ffffff;
+            box-shadow: 0 6px 15px rgba(217, 119, 6, 0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 88px;
+        }
+
+        .metric-card.orange {
+            background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+        }
+
+        .metric-card.blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .metric-card.green {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        }
+
+        .metric-card.purple {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        }
+
+        .metric-card.red {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        }
+
+        .metric-card.teal {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+        }
+
+        .metric-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+
+        .metric-value {
+            font-size: 17px;
+            font-weight: 900;
+            margin-bottom: 2px;
+            word-break: break-all;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            font-weight: 700;
+            opacity: 0.95;
+            letter-spacing: 0.3px;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            border: 2px solid #ffd79d;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border-bottom: 1px dashed #fed7aa;
+            padding-bottom: 10px;
+        }
+
+        .table-header h3 {
+            font-size: 15px;
+            font-weight: 900;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #fff8f0;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 10px 14px;
+            border-bottom: 2px solid #fed7aa;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px 14px;
+            font-size: 12px;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge.approved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge.rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-table-action {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-approve-action {
+            background: #008069;
+            color: #fff;
+        }
+
+        .btn-reject-action {
+            background: #fee2e2;
+            color: #b91c1c;
+            margin-left: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar-mock {
+                display: none;
+            }
+
+            .desktop-top-bar {
+                display: none !important;
+            }
+
+            body {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-left: 0 !important;
+                padding: 16px 12px 60px !important;
+                width: 100% !important;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mock Sidebar -->
+    <aside class="admin-sidebar-mock">
+        <h2>Nexora Admin</h2>
+        <a href="admin-dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="admin-deposits.html"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+        <a href="admin-withdrawals.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+        <a href="admin-banks.html"><i class="fa-solid fa-wallet"></i> Currency Account</a>
+        <a href="admin-users.html"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="admin-team.html"><i class="fa-solid fa-user-shield"></i> Admin Members</a>
+        <a href="admin-settings.html"><i class="fa-solid fa-sliders"></i> Project Setting</a>
+        <a href="dashboard.html" target="_blank"><i class="fa-solid fa-globe"></i> Live User App</a>
+        <a href="admin-login.html" style="margin-top: auto; color: #fee2e2;"><i
+                class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <main class="admin-main-content">
+        <!-- Top Navigation Header Bar -->
+        <div class="desktop-top-bar">
+            <a href="admin-dashboard.html" class="active-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="admin-deposits.html" class="regular-link"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+            <a href="admin-withdrawals.html" class="regular-link"><i class="fa-solid fa-money-bill-transfer"></i>
+                Withdrawals</a>
+            <a href="admin-banks.html" class="regular-link"><i class="fa-solid fa-wallet"></i> Banks</a>
+            <a href="admin-users.html" class="regular-link"><i class="fa-solid fa-users"></i> Users</a>
+            <a href="admin-team.html" class="regular-link"><i class="fa-solid fa-user-shield"></i> Team</a>
+            <a href="admin-settings.html" class="regular-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+            <a href="dashboard.html" target="_blank" class="live-link"><i class="fa-solid fa-globe"></i> Live Site</a>
+            <a href="javascript:void(0);" onclick="handleAdminLogout()" class="logout-link"><i
+                    class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+
+        <!-- 1. Pending Deposits Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3 id="depositsCountTitle"><i class="fa-solid fa-building-columns" style="color: #008069;"></i> Pending
+                    Deposits Verification (0)</h3>
+                <a href="admin-deposits.html"
+                    style="font-size: 11px; font-weight: 700; color: #008069; text-decoration: none;">View All <i
+                        class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>USERNAME</th>
+                            <th>AMOUNT</th>
+                            <th>METHOD</th>
+                            <th>TRX ID</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="depositsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. Pending Withdrawals Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3 id="withdrawalsCountTitle"><i class="fa-solid fa-money-bill-transfer" style="color: #7e22ce;"></i>
+                    Pending Withdrawals Requests (0)</h3>
+                <a href="admin-withdrawals.html"
+                    style="font-size: 11px; font-weight: 700; color: #7e22ce; text-decoration: none;">View All <i
+                        class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>USERNAME</th>
+                            <th>AMOUNT</th>
+                            <th>METHOD</th>
+                            <th>ACCOUNT TITLE</th>
+                            <th>ACCOUNT NUMBER</th>
+                            <th>STATUS</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawalsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div class="section-header-title"><i class="fa-solid fa-users" style="color: #f59e0b;"></i> Users & Members
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="metric-value" id="stat_totalMembers">0</div>
+                <div class="metric-label">Total Members</div>
+            </div>
+            <div class="metric-card orange">
+                <div class="metric-icon"><i class="fa-solid fa-wallet"></i></div>
+                <div class="metric-value" id="stat_totalMemberBalance">Rs. 0</div>
+                <div class="metric-label">Total Member Balance</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="metric-value" id="stat_todayJoinedCount">0</div>
+                <div class="metric-label">Today Joined Members</div>
+            </div>
+            <div class="metric-card orange">
+                <div class="metric-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="metric-value" id="stat_todayJoinedBalance">Rs. 0</div>
+                <div class="metric-label">Today Joined Balance</div>
+            </div>
+            <div class="metric-card blue">
+                <div class="metric-icon"><i class="fa-solid fa-user-check"></i></div>
+                <div class="metric-value" id="stat_activeMembers">0</div>
+                <div class="metric-label">Active Members</div>
+            </div>
+            <div class="metric-card blue">
+                <div class="metric-icon"><i class="fa-solid fa-vault"></i></div>
+                <div class="metric-value" id="stat_activeMemberBalance">Rs. 0</div>
+                <div class="metric-label">Active Member Balance</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-user-slash"></i></div>
+                <div class="metric-value" id="stat_suspendedMembers">0</div>
+                <div class="metric-label">Suspended Members</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-ban"></i></div>
+                <div class="metric-value" id="stat_suspendedMemberBalance">Rs. 0</div>
+                <div class="metric-label">Suspended Member Balance</div>
+            </div>
+        </div>
+
+        <!-- Deposits Section -->
+        <div class="section-header-title"><i class="fa-solid fa-coins" style="color: #10b981;"></i> Deposits Overview
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card green">
+                <div class="metric-icon"><i class="fa-solid fa-hourglass-start"></i></div>
+                <div class="metric-value" id="stat_pendingDepositAmount">Rs. 0</div>
+                <div class="metric-label">Pending Deposits Amount</div>
+            </div>
+            <div class="metric-card green">
+                <div class="metric-icon"><i class="fa-solid fa-list-check"></i></div>
+                <div class="metric-value" id="stat_pendingDepositRequests">0</div>
+                <div class="metric-label">Pending Deposit Requests</div>
+            </div>
+            <div class="metric-card teal">
+                <div class="metric-icon"><i class="fa-solid fa-circle-arrow-down"></i></div>
+                <div class="metric-value" id="stat_todayDepositsAmount">Rs. 0</div>
+                <div class="metric-label">Today Deposits</div>
+            </div>
+            <div class="metric-card teal">
+                <div class="metric-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="metric-value" id="stat_todayActivePlans">0</div>
+                <div class="metric-label">Today Active Plans</div>
+            </div>
+            <div class="metric-card blue">
+                <div class="metric-icon"><i class="fa-solid fa-gem"></i></div>
+                <div class="metric-value" id="stat_totalActivePlans">0</div>
+                <div class="metric-label">Total Active Plans</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+                <div class="metric-value" id="stat_canceledDepositsAmount">Rs. 0</div>
+                <div class="metric-label">Canceled Deposits</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-rectangle-xmark"></i></div>
+                <div class="metric-value" id="stat_canceledDepositRequests">0</div>
+                <div class="metric-label">Canceled Deposit Requests</div>
+            </div>
+        </div>
+
+        <!-- Withdrawals Section -->
+        <div class="section-header-title"><i class="fa-solid fa-wallet" style="color: #ef4444;"></i> Withdrawals
+            Overview</div>
+        <div class="metrics-grid">
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                <div class="metric-value" id="stat_pendingWithdrawAmount">Rs. 0</div>
+                <div class="metric-label">Pending Withdraw Amount</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-list-ol"></i></div>
+                <div class="metric-value" id="stat_pendingWithdrawRequests">0</div>
+                <div class="metric-label">Pending Withdraw Requests</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                <div class="metric-value" id="stat_todayWithdrawAmount">Rs. 0</div>
+                <div class="metric-label">Today Withdraw</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                <div class="metric-value" id="stat_todayWithdrawRequests">0</div>
+                <div class="metric-label">Today Withdraw Requests</div>
+            </div>
+            <div class="metric-card purple">
+                <div class="metric-icon"><i class="fa-solid fa-ban"></i></div>
+                <div class="metric-value" id="stat_rejectedWithdrawAmount">Rs. 0</div>
+                <div class="metric-label">Rejected Withdraw</div>
+            </div>
+            <div class="metric-card purple">
+                <div class="metric-icon"><i class="fa-solid fa-rectangle-list"></i></div>
+                <div class="metric-value" id="stat_canceledWithdrawRequests">0</div>
+                <div class="metric-label">Canceled Withdraw Requests</div>
+            </div>
+        </div>
+
+        <!-- Profit & Reports Section -->
+        <div class="section-header-title"><i class="fa-solid fa-chart-pie" style="color: #10b981;"></i> Profit & Reports
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card green">
+                <div class="metric-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="metric-value" id="stat_totalProfit">Rs. 0</div>
+                <div class="metric-label">Total Profit</div>
+            </div>
+            <div class="metric-card purple">
+                <div class="metric-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                <div class="metric-value" id="stat_todayProfit">Rs. 0</div>
+                <div class="metric-label">Today Profit</div>
+            </div>
+            <div class="metric-card teal">
+                <div class="metric-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="metric-value" id="stat_todayProfitGenerated">Rs. 0</div>
+                <div class="metric-label">Today Profit Generated</div>
+            </div>
+            <div class="metric-card blue">
+                <div class="metric-icon"><i class="fa-solid fa-clock"></i></div>
+                <div class="metric-value" id="stat_nextDayEarning">Rs. 0</div>
+                <div class="metric-label">Next Day Earning</div>
+            </div>
+        </div>
+
+        <!-- Referrals Section -->
+        <div class="section-header-title"><i class="fa-solid fa-users-rectangle" style="color: #3b82f6;"></i> Referrals
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card blue">
+                <div class="metric-icon"><i class="fa-solid fa-user-group"></i></div>
+                <div class="metric-value" id="stat_totalReferrals">0</div>
+                <div class="metric-label">Total Referrals</div>
+            </div>
+            <div class="metric-card teal">
+                <div class="metric-icon"><i class="fa-solid fa-user-check"></i></div>
+                <div class="metric-value" id="stat_activeReferrals">0</div>
+                <div class="metric-label">Active Referrals</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <div class="metric-value" id="stat_totalReferralDeposits">Rs. 0</div>
+                <div class="metric-label">Total Referral Deposits</div>
+            </div>
+            <div class="metric-card orange">
+                <div class="metric-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <div class="metric-value" id="stat_referralCommission">Rs. 0</div>
+                <div class="metric-label">Referral Commission</div>
+            </div>
+        </div>
+
+        <!-- Tasks & Salary Section -->
+        <div class="section-header-title"><i class="fa-solid fa-list-check" style="color: #f59e0b;"></i> Tasks & Salary
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-business-time"></i></div>
+                <div class="metric-value" id="stat_tasksPending">0</div>
+                <div class="metric-label">Tasks Pending</div>
+            </div>
+            <div class="metric-card green">
+                <div class="metric-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="metric-value" id="stat_completedTasks">0</div>
+                <div class="metric-label">Completed Tasks</div>
+            </div>
+            <div class="metric-card blue">
+                <div class="metric-icon"><i class="fa-solid fa-list"></i></div>
+                <div class="metric-value" id="stat_totalTasks">10</div>
+                <div class="metric-label">Total Tasks</div>
+            </div>
+            <div class="metric-card purple">
+                <div class="metric-icon"><i class="fa-solid fa-money-bill-1"></i></div>
+                <div class="metric-value" id="stat_totalTaskAmount">Rs. 0</div>
+                <div class="metric-label">Total Task Amount</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Client-Side JavaScript Logic & Real-time LocalStorage Integration -->
+    <script>
+        function getLocalStorageData() {
+            const users = JSON.parse(localStorage.getItem('nexora_registered_users')) || [
+                { id: 1, username: "noman", phone: "03001234567", balance: 14500, referredBy: "Direct", createdAt: "2026-10-15" },
+                { id: 2, username: "usman_khan", phone: "03129876543", balance: 5200, referredBy: "noman", createdAt: "2026-10-25" },
+                { id: 3, username: "ahmad_ali", phone: "03217654321", balance: 3000, referredBy: "noman", createdAt: "2026-10-31" }
+            ];
+
+            const deposits = JSON.parse(localStorage.getItem('admin_deposits_all')) || [
+                { id: 1, username: "usman_khan", amount: 15000, method: "EasyPaisa", transactionId: "TRX88291039", date: new Date().toISOString(), status: "Pending" },
+                { id: 2, username: "ahmad_ali", amount: 20000, method: "JazzCash", transactionId: "TRX99201948", date: new Date().toISOString(), status: "Pending" },
+                { id: 3, username: "noman", amount: 10000, method: "Nayapay", transactionId: "TRX33849102", date: "2026-10-25T09:15:00.000Z", status: "Approved" }
+            ];
+
+            const withdrawals = JSON.parse(localStorage.getItem('nexora_admin_withdrawals')) || [
+                { id: 1, username: "noman", amount: 8000, method: "Sadapay", accountTitle: "Muhammad Noman", accountNumber: "03001234567", status: "Pending", date: new Date().toISOString() },
+                { id: 2, username: "usman_khan", amount: 4500, method: "EasyPaisa", accountTitle: "Muhammad Usman", accountNumber: "03129876543", status: "Paid", date: "2026-10-24" }
+            ];
+
+            return { users, deposits, withdrawals };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+        });
+
+        function initDashboard() {
+            const { users, deposits, withdrawals } = getLocalStorageData();
+            calculateAndRenderStats(users, deposits, withdrawals);
+            renderPendingDeposits(deposits);
+            renderPendingWithdrawals(withdrawals);
+        }
+
+        function calculateAndRenderStats(users, deposits, withdrawals) {
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            // User stats
+            const totalMembers = users.length;
+            const totalMemberBalance = users.reduce((acc, u) => acc + Number(u.balance || 0), 0);
+            const todayJoined = users.filter(u => new Date(u.createdAt || Date.now()) >= startOfToday);
+            const todayJoinedBalance = todayJoined.reduce((acc, u) => acc + Number(u.balance || 0), 0);
+            const activeUsers = users.filter(u => Number(u.balance || 0) > 0);
+            const activeMemberBalance = activeUsers.reduce((acc, u) => acc + Number(u.balance || 0), 0);
+
+            // Deposit stats
+            const pendingDeposits = deposits.filter(d => (d.status || '').toLowerCase() === 'pending');
+            const approvedDeposits = deposits.filter(d => (d.status || '').toLowerCase() === 'approved');
+            const canceledDeposits = deposits.filter(d => ['canceled', 'cancelled', 'rejected'].includes((d.status || '').toLowerCase()));
+
+            const pendingDepositAmount = pendingDeposits.reduce((acc, d) => acc + Number(d.amount || 0), 0);
+            const todayDeposits = approvedDeposits.filter(d => new Date(d.date || d.createdAt || Date.now()) >= startOfToday);
+            const todayDepositsAmount = todayDeposits.reduce((acc, d) => acc + Number(d.amount || 0), 0);
+            const canceledDepositsAmount = canceledDeposits.reduce((acc, d) => acc + Number(d.amount || 0), 0);
+
+            // Withdrawal stats
+            const pendingWithdrawals = withdrawals.filter(w => (w.status || '').toLowerCase() === 'pending');
+            const approvedWithdrawals = withdrawals.filter(w => ['approved', 'paid'].includes((w.status || '').toLowerCase()));
+            const rejectedWithdrawals = withdrawals.filter(w => (w.status || '').toLowerCase() === 'rejected');
+
+            const pendingWithdrawAmount = pendingWithdrawals.reduce((acc, w) => acc + Number(w.amount || 0), 0);
+            const todayWithdrawals = approvedWithdrawals.filter(w => new Date(w.date || w.createdAt || Date.now()) >= startOfToday);
+            const todayWithdrawAmount = todayWithdrawals.reduce((acc, w) => acc + Number(w.amount || 0), 0);
+            const rejectedWithdrawAmount = rejectedWithdrawals.reduce((acc, w) => acc + Number(w.amount || 0), 0);
+
+            // Profit & Referral calculations
+            const totalProfit = approvedDeposits.reduce((acc, d) => acc + (Number(d.amount || 0) * 0.1), 0);
+            const todayProfit = todayDepositsAmount * 0.1;
+            const todayProfitGenerated = todayDepositsAmount * 0.15;
+            const nextDayEarning = todayProfit * 0.4;
+
+            const referredUsers = users.filter(u => u.referredBy && u.referredBy.toLowerCase() !== 'direct');
+            const totalReferralDeposits = approvedDeposits.reduce((acc, d) => acc + Number(d.amount || 0), 0);
+            const referralCommission = totalReferralDeposits * 0.1;
+
+            // DOM Binding
+            document.getElementById('stat_totalMembers').innerText = totalMembers.toLocaleString();
+            document.getElementById('stat_totalMemberBalance').innerText = 'Rs. ' + totalMemberBalance.toLocaleString();
+            document.getElementById('stat_todayJoinedCount').innerText = todayJoined.length.toLocaleString();
+            document.getElementById('stat_todayJoinedBalance').innerText = 'Rs. ' + todayJoinedBalance.toLocaleString();
+            document.getElementById('stat_activeMembers').innerText = activeUsers.length.toLocaleString();
+            document.getElementById('stat_activeMemberBalance').innerText = 'Rs. ' + activeMemberBalance.toLocaleString();
+            document.getElementById('stat_suspendedMembers').innerText = '0';
+            document.getElementById('stat_suspendedMemberBalance').innerText = 'Rs. 0';
+
+            document.getElementById('stat_pendingDepositAmount').innerText = 'Rs. ' + pendingDepositAmount.toLocaleString();
+            document.getElementById('stat_pendingDepositRequests').innerText = pendingDeposits.length.toLocaleString();
+            document.getElementById('stat_todayDepositsAmount').innerText = 'Rs. ' + todayDepositsAmount.toLocaleString();
+            document.getElementById('stat_todayActivePlans').innerText = todayDeposits.length.toLocaleString();
+            document.getElementById('stat_totalActivePlans').innerText = approvedDeposits.length.toLocaleString();
+            document.getElementById('stat_canceledDepositsAmount').innerText = 'Rs. ' + canceledDepositsAmount.toLocaleString();
+            document.getElementById('stat_canceledDepositRequests').innerText = canceledDeposits.length.toLocaleString();
+
+            document.getElementById('stat_pendingWithdrawAmount').innerText = 'Rs. ' + pendingWithdrawAmount.toLocaleString();
+            document.getElementById('stat_pendingWithdrawRequests').innerText = pendingWithdrawals.length.toLocaleString();
+            document.getElementById('stat_todayWithdrawAmount').innerText = 'Rs. ' + todayWithdrawAmount.toLocaleString();
+            document.getElementById('stat_todayWithdrawRequests').innerText = todayWithdrawals.length.toLocaleString();
+            document.getElementById('stat_rejectedWithdrawAmount').innerText = 'Rs. ' + rejectedWithdrawAmount.toLocaleString();
+            document.getElementById('stat_canceledWithdrawRequests').innerText = rejectedWithdrawals.length.toLocaleString();
+
+            document.getElementById('stat_totalProfit').innerText = 'Rs. ' + Math.round(totalProfit).toLocaleString();
+            document.getElementById('stat_todayProfit').innerText = 'Rs. ' + Math.round(todayProfit).toLocaleString();
+            document.getElementById('stat_todayProfitGenerated').innerText = 'Rs. ' + Math.round(todayProfitGenerated).toLocaleString();
+            document.getElementById('stat_nextDayEarning').innerText = 'Rs. ' + Math.round(nextDayEarning).toLocaleString();
+
+            document.getElementById('stat_totalReferrals').innerText = referredUsers.length.toLocaleString();
+            document.getElementById('stat_activeReferrals').innerText = referredUsers.filter(u => Number(u.balance || 0) > 0).length.toLocaleString();
+            document.getElementById('stat_totalReferralDeposits').innerText = 'Rs. ' + totalReferralDeposits.toLocaleString();
+            document.getElementById('stat_referralCommission').innerText = 'Rs. ' + Math.round(referralCommission).toLocaleString();
+        }
+
+        function renderPendingDeposits(deposits) {
+            const list = deposits.filter(d => (d.status || '').toLowerCase() === 'pending');
+            document.getElementById('depositsCountTitle').innerHTML = `<i class="fa-solid fa-building-columns" style="color: #008069;"></i> Pending Deposits Verification (${list.length})`;
+            const tbody = document.getElementById('depositsTableBody');
+            tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 18px;">No pending deposits found!</td></tr>`;
+                return;
+            }
+
+            list.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${d.username}</strong></td>
+                    <td style="font-weight: 800; color: #008069;">Rs. ${Number(d.amount).toLocaleString()}</td>
+                    <td>${d.method}</td>
+                    <td><code>${d.transactionId || 'N/A'}</code></td>
+                    <td>${new Date(d.date || Date.now()).toLocaleDateString()}</td>
+                    <td><span class="badge pending">Pending</span></td>
+                    <td>
+                        <button class="btn-table-action btn-approve-action" onclick="quickApproveDeposit(${d.id})"><i class="fa-solid fa-check"></i> Approve</button>
+                        <button class="btn-table-action btn-reject-action" onclick="quickRejectDeposit(${d.id})"><i class="fa-solid fa-xmark"></i> Reject</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderPendingWithdrawals(withdrawals) {
+            const list = withdrawals.filter(w => (w.status || '').toLowerCase() === 'pending');
+            document.getElementById('withdrawalsCountTitle').innerHTML = `<i class="fa-solid fa-money-bill-transfer" style="color: #7e22ce;"></i> Pending Withdrawals Requests (${list.length})`;
+            const tbody = document.getElementById('withdrawalsTableBody');
+            tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 18px;">No pending withdrawals found!</td></tr>`;
+                return;
+            }
+
+            list.forEach(w => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${w.username}</strong></td>
+                    <td style="font-weight: 800; color: #7e22ce;">Rs. ${Number(w.amount).toLocaleString()}</td>
+                    <td>${w.method}</td>
+                    <td>${w.accountTitle}</td>
+                    <td><code>${w.accountNumber}</code></td>
+                    <td><span class="badge pending">Pending</span></td>
+                    <td>
+                        <button class="btn-table-action btn-approve-action" onclick="quickApproveWithdraw(${w.id})"><i class="fa-solid fa-check"></i> Mark Paid</button>
+                        <button class="btn-table-action btn-reject-action" onclick="quickRejectWithdraw(${w.id})"><i class="fa-solid fa-rotate-left"></i> Refund</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function quickApproveDeposit(id) {
+            if (!confirm('Approve this deposit request?')) return;
+            let deposits = JSON.parse(localStorage.getItem('admin_deposits_all')) || [];
+            let users = JSON.parse(localStorage.getItem('nexora_registered_users')) || [];
+
+            const dep = deposits.find(d => d.id === id);
+            if (dep) {
+                dep.status = 'Approved';
+                // Add balance to user
+                users = users.map(u => {
+                    if (u.username.toLowerCase() === dep.username.toLowerCase()) {
+                        return { ...u, balance: Number(u.balance || 0) + Number(dep.amount) };
+                    }
+                    return u;
+                });
+            }
+
+            localStorage.setItem('admin_deposits_all', JSON.stringify(deposits));
+            localStorage.setItem('nexora_registered_users', JSON.stringify(users));
+            initDashboard();
+        }
+
+        function quickRejectDeposit(id) {
+            if (!confirm('Cancel/Reject this deposit?')) return;
+            let deposits = JSON.parse(localStorage.getItem('admin_deposits_all')) || [];
+            deposits = deposits.map(d => d.id === id ? { ...d, status: 'Canceled' } : d);
+            localStorage.setItem('admin_deposits_all', JSON.stringify(deposits));
+            initDashboard();
+        }
+
+        function quickApproveWithdraw(id) {
+            if (!confirm('Mark this withdrawal request as Paid?')) return;
+            let withdrawals = JSON.parse(localStorage.getItem('nexora_admin_withdrawals')) || [];
+            withdrawals = withdrawals.map(w => w.id === id ? { ...w, status: 'Paid' } : w);
+            localStorage.setItem('nexora_admin_withdrawals', JSON.stringify(withdrawals));
+            initDashboard();
+        }
+
+        function quickRejectWithdraw(id) {
+            if (!confirm('Refund and reject this withdrawal?')) return;
+            let withdrawals = JSON.parse(localStorage.getItem('nexora_admin_withdrawals')) || [];
+            let users = JSON.parse(localStorage.getItem('nexora_registered_users')) || [];
+
+            const wtd = withdrawals.find(w => w.id === id);
+            if (wtd) {
+                wtd.status = 'Rejected';
+                // Refund back to user
+                users = users.map(u => {
+                    if (u.username.toLowerCase() === wtd.username.toLowerCase()) {
+                        return { ...u, balance: Number(u.balance || 0) + Number(wtd.amount) };
+                    }
+                    return u;
+                });
+            }
+
+            localStorage.setItem('nexora_admin_withdrawals', JSON.stringify(withdrawals));
+            localStorage.setItem('nexora_registered_users', JSON.stringify(users));
+            initDashboard();
+        }
+
+        function handleAdminLogout() {
+            if (confirm('Aap admin panel se logout karna chahte hain?')) {
+                window.location.href = 'admin-login.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Nexora Admin - Complete Deposits</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #fdf6ec;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Mock Sidebar */
+        .admin-sidebar-mock {
+            width: 250px;
+            background: #008069;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 24px 16px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .admin-sidebar-mock h2 {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-left: 8px;
+        }
+
+        .admin-sidebar-mock a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .admin-sidebar-mock a:hover,
+        .admin-sidebar-mock a.active {
+            background: #ffffff;
+            color: #008069;
+        }
+
+        .admin-main-content {
+            margin-left: 250px;
+            padding: 24px 28px 60px;
+            min-height: 100vh;
+            width: calc(100% - 250px);
+            background: #fdf6ec;
+        }
+
+        /* Desktop Top Header Bar */
+        .desktop-top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #ffffff;
+            padding: 14px 18px;
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            border: 1.5px solid #ffd79d;
+            margin-bottom: 22px;
+        }
+
+        .desktop-top-bar a {
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s ease;
+        }
+
+        .desktop-top-bar a.active-link {
+            background: #008069;
+            color: #ffffff;
+        }
+
+        .desktop-top-bar a.regular-link {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .desktop-top-bar a.live-link {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .desktop-top-bar a.logout-link {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            margin-left: auto;
+        }
+
+        /* Filter Controls */
+        .filter-controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tabs-btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-pill.active {
+            background: #008069;
+            color: #ffffff;
+            border-color: #008069;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            min-width: 240px;
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid #ffd79d;
+            border-radius: 20px;
+            padding: 8px 14px 8px 34px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e293b;
+            outline: none;
+        }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border: 2px solid #ffd79d;
+            border-radius: 20px;
+            padding: 20px 18px;
+            box-shadow: 0 4px 16px rgba(210, 135, 45, 0.08);
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border-bottom: 1px dashed #fed7aa;
+            padding-bottom: 10px;
+        }
+
+        .table-card-head h2 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-card-head span {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        thead th {
+            padding: 10px 12px;
+            border-bottom: 2px solid #fed7aa;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            background: #fff8f0;
+        }
+
+        tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .status-Approved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-Pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-Canceled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-action-ok {
+            background: #008069;
+            color: #fff;
+            border: 0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 11px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-action-no {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #f87171;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-left: 4px;
+            font-size: 11px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-action-ok:hover,
+        .btn-action-no:hover {
+            opacity: 0.85;
+        }
+
+        .receipt-btn {
+            background: rgba(0, 128, 105, 0.1);
+            color: #008069;
+            padding: 4px 8px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            border: 1px solid rgba(0, 128, 105, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Screenshot Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-body {
+            background: #ffffff;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 14px 18px;
+            background: #008069;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .modal-img-container {
+            padding: 16px;
+            text-align: center;
+            max-height: 500px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .modal-img-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+
+            .admin-sidebar-mock,
+            .desktop-top-bar {
+                display: none !important;
+            }
+
+            body {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-left: 0 !important;
+                padding: 16px 12px 70px !important;
+                width: 100% !important;
+            }
+
+            .table-card {
+                padding: 14px 12px;
+                border-radius: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mock Sidebar -->
+    <aside class="admin-sidebar-mock">
+        <h2>Nexora Admin</h2>
+        <a href="admin-dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="admin-deposits.html" class="active"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+        <a href="admin-withdrawals.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawals</a>
+        <a href="admin-banks.html"><i class="fa-solid fa-wallet"></i> Currency Account</a>
+        <a href="admin-users.html"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="admin-team.html"><i class="fa-solid fa-user-shield"></i> Admin Members</a>
+        <a href="admin-settings.html"><i class="fa-solid fa-sliders"></i> Project Setting</a>
+        <a href="dashboard.html" target="_blank"><i class="fa-solid fa-globe"></i> Live User App</a>
+        <a href="javascript:void(0);" onclick="handleAdminLogout()" style="margin-top: auto; color: #fee2e2;"><i
+                class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <main class="admin-main-content">
+        <!-- Desktop Top Navigation Bar -->
+        <div class="desktop-top-bar">
+            <a href="admin-dashboard.html" class="regular-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="admin-deposits.html" class="active-link"><i class="fa-solid fa-building-columns"></i> Deposits</a>
+            <a href="admin-withdrawals.html" class="regular-link"><i class="fa-solid fa-money-bill-transfer"></i>
+                Withdrawals</a>
+            <a href="admin-banks.html" class="regular-link"><i class="fa-solid fa-wallet"></i> Banks</a>
+            <a href="admin-users.html" class="regular-link"><i class="fa-solid fa-users"></i> Users</a>
+            <a href="admin-team.html" class="regular-link"><i class="fa-solid fa-user-shield"></i> Team</a>
+            <a href="admin-settings.html" class="regular-link"><i class="fa-solid fa-sliders"></i> Settings</a>
+            <a href="dashboard.html" target="_blank" class="live-link"><i class="fa-solid fa-globe"></i> Live Site</a>
+            <a href="javascript:void(0);" onclick="handleAdminLogout()" class="logout-link"><i
+                    class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+
+        <!-- Filter and Search Row -->
+        <div class="filter-controls-row">
+            <div class="tabs-btn-group">
+                <button type="button" class="filter-pill active" onclick="setDepositFilter('all', this)">All</button>
+                <button type="button" class="filter-pill" onclick="setDepositFilter('Pending', this)">Pending</button>
+                <button type="button" class="filter-pill" onclick="setDepositFilter('Approved', this)">Approved</button>
+                <button type="button" class="filter-pill" onclick="setDepositFilter('Canceled', this)">Canceled</button>
+            </div>
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="depositSearchInput" oninput="handleSearch()" placeholder="Search user or TID...">
+            </div>
+        </div>
+
+        <!-- Deposits Table Card -->
+        <div class="table-card">
+            <div class="table-card-head">
+                <h2><i class="fa-solid fa-list-check" style="color:#008069;"></i> Deposit Records</h2>
+                <span id="totalDepositsCount">Total: 0</span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Pkg</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>TID</th>
+                        <th>Receipt</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="depositsTableBody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Screenshot Modal Preview -->
+    <div class="modal-overlay" id="screenshotModal">
+        <div class="modal-body">
+            <div class="modal-header">
+                <span>Payment Screenshot Proof</span>
+                <button type="button" class="modal-close-btn" onclick="closeScreenshotModal()"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-img-container">
+                <img id="modalPreviewImage" src="" alt="Payment Proof">
+            </div>
+        </div>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        const defaultDeposits = [
+            { id: 1, username: "usman_khan", packageId: "1", amount: 15000, method: "EasyPaisa", transactionId: "TRX88291039", screenshot: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400", date: "2026-10-31T09:15:00.000Z", status: "Pending" },
+            { id: 2, username: "ahmad_ali", packageId: "2", amount: 20000, method: "JazzCash", transactionId: "TRX99201948", screenshot: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400", date: "2026-10-31T10:45:00.000Z", status: "Pending" },
+            { id: 3, username: "noman", packageId: "1", amount: 10000, method: "Nayapay", transactionId: "TRX33849102", screenshot: null, date: "2026-10-25T08:30:00.000Z", status: "Approved" },
+            { id: 4, username: "rashid_dev", packageId: "3", amount: 35000, method: "Meezan Bank", transactionId: "TRX11029348", screenshot: null, date: "2026-10-29T14:20:00.000Z", status: "Canceled" }
+        ];
+
+        function getDeposits() {
+            let data = JSON.parse(localStorage.getItem('admin_deposits_all'));
+            if (!data || data.length === 0) {
+                data = defaultDeposits;
+                localStorage.setItem('admin_deposits_all', JSON.stringify(data));
+            }
+            return data;
+        }
+
+        function renderDepositsTable() {
+            const allDeposits = getDeposits();
+            const tbody = document.getElementById('depositsTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = allDeposits.filter(d => {
+                const matchesFilter = currentFilter === 'all' || (d.status || '').toLowerCase() === currentFilter.toLowerCase();
+                const q = searchQuery.toLowerCase();
+                const matchesSearch = !q || (d.username || '').toLowerCase().includes(q) || (d.transactionId || '').toLowerCase().includes(q);
+                return matchesFilter && matchesSearch;
+            });
+
+            document.getElementById('totalDepositsCount').innerText = `Total: ${filtered.length}`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 25px; color:#94a3b8; font-size:12px;">No deposits found matching criteria.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(d => {
+                const tr = document.createElement('tr');
+
+                let proofHtml = d.screenshot
+                    ? `<button type="button" class="receipt-btn" onclick="openScreenshotModal('${d.screenshot}')"><i class="fa-solid fa-image"></i> View</button>`
+                    : '<span style="color:#94a3b8;">None</span>';
+
+                let actionHtml = '';
+                if ((d.status || '').toLowerCase() === 'pending') {
+                    actionHtml = `
+                        <button type="button" class="btn-action-ok" onclick="updateDepositStatus(${d.id}, 'Approved')">Approve</button>
+                        <button type="button" class="btn-action-no" onclick="updateDepositStatus(${d.id}, 'Canceled')">Reject</button>
+                    `;
+                } else {
+                    actionHtml = `<span style="font-size:10px; color:#94a3b8; font-weight:700;">Completed</span>`;
+                }
+
+                const displayDate = d.date ? new Date(d.date).toLocaleDateString() : 'Recent';
+
+                tr.innerHTML = `
+                    <td><strong>${d.username}</strong></td>
+                    <td>P${d.packageId || 1}</td>
+                    <td style="font-weight:900; color:#008069;">Rs. ${Number(d.amount).toLocaleString()}</td>
+                    <td>${d.method}</td>
+                    <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:6px;">${d.transactionId || 'N/A'}</code></td>
+                    <td>${proofHtml}</td>
+                    <td>${displayDate}</td>
+                    <td><span class="status-badge status-${d.status}">${d.status}</span></td>
+                    <td>${actionHtml}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateDepositStatus(id, newStatus) {
+            let allDeposits = getDeposits();
+            const targetDeposit = allDeposits.find(d => d.id === id);
+
+            if (!targetDeposit) return;
+
+            if (confirm(`Are you sure you want to change deposit status to ${newStatus}?`)) {
+                targetDeposit.status = newStatus;
+                localStorage.setItem('admin_deposits_all', JSON.stringify(allDeposits));
+
+                // If approved, credit balance to the user in registered users list
+                if (newStatus === 'Approved') {
+                    let users = JSON.parse(localStorage.getItem('nexora_registered_users')) || [];
+                    users = users.map(u => {
+                        if (u.username.toLowerCase() === targetDeposit.username.toLowerCase()) {
+                            return { ...u, balance: Number(u.balance || 0) + Number(targetDeposit.amount) };
+                        }
+                        return u;
+                    });
+                    localStorage.setItem('nexora_registered_users', JSON.stringify(users));
+
+                    // If active user session matches, update session too
+                    let userSession = JSON.parse(localStorage.getItem('user_session'));
+                    if (userSession && userSession.username.toLowerCase() === targetDeposit.username.toLowerCase()) {
+                        userSession.balance = Number(userSession.balance || 0) + Number(targetDeposit.amount);
+                        localStorage.setItem('user_session', JSON.stringify(userSession));
+                    }
+                }
+
+                renderDepositsTable();
+            }
+        }
+
+        function setDepositFilter(filterType, element) {
+            currentFilter = filterType;
+            document.querySelectorAll('.filter-pill').forEach(pill => pill.classList.remove('active'));
+            element.classList.add('active');
+            renderDepositsTable();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('depositSearchInput').value.trim();
+            renderDepositsTable();
+        }
+
+        function openScreenshotModal(imgSrc) {
+            document.getElementById('modalPreviewImage').src = imgSrc;
+            document.getElementById('screenshotModal').style.display = 'flex';
+        }
+
+        function closeScreenshotModal() {
+            document.getElementById('screenshotModal').style.display = 'none';
+        }
+
+        function handleAdminLogout() {
+            if (confirm('Are you sure you want to logout of the admin panel?')) {
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderDepositsTable);
+    </script>
+</body>
+
+</html>

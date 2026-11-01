@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Earning History - Nexora Capital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 40px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #8ff1ff;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .history-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-align: center;
+            line-height: 1.1;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .summary-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 28px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .summary-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .summary-info small {
+            font-size: 11px;
+            font-weight: 700;
+            color: #b7c4d9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-info h2 {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ff5c77;
+            line-height: 1.1;
+            text-shadow: 0 0 20px rgba(255, 92, 119, 0.4);
+        }
+
+        .summary-info p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 18px;
+            padding: 12px 10px;
+            text-align: left;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-icon {
+            width: 34px;
+            height: 34px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .stat-box.debit .stat-icon {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .stat-box.entries .stat-icon {
+            background: rgba(14, 165, 233, 0.2);
+            color: #38bdf8;
+            border: 1px solid rgba(14, 165, 233, 0.4);
+        }
+
+        .stat-box small {
+            display: block;
+            font-size: 10px;
+            color: #b7c4d9;
+            font-weight: 700;
+        }
+
+        .stat-box span {
+            font-size: 15px;
+            font-weight: 900;
+            color: #f8fafc;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #eaf7ff;
+        }
+
+        .badge-recent {
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .filter-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .filter-tab {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .8), rgba(10, 17, 36, .9));
+            border: 1.5px solid rgba(185, 218, 255, .25);
+            border-radius: 14px;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #b7c4d9;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #ffffff;
+            border-color: rgba(161, 255, 225, .6);
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.4);
+        }
+
+        /* Earning List Item Styles */
+        .earnings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .earning-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .9), rgba(10, 17, 36, .94));
+            border: 1.5px solid rgba(185, 218, 255, .2);
+            border-radius: 18px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .earning-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .earning-badge-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+        }
+
+        .earning-badge-icon.credit {
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .earning-badge-icon.debit {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .earning-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #f8fafc;
+            line-height: 1.2;
+        }
+
+        .earning-date {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        .earning-amount {
+            font-size: 15px;
+            font-weight: 900;
+            text-align: right;
+        }
+
+        .earning-amount.credit {
+            color: #34d399;
+        }
+
+        .earning-amount.debit {
+            color: #f87171;
+        }
+
+        .empty-state {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .7), rgba(10, 17, 36, .85));
+            border: 2px dashed rgba(185, 218, 255, .3);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(20, 184, 166, 0.2);
+            color: #34d399;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            margin: 0 auto 14px;
+            border: 1px solid rgba(20, 184, 166, 0.4);
+        }
+
+        .empty-state h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 4px;
+        }
+
+        .empty-state p {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .btn-dashboard {
+            display: inline-block;
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #ffffff;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(161, 255, 225, .5);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-frame">
+        <div class="history-header">
+            <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="history-title">Earning<br>History</div>
+            <div style="width: 38px;"></div>
+        </div>
+
+        <!-- Total Earnings Summary Card -->
+        <div class="summary-card">
+            <div class="summary-icon"><i class="fa-solid fa-coins"></i></div>
+            <div class="summary-info">
+                <small>Total Earnings</small>
+                <h2 id="totalEarningsText">Rs 0</h2>
+                <p id="totalRecordsText">0 earning records</p>
+            </div>
+        </div>
+
+        <!-- Stats Grid (Credit, Debit, Entries) -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <small>Credit</small>
+                <span id="creditTotalText">Rs 0</span>
+            </div>
+            <div class="stat-box debit">
+                <div class="stat-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                <small>Debit</small>
+                <span id="debitTotalText">Rs 0</span>
+            </div>
+            <div class="stat-box entries">
+                <div class="stat-icon"><i class="fa-solid fa-list"></i></div>
+                <small>Entries</small>
+                <span id="entriesCountText">0</span>
+            </div>
+        </div>
+
+        <!-- Section Header -->
+        <div class="section-header">
+            <div class="section-title">All Earnings</div>
+            <div class="badge-recent">Recent</div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <a href="javascript:void(0);" class="filter-tab active" onclick="setFilter('all', this)">All</a>
+            <a href="javascript:void(0);" class="filter-tab" onclick="setFilter('credit', this)">Credit</a>
+            <a href="javascript:void(0);" class="filter-tab" onclick="setFilter('debit', this)">Debit</a>
+        </div>
+
+        <!-- Dynamic Earnings List -->
+        <div class="earnings-list" id="earningsListContainer"></div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyEarningsState">
+            <div class="empty-icon"><i class="fa-solid fa-coins"></i></div>
+            <h3>No earnings found</h3>
+            <p>Your earned rewards and income will appear here.</p>
+            <a href="dashboard.html" class="btn-dashboard">Back to Dashboard <i class="fa-solid fa-arrow-right"
+                    style="margin-left: 4px;"></i></a>
+        </div>
+
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        // Sample/Stored User Earning Records
+        let earningsData = JSON.parse(localStorage.getItem('user_earnings_data')) || [
+            { id: 1, title: "Daily Package Return", type: "credit", amount: 650, date: "2026-10-31T08:00:00.000Z" },
+            { id: 2, title: "Referral Commission", type: "credit", amount: 300, date: "2026-10-30T14:20:00.000Z" },
+            { id: 3, title: "Plan Activation Fee", type: "debit", amount: 500, date: "2026-10-28T10:15:00.000Z" },
+            { id: 4, title: "Daily Package Return", type: "credit", amount: 650, date: "2026-10-27T08:00:00.000Z" }
+        ];
+
+        let activeFilter = 'all';
+
+        function renderEarnings() {
+            const container = document.getElementById('earningsListContainer');
+            const emptyState = document.getElementById('emptyEarningsState');
+
+            container.innerHTML = '';
+
+            let totalCredit = 0;
+            let totalDebit = 0;
+
+            earningsData.forEach(item => {
+                if (item.type === 'credit') totalCredit += Number(item.amount || 0);
+                if (item.type === 'debit') totalDebit += Number(item.amount || 0);
+            });
+
+            const netTotal = totalCredit - totalDebit;
+
+            document.getElementById('totalEarningsText').innerText = `Rs ${netTotal.toLocaleString()}`;
+            document.getElementById('totalRecordsText').innerText = `${earningsData.length} earning records`;
+            document.getElementById('creditTotalText').innerText = `Rs ${totalCredit.toLocaleString()}`;
+            document.getElementById('debitTotalText').innerText = `Rs ${totalDebit.toLocaleString()}`;
+            document.getElementById('entriesCountText').innerText = earningsData.length;
+
+            const filtered = earningsData.filter(item => {
+                if (activeFilter === 'credit') return item.type === 'credit';
+                if (activeFilter === 'debit') return item.type === 'debit';
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'earning-card';
+
+                const isCredit = item.type === 'credit';
+                const iconClass = isCredit ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
+                const sign = isCredit ? '+' : '-';
+                const formattedDate = new Date(item.date).toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                card.innerHTML = `
+                    <div class="earning-left">
+                        <div class="earning-badge-icon ${item.type}">
+                            <i class="fa-solid ${iconClass}"></i>
+                        </div>
+                        <div>
+                            <div class="earning-title">${item.title}</div>
+                            <div class="earning-date">${formattedDate}</div>
+                        </div>
+                    </div>
+                    <div class="earning-amount ${item.type}">
+                        ${sign} Rs ${Number(item.amount).toLocaleString()}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function setFilter(filterType, element) {
+            activeFilter = filterType;
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+            renderEarnings();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderEarnings);
+    </script>
+</body>
+
+</html>

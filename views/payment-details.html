@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Payment Details - Nexora Capital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #050817;
+            background-image: radial-gradient(ellipse at 50% 18%, rgba(27, 69, 112, .28), transparent 42%),
+                radial-gradient(ellipse at 20% 75%, rgba(219, 49, 119, .12), transparent 35%),
+                radial-gradient(ellipse at 85% 88%, rgba(25, 113, 184, .14), transparent 38%);
+            color: #f1f5ff;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(8, 14, 31, .98), rgba(5, 9, 23, .98));
+            padding: 20px 16px 40px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(115, 199, 255, .08);
+            border-right: 1px solid rgba(115, 199, 255, .08);
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            font-size: 16px;
+            color: #8ff1ff;
+            text-decoration: none;
+            width: 38px;
+            height: 38px;
+            background: rgba(8, 18, 39, .85);
+            border: 1.5px solid #72e8ff;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 16px rgba(68, 213, 255, .13);
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #eaf7ff;
+            text-shadow: 0 0 12px rgba(91, 202, 255, .35);
+        }
+
+        .details-card {
+            background: linear-gradient(145deg, rgba(23, 34, 59, .96), rgba(10, 17, 36, .96));
+            border: 1.5px solid rgba(185, 218, 255, .4);
+            border-radius: 20px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .bank-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 1px solid rgba(187, 220, 255, .3);
+            padding: 4px;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+            color: #008069;
+        }
+
+        .copy-circle-btn {
+            background: rgba(20, 184, 166, 0.2);
+            border: 1px solid rgba(20, 184, 166, 0.4);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: #34d399;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .copy-circle-btn:active {
+            transform: scale(0.9);
+            background: rgba(20, 184, 166, 0.4);
+        }
+
+        .input-box-custom {
+            background: rgba(13, 22, 43, 0.9);
+            border: 1.5px solid rgba(187, 220, 255, .3);
+            border-radius: 16px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .input-box-custom input {
+            width: 100%;
+            border: 0;
+            outline: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .upload-box {
+            border: 2px dashed rgba(185, 218, 255, .4);
+            padding: 24px 20px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: linear-gradient(145deg, rgba(23, 34, 59, .7), rgba(10, 17, 36, .85));
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.2s ease;
+        }
+
+        .upload-box:hover {
+            border-color: rgba(52, 211, 153, 0.7);
+        }
+
+        .btn-gradient {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, #14b8a6, #047857);
+            color: #fff;
+            border: 1px solid rgba(161, 255, 225, .5);
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        .btn-gradient:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: #0f172a;
+            border: 1px solid #38bdf8;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            z-index: 99999;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast-msg.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-frame">
+        <div class="screen-header">
+            <a href="payment-method.html" id="backBtn" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div>
+                <h2 class="header-title">Payment Details</h2>
+                <div style="font-size: 11px; color: #b7c4d9; font-weight: 600;">Send payment, then submit receipt.</div>
+            </div>
+        </div>
+
+        <!-- Bank Name & Amount -->
+        <div class="details-card">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="bank-logo" id="bankLogoWrapper">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <strong style="color: #f8fafc; font-size: 16px;" id="bankNameText">
+                    EasyPaisa
+                </strong>
+            </div>
+            <div style="text-align: right;">
+                <small
+                    style="font-size: 10px; color: #b7c4d9; display: block; text-transform: uppercase; font-weight: 700;">Amount</small>
+                <strong style="color: #ff5c77; font-size: 16px; text-shadow: 0 0 10px rgba(255, 92, 119, 0.4);"
+                    id="packagePriceText">
+                    Rs. 1,500
+                </strong>
+            </div>
+        </div>
+
+        <!-- Account Holder -->
+        <div class="details-card">
+            <div>
+                <small style="color: #b7c4d9; font-size: 11px; text-transform: uppercase; font-weight: 700;">Account
+                    Holder</small>
+                <strong style="font-size: 14px; display: block; color: #f8fafc; margin-top: 2px;"
+                    id="accountHolderText">
+                    Noman Subhan
+                </strong>
+            </div>
+            <button type="button" class="copy-circle-btn"
+                onclick="copyToClipboard('accountHolderText', 'Account title')">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+        </div>
+
+        <!-- Account Number -->
+        <div class="details-card">
+            <div>
+                <small style="color: #b7c4d9; font-size: 11px; text-transform: uppercase; font-weight: 700;">Account
+                    Number</small>
+                <strong style="font-size: 14px; display: block; color: #f8fafc; margin-top: 2px;"
+                    id="accountNumberText">
+                    03001234567
+                </strong>
+            </div>
+            <button type="button" class="copy-circle-btn"
+                onclick="copyToClipboard('accountNumberText', 'Account number')">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+        </div>
+
+        <!-- Deposit Proof Submission Form -->
+        <form id="paymentSubmissionForm" onsubmit="handlePaymentSubmit(event)">
+            <div class="input-box-custom">
+                <i class="fa-regular fa-file-lines" style="color: #34d399;"></i>
+                <input type="text" id="transactionIdInput" required placeholder="Enter Transaction ID (TID)">
+            </div>
+
+            <div onclick="document.getElementById('ssFile').click()" class="upload-box">
+                <div style="font-size: 24px; color: #34d399; margin-bottom: 6px;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <strong style="font-size: 14px; display: block; color: #f8fafc;">Upload Payment Screenshot</strong>
+                <input type="file" id="ssFile" accept="image/*" style="display: none;"
+                    onchange="handleFileSelected(event)">
+                <div id="fileName" style="font-size: 11px; color: #34d399; margin-top: 6px; font-weight: 600;">
+                    No file selected
+                </div>
+            </div>
+
+            <button type="submit" class="btn-gradient">Submit for Verification</button>
+        </form>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast-msg" id="toastMsg">
+        <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+        <span id="toastText">Copied to clipboard</span>
+    </div>
+
+    <!-- Client-Side JavaScript Logic -->
+    <script>
+        let uploadedScreenshotBase64 = null;
+        let selectedPkg = null;
+        let selectedBank = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pkgId = urlParams.get('pkg');
+            const bankId = urlParams.get('bank');
+
+            // Resolve Package details
+            const storedPkg = JSON.parse(localStorage.getItem('selected_investment_package'));
+            const defaultPackages = [
+                { id: 1, name: "Bronze Starter", price: 1500 },
+                { id: 2, name: "Silver Growth", price: 3500 },
+                { id: 3, name: "Gold Executive", price: 7000 },
+                { id: 4, name: "Platinum Elite", price: 15000 }
+            ];
+
+            const allPackages = JSON.parse(localStorage.getItem('nexora_investment_packages')) || defaultPackages;
+            if (pkgId) {
+                selectedPkg = allPackages.find(p => String(p.id) === String(pkgId)) || storedPkg || allPackages[0];
+            } else {
+                selectedPkg = storedPkg || allPackages[0];
+            }
+
+            // Resolve Bank details
+            const storedBank = JSON.parse(localStorage.getItem('selected_payment_bank'));
+            const defaultBanks = [
+                { id: 1, bankName: "EasyPaisa", accountTitle: "Noman Subhan", accountNumber: "03001234567", isActive: true },
+                { id: 2, bankName: "JazzCash", accountTitle: "Noman Subhan", accountNumber: "03219876543", isActive: true }
+            ];
+
+            const allBanks = JSON.parse(localStorage.getItem('admin_banks_data')) || defaultBanks;
+            if (bankId) {
+                selectedBank = allBanks.find(b => String(b.id) === String(bankId)) || storedBank || allBanks[0];
+            } else {
+                selectedBank = storedBank || allBanks[0];
+            }
+
+            // Populate UI Elements
+            if (selectedPkg) {
+                document.getElementById('packagePriceText').innerText = `Rs. ${Number(selectedPkg.price).toLocaleString()}`;
+                document.getElementById('backBtn').href = `payment-method.html?pkg=${selectedPkg.id}`;
+            }
+
+            if (selectedBank) {
+                document.getElementById('bankNameText').innerText = selectedBank.bankName;
+                document.getElementById('accountHolderText').innerText = selectedBank.accountTitle;
+                document.getElementById('accountNumberText').innerText = selectedBank.accountNumber;
+            }
+        });
+
+        function handleFileSelected(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fileName').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    uploadedScreenshotBase64 = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function copyToClipboard(elementId, label) {
+            const text = document.getElementById(elementId).innerText.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`${label} copied!`);
+            }).catch(() => {
+                showToast("Copied!");
+            });
+        }
+
+        let toastTimer;
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            document.getElementById('toastText').innerText = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function handlePaymentSubmit(e) {
+            e.preventDefault();
+
+            const tid = document.getElementById('transactionIdInput').value.trim();
+            if (!tid) {
+                alert("Please enter a valid Transaction ID.");
+                return;
+            }
+
+            const userSession = JSON.parse(localStorage.getItem('user_session')) || {
+                username: "noman"
+            };
+
+            const newDeposit = {
+                id: Date.now(),
+                username: userSession.username,
+                packageId: selectedPkg ? selectedPkg.id : 1,
+                amount: selectedPkg ? selectedPkg.price : 1500,
+                method: selectedBank ? selectedBank.bankName : "EasyPaisa",
+                transactionId: tid,
+                screenshot: uploadedScreenshotBase64 || null,
+                date: new Date().toISOString(),
+                status: "Pending"
+            };
+
+            // Save deposit to master admin dataset
+            let adminDeposits = JSON.parse(localStorage.getItem('admin_deposits_all')) || [];
+            adminDeposits.unshift(newDeposit);
+            localStorage.setItem('admin_deposits_all', JSON.stringify(adminDeposits));
+
+            window.location.href = "payment-status.html";
+        }
+    </script>
+</body>
+
+</html>
